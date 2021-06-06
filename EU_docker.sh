@@ -4,5 +4,4 @@ docker start $dockername
 until [ $? -eq 0 ]  
   do
     docker start $dockername
-  done 
-    exit 0
+  done
