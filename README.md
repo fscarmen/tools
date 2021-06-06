@@ -7,3 +7,12 @@ bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/root.sh)
 ```bash
 bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/return.sh)
 ```
+端口转发，解决代理443端口被墙，本机用 127.0.0.1
+```bash
+bash <(curl -sSL http://www.arloor.com/sh/iptablesUtils/natcfg.sh)
+```
+
+EUserv docker无限启动直至成功
+```bash
+bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/EU_docker.sh)
+```
