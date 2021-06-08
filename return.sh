@@ -1,6 +1,6 @@
 if [[ $(hostnamectl) =~ .*arm.* ]]
-  then file=besttrace
-  else file=besttracearm
+  then file=besttracearm
+  else file=besttrace
 fi
 
 read -p "当地IP:" ip
