@@ -5,3 +5,4 @@ until [ $? -eq 0 ]
   do
     docker start $dockername
   done
+echo -e "\033[32m 恭喜！你的项目 $dockername 已经启动成功。 \033[0m"
