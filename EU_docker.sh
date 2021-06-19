@@ -1,3 +1,4 @@
+timedatectl set-timezone Asia/Shanghai
 startTime=`date +%Y%m%d-%H:%M:%S`
 startTime_s=`date +%s`
 i=1
