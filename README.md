@@ -12,12 +12,12 @@ bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/return.sh
 bash <(curl -sSL http://www.arloor.com/sh/iptablesUtils/natcfg.sh)
 ```
 
-EUserv docker无限启动直至成功
+EUserv docker 无限启动直至成功
 ```bash
 bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/EU_docker.sh)
 ```
 
-EUserv lxk 项目无限启动直至成功，需要先进入 docker-compose.yml 文件所在目录再运行
+EUserv docker-compose 无限启动直至成功，需要先进入 docker-compose.yml 文件所在目录再运行
 ```bash
-bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/EU_lxk.sh)
+bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/EU_compose.sh)
 ```
