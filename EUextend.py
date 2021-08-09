@@ -1,3 +1,4 @@
+import os
 import re
 import json
 import time
@@ -5,13 +6,13 @@ import requests
 from bs4 import BeautifulSoup
 
 # 多个账户请使用空格隔开
-USERNAME = os.environ.get('USERNAME') # 用户名，邮箱也可
-PASSWORD = os.environ.get('PASSWORD') # 密码
+USERNAME = os.environ.get('USERNAME')  # 用户名或邮箱
+PASSWORD = os.environ.get('PASSWORD')  # 密码
 
 # Telegram Bot Push https://core.telegram.org/bots/api#authorizing-your-bot
-TG_BOT_TOKEN = ''  # 通过 @BotFather 申请获得，示例：1077xxx4424:AAFjv0FcqxxxxxxgEMGfi22B4yh15R5uw
-TG_USER_ID = ''  # 用户、群组或频道 ID，示例：129xxx206
-TG_API_HOST = ''  # 自建 API 反代地址，供网络环境无法访问时使用，网络正常则保持默认
+TG_BOT_TOKEN = os.environ.get('TG_BOT_TOKEN')  # 通过 @BotFather 申请获得，示例：1077xxx4424:AAFjv0FcqxxxxxxgEMGfi22B4yh15R5uw
+TG_USER_ID = os.environ.get('TG_USER_ID')  # 用户、群组或频道 ID，示例：129xxx206
+TG_API_HOST = os.environ.get('TG_API_HOST', 'api.telegram.org')  # 自建 API 反代地址，供网络环境无法访问时使用，网络正常则保持默认
 
 # Server酱 http://sc.ftqq.com/?c=code
 SCKEY = ''  # 这里填Server酱的key，无需推送可不填 示例: SCU646xxxxxxxxdacd6a5dc3f6
