@@ -21,3 +21,7 @@ EUserv docker-compose 无限启动直至成功，需要先进入 docker-compose.
 ```bash
 bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/EU_compose.sh)
 ```
+EUserv docker 状态异常自动恢复，定时任务为1分钟检查一次各docker状态，如要取消编辑 /etc/crontab
+```bash
+wget -N -O /root/EU_docker_cron.sh https://raw.githubusercontent.com/fscarmen/tools/main/EU_docker_cron.sh;echo "*/1 * * * *  root bash /root/EU_docker_cron.sh" > /etc/crontab
+```
