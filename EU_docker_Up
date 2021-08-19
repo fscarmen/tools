@@ -1,3 +1,3 @@
-wget -N -O /root/EU_docker_check.sh https://raw.githubusercontent.com/fscarmen/tools/main/EU_docker_check.sh
-wget -N -O /root/EU_docker_cron.sh https://raw.githubusercontent.com/fscarmen/tools/main/EU_docker_cron.sh
+wget -N -P /root https://raw.githubusercontent.com/fscarmen/tools/main/EU_docker_check.sh
+wget -N -P /root https://raw.githubusercontent.com/fscarmen/tools/main/EU_docker_cron.sh
 echo '*/1 * * * *  root bash /root/EU_docker_check.sh' > /etc/crontab
