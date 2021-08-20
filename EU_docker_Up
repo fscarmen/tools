@@ -14,3 +14,4 @@ echo 'fi' >> /root/EU_docker_check.sh
 
 # 定时任务，1分钟运行守护进程一次
 echo '*/1 * * * *  root bash /root/EU_docker_check.sh' > /etc/crontab
+echo -e "\033[32m EUserv Docker 守护进程已运行，系统1分钟判断一次 Docker 状态，重启已停止的 docker ！ \033[0m"
