@@ -23,5 +23,5 @@ bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/EU_compos
 ```
 EUserv docker 状态异常自动恢复，定时任务为1分钟检查一次各docker状态，如要取消编辑 /etc/crontab
 ```bash
-bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/EU_docker_Up)
+bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/EU_docker_Up.sh)
 ```
