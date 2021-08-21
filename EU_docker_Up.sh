@@ -13,7 +13,7 @@ echo '     then bash /root/EU_docker_AutoUp.sh' >> /root/EU_docker_check.sh
 echo 'fi' >> /root/EU_docker_check.sh
 
 # 守护进程定时1分钟运行一次，避免重复运行 EU_docker_AutoUp.sh 而浪费系统资源
-grep -qE EU_docker_check /etc/crontab || echo '*/1 * * * *  root bash /root/EU_docker_check.sh' >> /etc/crontab
+grep -qE '^[ ]*\*/1[ ]*\*[ ]*\*[ ]*\*[ ]*\*[ ]*root[ ]*bash[ ]*/root/EU_docker_check.sh' /etc/crontab || echo '*/1 * * * *  root bash /root/EU_docker_check.sh' >> /etc/crontab
 
 # 输出执行结果
 echo -e "\033[32m EUserv Docker 守护进程已运行，系统1分钟判断一次 Docker 状态，重启已停止的 docker ！ \033[0m"
