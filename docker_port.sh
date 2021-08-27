@@ -7,5 +7,5 @@ docker stop qinglong
 systemctl stop docker
 sed -i 's/"HostPort":"$port1"/"HostPort":"$port2"/g'  /var/lib/docker/containers/$(docker ps -a | grep $dockername | awk '{print $1}')*/hostconfig.json
 systemctl start docker
-docker start qinglong
+docker start $dockername
 echo -e "\033[32m 恭喜！你的项目 $dockername 端口 $port1 已变更为 $port2 。\033[0m"
