@@ -2,7 +2,7 @@
 echo "docker ps -a | egrep 'Created|Exited'" >  /root/EU_docker_AutoUp.sh
 echo 'until [ $? -ne 0 ]'  >> /root/EU_docker_AutoUp.sh
 echo '  do' >> /root/EU_docker_AutoUp.sh
-echo '     docker start $(docker ps -aq)' >> /root/EU_docker_AutoUp.sh
+echo "     docker start \$(docker ps -a | egrep 'Created|Exited' | awk '{print \$1}')" >> /root/EU_docker_AutoUp.sh
 echo "     docker ps -a | egrep 'Created|Exited'" >> /root/EU_docker_AutoUp.sh
 echo 'done' >> /root/EU_docker_AutoUp.sh
 
