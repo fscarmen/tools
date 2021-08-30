@@ -4,8 +4,9 @@ read -p "原来的端口:" port1
 read -p "变更后的端口:" port2
 
 docker stop $dockername
-systemctl stop docker.service docker.socket
+systemctl stop docker docker.socket
 sed -i 's/"HostPort":"'$port1'"/"HostPort":"'$port2'"/g' /var/lib/docker/containers/$(docker ps -a | grep $dockername | awk '{print $1}')*/hostconfig.json
-echo -e "\033[32m 恭喜！你的项目 $dockername 端口 $port1 已变更为 $port2 。\033[0m"
-systemctl start docker.socket docker.service
+systemctl start docker.socket docker
 docker start $dockername
+echo -e "\033[32m 恭喜！你的项目 $dockername 端口 $port1 变更为 $port2 ，请在下表检查结果。\033[0m"
+docker ps -a
