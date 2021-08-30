@@ -8,4 +8,4 @@ sed -i 's/"HostPort":"'$port1'"/"HostPort":"'$port2'"/g' /var/lib/docker/contain
 systemctl start docker.socket
 docker start $dockername
 echo -e "\033[32m 恭喜！你的项目 $dockername 端口 $port1 变更为 $port2 ，请在下表检查结果。\033[0m"
-docker ps -a
+docker ps -a | grep $dockername | grep $port2
