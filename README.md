@@ -25,9 +25,9 @@ EUserv docker 状态异常自动恢复，定时任务为1分钟检查一次各do
 ```bash
 bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/EU_docker_Up.sh)
 ```
-取消定时任务并删相关文件，彻底清除
+取消 EUserv docker 定时任务并删除相应文件，彻底清除
 ```bash
-sed -i '/EU_docker_check/d' /etc/crontab;kill $(pgrep -f EU_docker);rm -f  EU_docker*
+sed -i '/EU_docker_check/d' /etc/crontab;kill $(pgrep -f EU_docker);rm -f EU_docker*
 ```
 
 docker 更换端口
