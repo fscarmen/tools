@@ -2,11 +2,11 @@ timedatectl set-timezone Asia/Shanghai
 startTime=`date +%Y%m%d-%H:%M:%S`
 startTime_s=`date +%s`
 i=1
-docker compose up -d
+docker compose up -d ||  docker-compose up -d
 until [ $? -eq 0 ]  
   do
     let i++
-    docker-compose up -d
+    docker compose up -d ||  docker-compose up -d
 done
 endTime=`date +%Y%m%d-%H:%M:%S`
 endTime_s=`date +%s`
