@@ -16,3 +16,5 @@ echo -e "\033[32m\033[01m 恭喜！你的项目经过$i次努力终于启动成�
 
 else
 echo -e "\033[31m\033[01m 请进入有 docker-compose.yml 文件的项目路径\033[0m"
+
+fi
