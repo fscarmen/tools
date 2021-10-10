@@ -98,11 +98,11 @@ cp wgcf-profile.conf /etc/wireguard/wgcf.conf
 # 自动刷直至成功（ warp bug，有时候获取不了ip地址）
 echo -e "\033[32m (3/3) 运行 WGCF \033[0m"
 echo -e "\033[33m 后台获取 warp IP 中…… \033[0m"
-WG_QUICK_USERSPACE_IMPLEMENTATION=boringtun WG_SUDO=1 wg-quick up wgcf >/dev/null 2>&1
+WG_QUICK_USERSPACE_IMPLEMENTATION=boringtun WG_SUDO=1 wg-quick up wgcf
 until [[ -n $(wget -T1 -t1 -qO- -4 ip.gs) ]]
   do
-   wg-quick down wgcf >/dev/null 2>&1
-   WG_QUICK_USERSPACE_IMPLEMENTATION=boringtun WG_SUDO=1 wg-quick up wgcf >/dev/null 2>&1
+   wg-quick down wgcf
+   WG_QUICK_USERSPACE_IMPLEMENTATION=boringtun WG_SUDO=1 wg-quick up wgcf
 done
 
 # 设置开机启动
