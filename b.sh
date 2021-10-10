@@ -69,10 +69,10 @@ wget --no-check-certificate -N -6 -O /usr/local/bin/wgcf https://github.com/ViRb
 
 # 安装 wireguard-go
 #wget --no-check-certificate -N -6 -P /usr/bin https://cdn.jsdelivr.net/gh/fscarmen/warp/wireguard-go
-#wget --no-check-certificate -N -6 -P /usr/bin https://cdn.jsdelivr.net/gh/fscarmen/warp/boringtun
+wget --no-check-certificate -N -6 -P /usr/bin https://cdn.jsdelivr.net/gh/fscarmen/warp/boringtun
 
 # 添加执行权限
-chmod +x /usr/bin/wireguard-go /usr/local/bin/wgcf /usr/bin/boringtun
+chmod +x /usr/local/bin/wgcf /usr/bin/boringtun
 
 # 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息，为避免文件已存在导致出错，先尝试删掉原文件)
 rm -f wgcf-account.toml
