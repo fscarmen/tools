@@ -7,6 +7,9 @@ read -p "如有 Warp+ License 请输入，没有可回车继续:" LICENSE
 # 判断系统，安装差异部分依赖包
 echo -e "\033[32m (1/3) 安装系统依赖和 wireguard 内核模块 \033[0m"
 
+# 安装 curl
+[[ ! $(type -P curl) ]] && green " 安装curl中…… " && (apt -y install curl >/dev/null 2>&1 || yum -y install curl >/dev/null 2>&1 
+
 # Debian 运行以下脚本
 if [[ $(hostnamectl | tr A-Z a-z ) =~ debian ]]; then
 	
@@ -99,7 +102,7 @@ cp wgcf-profile.conf /etc/wireguard/wgcf.conf
 echo -e "\033[32m (3/3) 运行 WGCF \033[0m"
 echo -e "\033[33m 后台获取 warp IP 中…… \033[0m"
 WG_QUICK_USERSPACE_IMPLEMENTATION=boringtun WG_SUDO=1 wg-quick up wgcf
-until [[ -n $(wget -T1 -t1 -qO- -4 ip.gs) ]]
+until [[ -n $(curl -s4m1 https://ip.gs) ]]
   do
    wg-quick down wgcf
    WG_QUICK_USERSPACE_IMPLEMENTATION=boringtun WG_SUDO=1 wg-quick up wgcf
@@ -112,7 +115,7 @@ systemctl enable wg-quick@wgcf >/dev/null 2>&1
 if [[ -e /etc/gai.conf ]]; then grep -qE '^[ ]*precedence[ ]*::ffff:0:0/96[ ]*100' /etc/gai.conf || echo 'precedence ::ffff:0:0/96  100' | tee -a /etc/gai.conf >/dev/null 2>&1; fi
 
 # 结果提示
-echo -e "\033[32m 恭喜！WARP已开启，IPv4地址为:$(wget -qO- -4 ip.gs)，IPv6地址为:$(wget -qO- -6 ip.gs) \033[0m"
+echo -e "\033[32m 恭喜！WARP已开启，IPv4地址为:$(curl -s4 https://ip.gs)，IPv6地址为:$(curl -s6 https://ip.gs) \033[0m"
 
 # 删除临时文件
 # rm -f warp.sh wgcf-account.toml wgcf-profile.conf menu.sh
