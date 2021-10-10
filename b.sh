@@ -7,9 +7,6 @@ read -p "如有 Warp+ License 请输入，没有可回车继续:" LICENSE
 # 判断系统，安装差异部分依赖包
 echo -e "\033[32m (1/3) 安装系统依赖和 wireguard 内核模块 \033[0m"
 
-# 安装 curl
-[[ ! $(type -P curl) ]] && green " 安装curl中…… " && (apt -y install curl >/dev/null 2>&1 || yum -y install curl >/dev/null 2>&1 
-
 # Debian 运行以下脚本
 if [[ $(hostnamectl | tr A-Z a-z ) =~ debian ]]; then
 	
@@ -71,10 +68,11 @@ latest=$(wget --no-check-certificate -qO- -t1 -T2 "https://api.github.com/repos/
 wget --no-check-certificate -N -6 -O /usr/local/bin/wgcf https://github.com/ViRb3/wgcf/releases/download/v$latest/wgcf_${latest}_linux_$architecture
 
 # 安装 wireguard-go
-#wget --no-check-certificate -N -6 -P /usr/bin https://cdn.jsdelivr.net/gh/fscarmen/warp/wireguard-go
+# wget --no-check-certificate -N -6 -P /usr/bin https://cdn.jsdelivr.net/gh/fscarmen/warp/wireguard-go
 wget --no-check-certificate -N -6 -P /usr/bin https://cdn.jsdelivr.net/gh/fscarmen/warp/boringtun
 
 # 添加执行权限
+# chmod +x /usr/bin/wireguard-go /usr/local/bin/wgcf
 chmod +x /usr/local/bin/wgcf /usr/bin/boringtun
 
 # 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息，为避免文件已存在导致出错，先尝试删掉原文件)
@@ -104,7 +102,7 @@ echo -e "\033[33m 后台获取 warp IP 中…… \033[0m"
 WG_QUICK_USERSPACE_IMPLEMENTATION=boringtun WG_SUDO=1 wg-quick up wgcf
 until [[ -n $(curl -s4m1 https://ip.gs) ]]
   do
-   wg-quick down wgcf
+   wg-quick down wgcf >/dev/null
    WG_QUICK_USERSPACE_IMPLEMENTATION=boringtun WG_SUDO=1 wg-quick up wgcf
 done
 
@@ -118,4 +116,4 @@ if [[ -e /etc/gai.conf ]]; then grep -qE '^[ ]*precedence[ ]*::ffff:0:0/96[ ]*10
 echo -e "\033[32m 恭喜！WARP已开启，IPv4地址为:$(curl -s4 https://ip.gs)，IPv6地址为:$(curl -s6 https://ip.gs) \033[0m"
 
 # 删除临时文件
-# rm -f warp.sh wgcf-account.toml wgcf-profile.conf menu.sh
+rm -f warp.sh wgcf-account.toml wgcf-profile.conf menu.sh
