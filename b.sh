@@ -364,7 +364,7 @@ ver(){
 	wget -N $CDN -P /etc/wireguard https://cdn.jsdelivr.net/gh/fscarmen/warp/menu.sh &&
 	chmod +x /etc/wireguard/menu.sh &&
 	ln -sf /etc/wireguard/menu.sh /usr/bin/warp &&
-	green " 成功！已同步最新脚本，版本号：$(grep ^VERSION /etc/wireguard/menu.sh | cut -d = -f2)  功能新增：$(grep ^TXT /etc/wireguard/menu.sh | cut -d =\" -f2) " || red " 升级失败，问题反馈:[https://github.com/fscarmen/warp/issues] "
+	green " 成功！已同步最新脚本，版本号：$(grep ^VERSION /etc/wireguard/menu.sh | cut -d = -f2)  功能新增：$(grep ^TXT /etc/wireguard/menu.sh | cut -d \" -f2) " || red " 升级失败，问题反馈:[https://github.com/fscarmen/warp/issues] "
 	exit
 	}
 # 单栈
