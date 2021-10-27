@@ -3,7 +3,7 @@ VERSION=2.06
 TXT="1)添加自动检查是否开启 Tun 模块； 2)提高脚本适配性; 3)新增 hax、Amazon Linux 2 和 Oracle Linux 支持"
 
 help(){
-	yellow " warp h (帮助菜单）\n warp o (临时warp开关)\n warp u (卸载warp)\n warp b (升级内核、开启BBR及DD)\n warp d (免费 WARP 账户升级 WARP+)\n warp d N5670ljg-sS9jD334-6o6g4M9F (指定 License 升级 Warp+)\n warp p (刷WARP+流量)\n warp v (同步脚本至最新版本)\n warp 1 (Warp单栈)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F (指定 Warp+ License Warp 单栈)\n warp 2 (Warp双栈)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F (指定 Warp+ License Warp 双栈)\n " 
+	yellow " warp h (帮助菜单--help）\n warp o (临时WRAP开关--Turn off WARP temporarily)\n warp u (卸载WARP--Turn off and uninstall WARP interface)\n warp b (升级内核、开启BBR及DD--Upgrade kernel, turn on BBR, change Linux system )\n warp d (免费 WARP 账户升级 WARP+ --Upgrade to WARP+ account)\n warp d N5670ljg-sS9jD334-6o6g4M9F (指定 License 升级 Warp+ --Upgrade to WARP+ account with the license)\n warp p (刷WARP+流量--Brush WARP+ quota)\n warp v (同步脚本至最新版本--Sync the latest version)\n warp 1 (Warp单栈--Add WARP IPv6 interface to native IPv4 VPS or WARP IPv4 interface to native IPv6 VPS)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F (指定 WARP+ License Warp 单栈--Add IPv4 or IPV6 WARP+ interface )\n warp 2 (Warp双栈--Change WARP dualstack interface IPv4 + IPv6 from native dualstack VPS)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F (指定 Warp+ License Warp 双栈--Change WARP dualstack interface with the license)\n " 
 	}
 
 # 字体彩色
@@ -18,11 +18,11 @@ yellow(){
 }
 
 # 必须以root运行脚本
-[[ $(id -u) != 0 ]] && red " 必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]" && exit 1
+[[ $(id -u) != 0 ]] && red " 必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]\n The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp/issues]" && exit 1
 
 # 必须加载 Tun 模块
 TUN=$(cat /dev/net/tun 2>&1 | tr A-Z a-z)
-[[ ! $TUN =~ 'in bad state' ]] && [[ ! $TUN =~ '处于错误状态' ]] && red " 没有加载 Tun 模块，请在管理后台开启或联系供应商了解如何开启，问题反馈:[https://github.com/fscarmen/warp/issues]" && exit 1
+[[ ! $TUN =~ 'in bad state' ]] && [[ ! $TUN =~ '处于错误状态' ]] && red " 没有加载 Tun 模块，请在管理后台开启或联系供应商了解如何开启，问题反馈:[https://github.com/fscarmen/warp/issues]\n The Tun module is not loaded. You should turn it on in the control panel. Ask the supplier for more help. Feedback: [https://github.com/fscarmen/warp/issues] " && exit 1
 
 # 判断是否大陆 VPS。先尝试连接 CloudFlare WARP 服务的 Endpoint IP，如遇到 WARP 断网则先关闭、杀进程后重试一次，仍然不通则 WARP 项目不可用。
 ping6 -c2 -w10 2606:4700:d0::a29f:c001 >/dev/null 2>&1 && IPV6=1 && CDN=-6 || IPV6=0
@@ -34,7 +34,7 @@ if [[ $IPV4$IPV6 = 00 && -n $(wg) ]]; then
 	ping6 -c2 -w10 2606:4700:d0::a29f:c001 >/dev/null 2>&1 && IPV6=1 && CDN=-6
 	ping -c2 -W10 162.159.192.1 >/dev/null 2>&1 && IPV4=1 && CDN=-4
 fi
-[[ $IPV4$IPV6 = 00 ]] && red " 与 WARP 的服务器不能连接,可能是大陆 VPS，可手动 ping 162.159.192.1 或 ping6 2606:4700:d0::a29f:c001，如能连通可再次运行脚本 " && exit 1
+[[ $IPV4$IPV6 = 00 ]] && red " 与 WARP 的服务器不能连接,可能是大陆 VPS，可手动 ping 162.159.192.1 或 ping6 2606:4700:d0::a29f:c001，如能连通可再次运行脚本\n The WARP server cannot be connected. It may be a China Mainland VPS. You can manually ping 162.159.192.1 or ping6 2606:4700:d0::a29f:c001.You can run the script again if connect was successful. " && exit 1
 
 # 判断操作系统，只支持 Debian、Ubuntu 或 Centos,如非上述操作系统，删除临时文件，退出脚本
 [[ -f /etc/os-release ]] && SYS=$(grep -i pretty_name /etc/os-release 2>/dev/null | cut -d \" -f2)
@@ -47,15 +47,15 @@ fi
 [[ $(echo $SYS | tr A-Z a-z) =~ ubuntu ]] && SYSTEM=ubuntu
 [[ $(echo $SYS | tr A-Z a-z) =~ centos|kernel|'oracle linux' ]] && SYSTEM=centos
 [[ $(echo $SYS | tr A-Z a-z) =~ 'amazon linux' ]] && SYSTEM=centos && COMPANY=amazon
-[[ -z $SYSTEM ]] && red " 本脚本只支持 Debian、Ubuntu 或 CentOS 系统,问题反馈:[https://github.com/fscarmen/warp/issues] " && exit 1
+[[ -z $SYSTEM ]] && red " 本脚本只支持 Debian、Ubuntu 或 CentOS 系统,问题反馈:[https://github.com/fscarmen/warp/issues]\n The script supports Debian, Ubuntu or CentOS systems only. Feedback: [https://github.com/fscarmen/warp/issues] " && exit 1
 
 green " 检查环境中…… "
 
 # 安装 curl
 [[ ! $(type -P curl) ]] && 
-( yellow " 安装curl中…… " && (apt -y install curl >/dev/null 2>&1 || yum -y install curl >/dev/null 2>&1) || 
-( yellow " 先升级软件库才能继续安装 curl，时间较长，请耐心等待…… " && apt -y update >/dev/null 2>&1 && apt -y install curl >/dev/null 2>&1 || 
-( yum -y update >/dev/null 2>&1 && yum -y install curl >/dev/null 2>&1 || ( yellow " 安装 curl 失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues] " && exit 1 ))))
+( yellow " 安装curl中……\n Installing curl... " && (apt -y install curl >/dev/null 2>&1 || yum -y install curl >/dev/null 2>&1) || 
+( yellow " 先升级软件库才能继续安装 curl，时间较长，请耐心等待……\n Upgrade the latest package information is necessary before install curl.It will take a little time,please be patiently " && apt -y update >/dev/null 2>&1 && apt -y install curl >/dev/null 2>&1 || 
+( yum -y update >/dev/null 2>&1 && yum -y install curl >/dev/null 2>&1 || ( yellow " 安装 curl 失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]\n Failed to install curl. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues] " && exit 1 ))))
 
 # 判断处理器架构
 [[ $(arch | tr A-Z a-z) =~ aarch ]] && ARCHITECTURE=arm64 || ARCHITECTURE=amd64
@@ -94,26 +94,26 @@ MODIFYD11='sed -i "7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/" wg
 net(){
 	[[ ! $(type -P wg-quick) || ! -e /etc/wireguard/wgcf.conf ]] && red " 没有安装 WireGuard tools 或者找不到配置文件 wgcf.conf，请重新安装 " && exit 1 ||
 	i=1;j=10
-	yellow " 后台获取 WARP IP 中,最大尝试$j次……  "
-	yellow " 第$i次尝试 "
+	yellow " 后台获取 WARP IP 中,最大尝试$j次…… --Maximum $j attempts to get WARP IP... "
+	yellow " 第$i次尝试 --Try $i"
 	echo $UP | sh >/dev/null 2>&1
 	WAN4=$(curl -s4m10 https://ip.gs) &&
 	WAN6=$(curl -s6m10 https://ip.gs)
 	until [[ -n $WAN4 && -n $WAN6 ]]
 		do	let i++
-			yellow " 第$i次尝试 "
+			yellow " 第$i次尝试 --Try $i "
 			echo $DOWN | sh >/dev/null 2>&1
 			echo $UP | sh >/dev/null 2>&1
 			WAN4=$(curl -s4m10 https://ip.gs) &&
 			WAN6=$(curl -s6m10 https://ip.gs)
-			[[ $i = $j ]] && (echo $DOWN | sh >/dev/null 2>&1; red " 失败已超过$i次，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues] ") && exit 1
+			[[ $i = $j ]] && (echo $DOWN | sh >/dev/null 2>&1; red " 失败已超过$i次，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]\n There have been more than $i failures. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues] ") && exit 1
         	done
-green " 已成功获取 WARP 网络\n IPv4:$WAN4\n IPv6:$WAN6 "
+green " 已成功获取 WARP 网络 --got the WARP IP successfully\n IPv4:$WAN4\n IPv6:$WAN6 "
 	}
 
 # WARP 开关
 onoff(){
-	[[ -n $(wg) ]] 2>/dev/null && (echo $DOWN | sh >/dev/null 2>&1; green " 已暂停 WARP，再次开启可以用 warp o ") || net
+	[[ -n $(wg) ]] 2>/dev/null && (echo $DOWN | sh >/dev/null 2>&1; green " 已暂停 WARP，再次开启可以用 warp o\n WARP is turned off. You can use [warp o] to turn it on again. ") || net
 	}
 
 # VPS 当前状态
