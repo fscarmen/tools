@@ -1,11 +1,3 @@
-# 当前脚本版本号和新增功能
-VERSION=2.06
-TXT="1)添加自动检查是否开启 Tun 模块； 2)提高脚本适配性; 3)新增 hax、Amazon Linux 2 和 Oracle Linux 支持"
-
-help(){
-	yellow " warp h (帮助菜单）\n warp o (临时warp开关)\n warp u (卸载warp)\n warp b (升级内核、开启BBR及DD)\n warp d (免费 WARP 账户升级 WARP+)\n warp d N5670ljg-sS9jD334-6o6g4M9F (指定 License 升级 Warp+)\n warp p (刷WARP+流量)\n warp v (同步脚本至最新版本)\n warp 1 (Warp单栈)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F (指定 Warp+ License Warp 单栈)\n warp 2 (Warp双栈)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F (指定 Warp+ License Warp 双栈)\n " 
-	}
-
 # 字体彩色
 red(){
 	echo -e "\033[31m\033[01m$1\033[0m"
@@ -17,12 +9,49 @@ yellow(){
 	echo -e "\033[33m\033[01m$1\033[0m"
 }
 
+read -p " 1.English	2.简体中文	Choose language (default is English): " LANGUAGE
+[[ $LANGUAGE != 2 ]] && T1='1)check whether the Tun module is turned on automatically; 2) Improve script adaptability; 3) Support hax, Amazon Linux 2 and Oracle Linux ' || T1='1)添加自动检查是否开启 Tun 模块； 2)提高脚本适配性; 3)新增 hax、Amazon Linux 2 和 Oracle Linux 支持'
+[[ $LANGUAGE != 2 ]] && T2='The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp/issues]' || T2='必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]'
+[[ $LANGUAGE != 2 ]] && T3='The Tun module is not loaded. You should turn it on in the control panel. Ask the supplier for more help. Feedback: [https://github.com/fscarmen/warp/issues]' || T3='没有加载 Tun 模块，请在管理后台开启或联系供应商了解如何开启，问题反馈:[https://github.com/fscarmen/warp/issues]'
+[[ $LANGUAGE != 2 ]] && T4='The WARP server cannot be connected. It may be a China Mainland VPS. You can manually ping 162.159.192.1 or ping6 2606:4700:d0::a29f:c001.You can run the script again if the connect is successful. Feedback: [https://github.com/fscarmen/warp/issues]' || T4='与 WARP 的服务器不能连接,可能是大陆 VPS，可手动 ping 162.159.192.1 或 ping6 2606:4700:d0::a29f:c001，如能连通可再次运行脚本，问题反馈:[https://github.com/fscarmen/warp/issues]'
+[[ $LANGUAGE != 2 ]] && T5= || T5=
+[[ $LANGUAGE != 2 ]] && T6= || T6=
+[[ $LANGUAGE != 2 ]] && T7= || T7=
+[[ $LANGUAGE != 2 ]] && T8= || T8=
+[[ $LANGUAGE != 2 ]] && T9= || T9=
+[[ $LANGUAGE != 2 ]] && T10= || T10=
+[[ $LANGUAGE != 2 ]] && T11= || T11=
+[[ $LANGUAGE != 2 ]] && T12= || T12=
+[[ $LANGUAGE != 2 ]] && T13= || T13=
+[[ $LANGUAGE != 2 ]] && T14= || T14=
+[[ $LANGUAGE != 2 ]] && T15= || T15=
+[[ $LANGUAGE != 2 ]] && T16= || T16=
+[[ $LANGUAGE != 2 ]] && T17= || T17=
+[[ $LANGUAGE != 2 ]] && T18= || T18=
+[[ $LANGUAGE != 2 ]] && T19= || T19=
+[[ $LANGUAGE != 2 ]] && T20= || T20=
+[[ $LANGUAGE != 2 ]] && T21= || T21=
+[[ $LANGUAGE != 2 ]] && T22= || T22=
+[[ $LANGUAGE != 2 ]] && T23= || T23=
+[[ $LANGUAGE != 2 ]] && T24= || T24=
+[[ $LANGUAGE != 2 ]] && T25= || T25=
+
+
+
+# 当前脚本版本号和新增功能
+VERSION=2.06
+TXT=" $T1 "
+
+help(){
+	yellow " warp h (帮助菜单）\n warp o (临时warp开关)\n warp u (卸载warp)\n warp b (升级内核、开启BBR及DD)\n warp d (免费 WARP 账户升级 WARP+)\n warp d N5670ljg-sS9jD334-6o6g4M9F (指定 License 升级 Warp+)\n warp p (刷WARP+流量)\n warp v (同步脚本至最新版本)\n warp 1 (Warp单栈)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F (指定 Warp+ License Warp 单栈)\n warp 2 (Warp双栈)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F (指定 Warp+ License Warp 双栈)\n " 
+	}
+
 # 必须以root运行脚本
-[[ $(id -u) != 0 ]] && red " 必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]" && exit 1
+[[ $(id -u) != 0 ]] && red " $T2 " && exit 1
 
 # 必须加载 Tun 模块
 TUN=$(cat /dev/net/tun 2>&1 | tr A-Z a-z)
-[[ ! $TUN =~ 'in bad state' ]] && [[ ! $TUN =~ '处于错误状态' ]] && red " 没有加载 Tun 模块，请在管理后台开启或联系供应商了解如何开启，问题反馈:[https://github.com/fscarmen/warp/issues]" && exit 1
+[[ ! $TUN =~ 'in bad state' ]] && [[ ! $TUN =~ '处于错误状态' ]] && red " $T3 " && exit 1
 
 # 判断是否大陆 VPS。先尝试连接 CloudFlare WARP 服务的 Endpoint IP，如遇到 WARP 断网则先关闭、杀进程后重试一次，仍然不通则 WARP 项目不可用。
 ping6 -c2 -w10 2606:4700:d0::a29f:c001 >/dev/null 2>&1 && IPV6=1 && CDN=-6 || IPV6=0
@@ -34,7 +63,7 @@ if [[ $IPV4$IPV6 = 00 && -n $(wg) ]]; then
 	ping6 -c2 -w10 2606:4700:d0::a29f:c001 >/dev/null 2>&1 && IPV6=1 && CDN=-6
 	ping -c2 -W10 162.159.192.1 >/dev/null 2>&1 && IPV4=1 && CDN=-4
 fi
-[[ $IPV4$IPV6 = 00 ]] && red " 与 WARP 的服务器不能连接,可能是大陆 VPS，可手动 ping 162.159.192.1 或 ping6 2606:4700:d0::a29f:c001，如能连通可再次运行脚本 " && exit 1
+[[ $IPV4$IPV6 = 00 ]] && red " $T4 " && exit 1
 
 # 判断操作系统，只支持 Debian、Ubuntu 或 Centos,如非上述操作系统，删除临时文件，退出脚本
 [[ -f /etc/os-release ]] && SYS=$(grep -i pretty_name /etc/os-release 2>/dev/null | cut -d \" -f2)
