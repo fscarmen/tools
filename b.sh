@@ -121,7 +121,7 @@ status(){
 	clear
 	yellow "本项目专为 VPS 添加 wgcf 网络接口，详细说明：[https://github.com/fscarmen/warp]\n脚本特点:\n	* 支持 Warp+ 账户，附带第三方刷 Warp+ 流量和升级内核 BBR 脚本\n	* 普通用户友好的菜单，进阶者通过后缀选项快速搭建\n	* 智能判断vps操作系统：Ubuntu 18.04、Ubuntu 20.04、Debian 10、Debian 11、CentOS 7、CentOS 8，请务必选择 LTS 系统；智能判断硬件结构类型：AMD 或者 ARM\n	* 结合 Linux 版本和虚拟化方式，自动优选三个 WireGuard 方案。网络性能方面：内核集成 WireGuard＞安装内核模块＞boringtun＞wireguard-go\n	* 智能判断 WGCF 作者 github库的最新版本 （Latest release）\n	* 智能分析内网和公网IP生成 WGCF 配置文件\n	* 输出执行结果，提示是否使用 WARP IP ，IP 归属地\n"
 	red "======================================================================================================================\n"
-	green " 脚本版本(Version)：$VERSION  功能新增(What's news)：$TXT\n 系统信息：\n	当前操作系统(Operating System)：$SYS\n	内核(Kernel)：$(uname -r)\n	处理器架构(Architecture)：$ARCHITECTURE\n	虚拟化(Virtualization)：$VIRT "
+	green " 脚本版本：$VERSION  功能新增：$TXT\n 系统信息：\n Version:$VERSION	What's new:$TXT\n			System infomations\n	当前操作系统：$SYS			Operating System:$SYS\n	内核：$(uname -r)			Kernel:$(uname -r)\n	处理器架构：$ARCHITECTURE			Architecture:$ARCHITECTURE\n	虚拟化：$VIRT			Virtualization:$VIRT "
 	[[ $TRACE4 = plus ]] && green "	IPv4：$WAN4 ( WARP+ IPv4 ) $COUNTRY4 "
 	[[ $TRACE4 = on ]] && green "	IPv4：$WAN4 ( WARP IPv4 ) $COUNTRY4 "
 	[[ $TRACE4 = off ]] && green "	IPv4：$WAN4 $COUNTRY4 "
@@ -298,14 +298,14 @@ uninstall(){
 bbrInstall() {
 	red "\n=============================================================="
 	green " BBR、DD脚本用的[ylx2016]的成熟作品，地址[https://github.com/ylx2016/Linux-NetSpeed]，请熟知\n Upgrade kernel, turn on BBR, change Linux system by other authors [ylx2016],[https://github.com/ylx2016/Linux-NetSpeed] "
-	yellow " 1.安装脚本【推荐原版BBR+FQ】			1.Running scripts "
-	yellow " 2.回退主目录			2.return to main menu "
+	yellow " 1.安装脚本【推荐原版BBR+FQ】		1.Running scripts "
+	yellow " 2.回退主目录				2.return to main menu "
 	red "=============================================================="
-	read -p "请选择：" BBR
+	read -p $'请选择\n choose' BBR
 	case "$BBR" in
 		1 ) wget --no-check-certificate -N "https://raw.githubusercontent.com/ylx2016/Linux-NetSpeed/master/tcp.sh" && chmod +x tcp.sh && ./tcp.sh;;
 		2 ) menu$PLAN;;
-		* ) red " 请输入正确数字 [1-2] "; sleep 1; bbrInstall;;
+		* ) red " 请输入正确数字 [1-2]\n Please enter the correct number [1-2] "; sleep 1; bbrInstall;;
 	esac
 	}
 
