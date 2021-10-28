@@ -123,14 +123,14 @@ status(){
 	red "======================================================================================================================\n"
 	green " 脚本版本：$VERSION  功能新增：$TXT\n Version: $VERSION	What's new: $TXT\n 系统信息：						System infomations:\n	当前操作系统：$SYS				Operating System: $SYS\n	内核：$(uname -r)			Kernel: $(uname -r)\n	处理器架构：$ARCHITECTURE					Architecture: $ARCHITECTURE\n	虚拟化：$VIRT						Virtualization: $VIRT "
 	[[ $TRACE4 = plus ]] && green "	IPv4：$WAN4 ( WARP+ IPv4 ) $COUNTRY4		IPv4：$WAN4 ( WARP+ IPv4 ) $COUNTRY4 "
-	[[ $TRACE4 = on ]] && green "	IPv4：$WAN4 ( WARP IPv4 ) $COUNTRY4		IPv4：$WAN4 ( WARP IPv4 ) $COUNTRY4 "
+	[[ $TRACE4 = on ]] && green "	IPv4：$WAN4 ( WARP IPv4 ) $COUNTRY4			IPv4：$WAN4 ( WARP IPv4 ) $COUNTRY4 "
 	[[ $TRACE4 = off ]] && green "	IPv4：$WAN4 $COUNTRY4			IPv4：$WAN4 $COUNTRY4 "
 	[[ $TRACE6 = plus ]] && green "	IPv6：$WAN6 ( WARP+ IPv6 ) $COUNTRY6	IPv6：$WAN6 ( WARP+ IPv6 ) $COUNTRY6 "
 	[[ $TRACE6 = on ]] && green "	IPv6：$WAN6 ( WARP IPv6 ) $COUNTRY6	IPv6：$WAN6 ( WARP IPv6 ) $COUNTRY6 "
 	[[ $TRACE6 = off ]] && green "	IPv6：$WAN6 $COUNTRY6			IPv6：$WAN6 $COUNTRY6  "
 	[[ $TRACE4 = plus || $TRACE6 = plus ]] && green "	WARP+ 已开启	设备名：$(grep name /etc/wireguard/info.log 2>/dev/null | awk '{ print $NF }')\n	WARP+ is turned on.	Device name：$(grep name /etc/wireguard/info.log 2>/dev/null | awk '{ print $NF }') "
-	[[ $TRACE4 = on || $TRACE6 = on ]] && green "	WARP 已开启								WARP is turned on " 	
-	[[ $TRACE4 = off && $TRACE6 = off ]] && green "	WARP 未开启								WARP is not turned on "
+	[[ $TRACE4 = on || $TRACE6 = on ]] && green "	WARP 已开启							WARP is turned on " 	
+	[[ $TRACE4 = off && $TRACE6 = off ]] && green "	WARP 未开启							WARP is not turned on "
  	red "\n======================================================================================================================\n"
 	}
 
