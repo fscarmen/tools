@@ -43,9 +43,13 @@ yellow(){
 [[ $LANGUAGE != 2 ]] && T31='LXC VPS choose:1. Wireguard-GO or 2. BoringTun （default is 1）,choose' || T31='LXC方案:1. Wireguard-GO 或者 2. BoringTun （默认值选项为 1）,请选择'
 [[ $LANGUAGE != 2 ]] && T32='Step 1/3: Install dependencies' || T32='进度  1/3： 安装系统依赖'
 [[ $LANGUAGE != 2 ]] && T33='Step 2/3: Install WGCF' || T33='进度  2/3： 安装 WGCF'
-[[ $LANGUAGE != 2 ]] && T34='Create shortcut [warp] successfully' || T34='创建快捷 warp 指令成功'
-[[ $LANGUAGE != 2 ]] && T35='Step 3/3: Running WGCF' || T35='进度  3/3： 运行 WGCF'
-[[ $LANGUAGE != 2 ]] && T36='\$COMPANY vps needs to restart and run [warp n] to open WARP.' || T36='\$COMPANY vps 需要重启后运行 warp n 才能打开 WARP,现执行重启'
+[[ $LANGUAGE != 2 ]] && T34='Register new WARP account...' || T34='WARP 注册中……'
+[[ $LANGUAGE != 2 ]] && T35='Update WARP+ account' || T35='升级 WARP+ 账户'
+[[ $LANGUAGE != 2 ]] && T36='The upgrade failed, WARP+ account error or more than 5 devices have been activated. Free WARP account to continu.' || T36='升级失败，WARP+ 账户错误或者已激活超过5台设备，自动更换免费 Warp 账户继续'
+[[ $LANGUAGE != 2 ]] && T37='Checking VPS infomations...' || T37='检查环境中……'
+[[ $LANGUAGE != 2 ]] && T38='Create shortcut [warp] successfully' || T38='创建快捷 warp 指令成功'
+[[ $LANGUAGE != 2 ]] && T39='Step 3/3: Running WGCF' || T39='进度  3/3： 运行 WGCF'
+[[ $LANGUAGE != 2 ]] && T40='\$COMPANY vps needs to restart and run [warp n] to open WARP.' || T40='\$COMPANY vps 需要重启后运行 warp n 才能打开 WARP,现执行重启'
 
 
 
@@ -90,7 +94,7 @@ fi
 [[ $(echo $SYS | tr A-Z a-z) =~ 'amazon linux' ]] && SYSTEM=centos && COMPANY=amazon
 [[ -z $SYSTEM ]] && red " $T5 " && exit 1
 
-green " 检查环境中…… "
+green " $T37 "
 
 # 安装 curl
 [[ ! $(type -P curl) ]] && 
@@ -190,12 +194,12 @@ install(){
 		done
 
 	# OpenVZ / LXC 选择 Wireguard-GO 或者 BoringTun 方案，并重新定义相应的 UP 和 DOWN 指令
-	[[ $LXC = 1 ]] && read -p " LXC方案:1. Wireguard-GO 或者 2. BoringTun （默认值选项为 1）,请选择:" BORINGTUN
+	[[ $LXC = 1 ]] && read -p " $T31:" BORINGTUN
 	[[ $BORINGTUN = 2 ]] && UP='WG_QUICK_USERSPACE_IMPLEMENTATION=boringtun WG_SUDO=1 wg-quick up wgcf' || UP='wg-quick up wgcf'
 	[[ $BORINGTUN = 2 ]] && DOWN='wg-quick down wgcf && kill $(pgrep -f boringtun)' || DOWN='wg-quick down wgcf'
 	[[ $BORINGTUN = 2 ]] && WB=boringtun || WB=wireguard-go
 	
-	green " 进度  1/3： 安装系统依赖 "
+	green " $T32 "
 	
 	# 先删除之前安装，可能导致失败的文件，添加环境变量
 	rm -rf /usr/local/bin/wgcf /usr/bin/boringtun /usr/bin/wireguard-go wgcf-account.toml wgcf-profile.conf
@@ -245,7 +249,7 @@ install(){
 	$SYSTEM
 
 	# 安装并认证 WGCF
-	green " 进度  2/3： 安装 WGCF "
+	green " $T33 "
 
 	# 判断 wgcf 的最新版本,如因 github 接口问题未能获取，默认 v2.2.9
 	latest=$(wget --no-check-certificate -qO- -T1 -t1 $CDN "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/\"//g;s/v//g;s/,//g;s/ //g')
@@ -260,7 +264,7 @@ install(){
 	[[ $LXC = 1 ]] && wget --no-check-certificate -N $CDN -P /usr/bin https://cdn.jsdelivr.net/gh/fscarmen/warp/$WB && chmod +x /usr/bin/$WB
 
 	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息)
-	yellow " WGCF 注册中…… "
+	yellow " $T34 "
 	until [[ -e wgcf-account.toml ]]
 	  do
 	   echo | wgcf register >/dev/null 2>&1
@@ -268,8 +272,8 @@ install(){
 	
 	# 如有 Warp+ 账户，修改 license 并升级，并把设备名等信息保存到 /etc/wireguard/info.log
 	mkdir -p /etc/wireguard/ >/dev/null 2>&1
-	[[ -n $LICENSE ]] && yellow " 升级 Warp+ 账户 " && sed -i "s/license_key.*/license_key = \"$LICENSE\"/g" wgcf-account.toml &&
-	( wgcf update > /etc/wireguard/info.log 2>&1 || red " 升级失败，Warp+ 账户错误或者已激活超过5台设备，自动更换免费 Warp 账户继续 " )
+	[[ -n $LICENSE ]] && yellow " $T35 " && sed -i "s/license_key.*/license_key = \"$LICENSE\"/g" wgcf-account.toml &&
+	( wgcf update > /etc/wireguard/info.log 2>&1 || red " $T36 " )
 	
 	# 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
 	wgcf generate >/dev/null 2>&1
@@ -292,12 +296,12 @@ install(){
 	
 	# 创建再次执行的软链接快捷方式，再次运行可以用 warp 指令
 	chmod +x /etc/wireguard/menu.sh >/dev/null 2>&1
-	ln -sf /etc/wireguard/menu.sh /usr/bin/warp && green " 创建快捷 warp 指令成功 "
+	ln -sf /etc/wireguard/menu.sh /usr/bin/warp && green " $T38 "
 	
 	# 自动刷直至成功（ warp bug，有时候获取不了ip地址），重置之前的相关变量值，记录新的 IPv4 和 IPv6 地址和归属地
-	green " 进度  3/3： 运行 WGCF "
+	green " $T39 "
 	unset WAN4 WAN6 COUNTRY4 COUNTRY6 TRACE4 TRACE6
-	[[ $COMPANY = amazon ]] && red " $COMPANY vps 需要重启后运行 warp n 才能打开 WARP,现执行重启 " && reboot || net
+	[[ $COMPANY = amazon ]] && red " $T40 " && reboot || net
 	COUNTRY4=$(curl -s4 https://ip.gs/country)
 	TRACE4=$(curl -s4 https://www.cloudflare.com/cdn-cgi/trace | grep warp | cut -d= -f2)
 	COUNTRY6=$(curl -s6 https://ip.gs/country)
