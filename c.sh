@@ -37,13 +37,15 @@ yellow(){
 [[ $LANGUAGE != 2 ]] && T25='Device name' || T25='设备名'
 [[ $LANGUAGE != 2 ]] && T26='is off' || T26='未开启'
 [[ $LANGUAGE != 2 ]] && T27='Device name' || T27='设备名'
-[[ $LANGUAGE != 2 ]] && T28='Device name' || T28='设备名'
-[[ $LANGUAGE != 2 ]] && T29='Device name' || T29='设备名'
-[[ $LANGUAGE != 2 ]] && T30='Device name' || T30='设备名'
-[[ $LANGUAGE != 2 ]] && T31='Device name' || T31='设备名'
-[[ $LANGUAGE != 2 ]] && T32='Device name' || T32='设备名'
-[[ $LANGUAGE != 2 ]] && T33='Device name' || T33='设备名'
-[[ $LANGUAGE != 2 ]] && T34='Device name' || T34='设备名'
+[[ $LANGUAGE != 2 ]] && T28='If there is a WARP+ License, please enter it, otherwise press Enter to continue' || T28='如有 WARP+ License 请输入，没有可回车继续'
+[[ $LANGUAGE != 2 ]] && T29='Input errors up to 5 times.The script is aborted.' || T29='输入错误达5次，脚本退出'
+[[ $LANGUAGE != 2 ]] && T30='License should be 26 characters, please re-enter WARP+ License. Otherwise press Enter to continue. (\$i times remaining)' || T30='License 应为26位字符，请重新输入 Warp+ License，没有可回车继续（剩余\$i次)'
+[[ $LANGUAGE != 2 ]] && T31='LXC VPS choose:1. Wireguard-GO or 2. BoringTun （default is 1）,choose' || T31='LXC方案:1. Wireguard-GO 或者 2. BoringTun （默认值选项为 1）,请选择'
+[[ $LANGUAGE != 2 ]] && T32='Step 1/3: Install dependencies' || T32='进度  1/3： 安装系统依赖'
+[[ $LANGUAGE != 2 ]] && T33='Step 2/3: Install WGCF' || T33='进度  2/3： 安装 WGCF'
+[[ $LANGUAGE != 2 ]] && T34='Create shortcut [warp] successfully' || T34='创建快捷 warp 指令成功'
+[[ $LANGUAGE != 2 ]] && T35='Step 3/3: Running WGCF' || T35='进度  3/3： 运行 WGCF'
+[[ $LANGUAGE != 2 ]] && T36='\$COMPANY vps needs to restart and run [warp n] to open WARP.' || T36='\$COMPANY vps 需要重启后运行 warp n 才能打开 WARP,现执行重启'
 
 
 
@@ -179,12 +181,12 @@ install(){
 	start=$(date +%s)
 	
 	# 输入 Warp+ 账户（如有），限制位数为空或者26位以防输入错误
-	[[ -z $LICENSE ]] && read -p " 如有 Warp+ License 请输入，没有可回车继续: " LICENSE
+	[[ -z $LICENSE ]] && read -p " $T28: " LICENSE
 	i=5
 	until [[ -z $LICENSE || ${#LICENSE} = 26 ]]
 		do
 			let i--
-			[[ $i = 0 ]] && red " 输入错误达5次，脚本退出 " && exit 1 || read -p " License 应为26位字符，请重新输入 Warp+ License，没有可回车继续（剩余$i次）: " LICENSE
+			[[ $i = 0 ]] && red " $T29 " && exit 1 || read -p " $T30: " LICENSE
 		done
 
 	# OpenVZ / LXC 选择 Wireguard-GO 或者 BoringTun 方案，并重新定义相应的 UP 和 DOWN 指令
