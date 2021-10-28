@@ -25,16 +25,26 @@ read -p " 1.English	2.简体中文	Choose language (default is English): " LANGU
 [[ $LANGUAGE != 2 ]] && T13='There have been more than \$i failures. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]' || T13='失败已超过\$i次，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]'
 [[ $LANGUAGE != 2 ]] && T14='Get the WARP IP successfully.' || T14='已成功获取 WARP 网络'
 [[ $LANGUAGE != 2 ]] && T15='WARP is turned off. It could be turned on again by [warp o]' || T15='已暂停 WARP，再次开启可以用 warp o'
-[[ $LANGUAGE != 2 ]] && T16='This project specifically adds WARP network interface for VPS, detailed:[https://github.com/fscarmen/warp]\nFeatures:\n	* Support Warp+ account. Third-party increase quota Warp+ and upgrade kernel BBR script.\n	* Not only menus, but also commands with suffixes.\n	* Intelligent analysis of vps operating system：Ubuntu 18.04、Ubuntu 20.04、Debian 10、Debian 11、CentOS 7、CentOS 8. Be sure to choose the LTS system；Intelligent analysis of architecture：AMD or ARM\n	* Comprehensive analysis of Linux version and virtualization, automatically select three WireGuard solutions. Performance: Kernel integration WireGuard＞Install kernel module＞boringtun＞wireguard-go\n	* Intelligent analysis of the latest version of the WGCF\n	* Intelligent analysis of lan and wan IP to generate WGCF configuration file.\n	* Output the result: WARP status and the IP region\n' || T16='本项目专为 VPS 添加 wgcf 网络接口，详细说明：[https://github.com/fscarmen/warp]\n脚本特点:\n	* 支持 Warp+ 账户，附带第三方刷 Warp+ 流量和升级内核 BBR 脚本\n	* 普通用户友好的菜单，进阶者通过后缀选项快速搭建\n	* 智能判断vps操作系统：Ubuntu 18.04、Ubuntu 20.04、Debian 10、Debian 11、CentOS 7、CentOS 8，请务必选择 LTS 系统；智能判断硬件结构类型：AMD 或者 ARM\n	* 结合 Linux 版本和虚拟化方式，自动优选三个 WireGuard 方案。网络性能方面：内核集成 WireGuard＞安装内核模块＞boringtun＞wireguard-go\n	* 智能判断 WGCF 作者 github库的最新版本 （Latest release）\n	* 智能分析内网和公网IP生成 WGCF 配置文件\n	* 输出执行结果，提示是否使用 WARP IP ，IP 归属地\n'
-[[ $LANGUAGE != 2 ]] && T17='' || T17=''
-[[ $LANGUAGE != 2 ]] && T18='' || T18=''
-[[ $LANGUAGE != 2 ]] && T19='' || T19=''
-[[ $LANGUAGE != 2 ]] && T20='' || T20=''
-[[ $LANGUAGE != 2 ]] && T21='' || T21=''
-[[ $LANGUAGE != 2 ]] && T22='' || T22=''
-[[ $LANGUAGE != 2 ]] && T23='' || T23=''
-[[ $LANGUAGE != 2 ]] && T24='' || T24=''
-[[ $LANGUAGE != 2 ]] && T25='' || T25=''
+[[ $LANGUAGE != 2 ]] && T16='The script specifically adds WARP network interface for VPS, detailed:[https://github.com/fscarmen/warp]\nFeatures:\n	* Support Warp+ account. Third-party increase quota Warp+ and upgrade kernel BBR script.\n	* Not only menus, but also commands with suffixes.\n	* Intelligent analysis of vps operating system：Ubuntu 18.04、Ubuntu 20.04、Debian 10、Debian 11、CentOS 7、CentOS 8. Be sure to choose the LTS system；Intelligent analysis of architecture：AMD or ARM\n	* Comprehensive analysis of Linux version and virtualization, automatically select three WireGuard solutions. Performance: Kernel integration WireGuard＞Install kernel module＞boringtun＞wireguard-go\n	* Intelligent analysis of the latest version of the WGCF\n	* Intelligent analysis of lan and wan IP to generate WGCF configuration file.\n	* Output the result: WARP status and the IP region\n' || T16='本项目专为 VPS 添加 wgcf 网络接口，详细说明：[https://github.com/fscarmen/warp]\n脚本特点:\n	* 支持 Warp+ 账户，附带第三方刷 Warp+ 流量和升级内核 BBR 脚本\n	* 普通用户友好的菜单，进阶者通过后缀选项快速搭建\n	* 智能判断vps操作系统：Ubuntu 18.04、Ubuntu 20.04、Debian 10、Debian 11、CentOS 7、CentOS 8，请务必选择 LTS 系统；智能判断硬件结构类型：AMD 或者 ARM\n	* 结合 Linux 版本和虚拟化方式，自动优选三个 WireGuard 方案。网络性能方面：内核集成 WireGuard＞安装内核模块＞boringtun＞wireguard-go\n	* 智能判断 WGCF 作者 github库的最新版本 （Latest release）\n	* 智能分析内网和公网IP生成 WGCF 配置文件\n	* 输出执行结果，提示是否使用 WARP IP ，IP 归属地\n'
+[[ $LANGUAGE != 2 ]] && T17='Version' || T17='脚本版本'
+[[ $LANGUAGE != 2 ]] && T18='What's news:' || T18='功能新增'
+[[ $LANGUAGE != 2 ]] && T19='System infomations' || T19='系统信息'
+[[ $LANGUAGE != 2 ]] && T20='Operating System' || T20='当前操作系统'
+[[ $LANGUAGE != 2 ]] && T21='Kernel' || T21='内核'
+[[ $LANGUAGE != 2 ]] && T22='Architecture' || T22='处理器架构'
+[[ $LANGUAGE != 2 ]] && T23='Virtualization' || T23='虚拟化'
+[[ $LANGUAGE != 2 ]] && T24='is on' || T24='已开启'
+[[ $LANGUAGE != 2 ]] && T25='Device name' || T25='设备名'
+[[ $LANGUAGE != 2 ]] && T26='is off' || T26='未开启'
+[[ $LANGUAGE != 2 ]] && T27='Device name' || T27='设备名'
+[[ $LANGUAGE != 2 ]] && T28='Device name' || T28='设备名'
+[[ $LANGUAGE != 2 ]] && T29='Device name' || T29='设备名'
+[[ $LANGUAGE != 2 ]] && T30='Device name' || T30='设备名'
+[[ $LANGUAGE != 2 ]] && T31='Device name' || T31='设备名'
+[[ $LANGUAGE != 2 ]] && T32='Device name' || T32='设备名'
+[[ $LANGUAGE != 2 ]] && T33='Device name' || T33='设备名'
+[[ $LANGUAGE != 2 ]] && T34='Device name' || T34='设备名'
+
 
 
 
@@ -150,16 +160,16 @@ status(){
 	clear
 	yellow " $T16 "
 	red "======================================================================================================================\n"
-	green " 脚本版本：$VERSION  功能新增：$TXT\n 系统信息：\n	当前操作系统：$SYS\n	内核：$(uname -r)\n	处理器架构：$ARCHITECTURE\n	虚拟化：$VIRT "
+	green " $T17：$VERSION  $T18：$TXT\n $T19：\n	$T20：$SYS\n	$T21：$(uname -r)\n	$T22：$ARCHITECTURE\n	$T23：$VIRT "
 	[[ $TRACE4 = plus ]] && green "	IPv4：$WAN4 ( WARP+ IPv4 ) $COUNTRY4 "
 	[[ $TRACE4 = on ]] && green "	IPv4：$WAN4 ( WARP IPv4 ) $COUNTRY4 "
 	[[ $TRACE4 = off ]] && green "	IPv4：$WAN4 $COUNTRY4 "
 	[[ $TRACE6 = plus ]] && green "	IPv6：$WAN6 ( WARP+ IPv6 ) $COUNTRY6 "
 	[[ $TRACE6 = on ]] && green "	IPv6：$WAN6 ( WARP IPv6 ) $COUNTRY6 "
 	[[ $TRACE6 = off ]] && green "	IPv6：$WAN6 $COUNTRY6 "
-	[[ $TRACE4 = plus || $TRACE6 = plus ]] && green "	WARP+ 已开启	设备名：$(grep name /etc/wireguard/info.log 2>/dev/null | awk '{ print $NF }') "
-	[[ $TRACE4 = on || $TRACE6 = on ]] && green "	WARP 已开启" 	
-	[[ $PLAN != 3 ]] && green "	WARP 未开启"
+	[[ $TRACE4 = plus || $TRACE6 = plus ]] && green "	WARP+ $T24	$T25：$(grep name /etc/wireguard/info.log 2>/dev/null | awk '{ print $NF }') "
+	[[ $TRACE4 = on || $TRACE6 = on ]] && green "	WARP $T24 " 	
+	[[ $PLAN != 3 ]] && green "	WARP $T26"
  	red "\n======================================================================================================================\n"
 	}
 
