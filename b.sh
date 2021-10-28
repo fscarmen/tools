@@ -70,12 +70,12 @@ VIRT=$(systemd-detect-virt 2>/dev/null | tr A-Z a-z)
 # 判断当前 IPv4 与 IPv6 ，归属 及 WARP 是否开启
 [[ $IPV4 = 1 ]] && LAN4=$(ip route get 162.159.192.1 2>/dev/null | grep -oP 'src \K\S+') &&
 		WAN4=$(curl -s4  https://ip.gs) &&
-		COUNTRY4=$(curl -s4 https://ip.gs/country)		
+		COUNTRY4=$(curl -s4 https://ip.gs/country) &&
+		TRACE4=$(curl -s4 https://www.cloudflare.com/cdn-cgi/trace | grep warp | cut -d= -f2)
 [[ $IPV6 = 1 ]] && LAN6=$(ip route get 2606:4700:d0::a29f:c001 2>/dev/null | grep -oP 'src \K\S+') &&
 		WAN6=$(curl -s6  https://ip.gs) &&
-		COUNTRY6=$(curl -s6 https://ip.gs/country)
-TRACE4=$(curl -s4 https://www.cloudflare.com/cdn-cgi/trace | grep warp | cut -d= -f2)	
-TRACE6=$(curl -s6 https://www.cloudflare.com/cdn-cgi/trace | grep warp | cut -d= -f2)
+		COUNTRY6=$(curl -s6 https://ip.gs/country) &&
+		TRACE6=$(curl -s6 https://www.cloudflare.com/cdn-cgi/trace | grep warp | cut -d= -f2)
 
 # 判断当前 WARP 状态，决定变量 PLAN，变量 PLAN 含义：1=单栈,	2=双栈,	3=WARP已开启
 [[ $TRACE4 = plus || $TRACE4 = on || $TRACE6 = plus || $TRACE6 = on ]] && PLAN=3 || PLAN=$(($IPV4+$IPV6))
@@ -130,7 +130,7 @@ status(){
 	[[ $TRACE6 = off ]] && green "	IPv6：$WAN6 $COUNTRY6			IPv6：$WAN6 $COUNTRY6  "
 	[[ $TRACE4 = plus || $TRACE6 = plus ]] && green "	WARP+ 已开启	设备名：$(grep name /etc/wireguard/info.log 2>/dev/null | awk '{ print $NF }')\n	WARP+ is turned on.	Device name：$(grep name /etc/wireguard/info.log 2>/dev/null | awk '{ print $NF }') "
 	[[ $TRACE4 = on || $TRACE6 = on ]] && green "	WARP 已开启						WARP is turned on " 	
-	[[ $TRACE4 = off && $TRACE6 = off ]] && green "	WARP 未开启						WARP is off "
+	[[ ! $TRACE4 = plus|on && ! $TRACE6 = plus|on ]] && green "	WARP 未开启						WARP is off "
  	red "\n======================================================================================================================\n"
 	}
 
