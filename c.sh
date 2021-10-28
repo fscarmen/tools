@@ -14,27 +14,27 @@ read -p " 1.English	2.简体中文	Choose language (default is English): " LANGU
 [[ $LANGUAGE != 2 ]] && T2='The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp/issues]' || T2='必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]'
 [[ $LANGUAGE != 2 ]] && T3='The Tun module is not loaded. You should turn it on in the control panel. Ask the supplier for more help. Feedback: [https://github.com/fscarmen/warp/issues]' || T3='没有加载 Tun 模块，请在管理后台开启或联系供应商了解如何开启，问题反馈:[https://github.com/fscarmen/warp/issues]'
 [[ $LANGUAGE != 2 ]] && T4='The WARP server cannot be connected. It may be a China Mainland VPS. You can manually ping 162.159.192.1 or ping6 2606:4700:d0::a29f:c001.You can run the script again if the connect is successful. Feedback: [https://github.com/fscarmen/warp/issues]' || T4='与 WARP 的服务器不能连接,可能是大陆 VPS，可手动 ping 162.159.192.1 或 ping6 2606:4700:d0::a29f:c001，如能连通可再次运行脚本，问题反馈:[https://github.com/fscarmen/warp/issues]'
-[[ $LANGUAGE != 2 ]] && T5='warp h (help）\n warp o (Turn off WARP temporarily)\n warp u (Turn off and uninstall WARP interface)\n warp b (Upgrade kernel, turn on BBR, change Linux system)\n warp d (Upgrade to WARP+ account)\n warp d N5670ljg-sS9jD334-6o6g4M9F (Upgrade to WARP+ account with the license)\n warp p (Getting WARP+ quota by scripts)\n warp v (Sync the latest version)\n warp 1 (Add WARP IPv6 interface to native IPv4 VPS or WARP IPv4 interface to native IPv6 VPS)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F (Add IPv4 or IPV6 WARP+ interface with the license)\n warp 2 (Add WARP dualstack interface IPv4 + IPv6)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F (Add WARP dualstack interface with the license)\n' || T5='warp h (帮助菜单）\n warp o (临时warp开关)\n warp u (卸载warp)\n warp b (升级内核、开启BBR及DD)\n warp d (免费 WARP 账户升级 WARP+)\n warp d N5670ljg-sS9jD334-6o6g4M9F (指定 License 升级 Warp+)\n warp p (刷WARP+流量)\n warp v (同步脚本至最新版本)\n warp 1 (Warp单栈)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F (指定 Warp+ License Warp 单栈)\n warp 2 (Warp双栈)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F (指定 Warp+ License Warp 双栈)\n'
-[[ $LANGUAGE != 2 ]] && T6= || T6=
-[[ $LANGUAGE != 2 ]] && T7= || T7=
-[[ $LANGUAGE != 2 ]] && T8= || T8=
-[[ $LANGUAGE != 2 ]] && T9= || T9=
-[[ $LANGUAGE != 2 ]] && T10= || T10=
-[[ $LANGUAGE != 2 ]] && T11= || T11=
-[[ $LANGUAGE != 2 ]] && T12= || T12=
-[[ $LANGUAGE != 2 ]] && T13= || T13=
-[[ $LANGUAGE != 2 ]] && T14= || T14=
-[[ $LANGUAGE != 2 ]] && T15= || T15=
-[[ $LANGUAGE != 2 ]] && T16= || T16=
-[[ $LANGUAGE != 2 ]] && T17= || T17=
-[[ $LANGUAGE != 2 ]] && T18= || T18=
-[[ $LANGUAGE != 2 ]] && T19= || T19=
-[[ $LANGUAGE != 2 ]] && T20= || T20=
-[[ $LANGUAGE != 2 ]] && T21= || T21=
-[[ $LANGUAGE != 2 ]] && T22= || T22=
-[[ $LANGUAGE != 2 ]] && T23= || T23=
-[[ $LANGUAGE != 2 ]] && T24= || T24=
-[[ $LANGUAGE != 2 ]] && T25= || T25=
+[[ $LANGUAGE != 2 ]] && T5='The script supports Debian, Ubuntu or CentOS systems only. Feedback: [https://github.com/fscarmen/warp/issues]' || T5='本脚本只支持 Debian、Ubuntu 或 CentOS 系统,问题反馈:[https://github.com/fscarmen/warp/issues]'
+[[ $LANGUAGE != 2 ]] && T6='warp h (help)\n warp o (Turn off WARP temporarily)\n warp u (Turn off and uninstall WARP interface)\n warp b (Upgrade kernel, turn on BBR, change Linux system)\n warp d (Upgrade to WARP+ account)\n warp d N5670ljg-sS9jD334-6o6g4M9F (Upgrade to WARP+ account with the license)\n warp p (Getting WARP+ quota by scripts)\n warp v (Sync the latest version)\n warp 1 (Add WARP IPv6 interface to native IPv4 VPS or WARP IPv4 interface to native IPv6 VPS)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F (Add IPv4 or IPV6 WARP+ interface with the license)\n warp 2 (Add WARP dualstack interface IPv4 + IPv6)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F (Add WARP dualstack interface with the license)\n' || T6='warp h (帮助菜单）\n warp o (临时warp开关)\n warp u (卸载warp)\n warp b (升级内核、开启BBR及DD)\n warp d (免费 WARP 账户升级 WARP+)\n warp d N5670ljg-sS9jD334-6o6g4M9F (指定 License 升级 Warp+)\n warp p (刷WARP+流量)\n warp v (同步脚本至最新版本)\n warp 1 (Warp单栈)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F (指定 Warp+ License Warp 单栈)\n warp 2 (Warp双栈)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F (指定 Warp+ License Warp 双栈)\n'
+[[ $LANGUAGE != 2 ]] && T7='Installing curl...' || T7='安装curl中……'
+[[ $LANGUAGE != 2 ]] && T8='It's necessary to upgrade the latest package library before install curl.It will take a little time,please be patiently...' || T8='先升级软件库才能继续安装 curl，时间较长，请耐心等待……'
+[[ $LANGUAGE != 2 ]] && T9='Failed to install curl. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]' || T9='安装 curl 失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]'
+[[ $LANGUAGE != 2 ]] && T10='WireGuard tools are not installed or the configuration file wgcf.conf cannot be found, please reinstall.' || T10='没有安装 WireGuard tools 或者找不到配置文件 wgcf.conf，请重新安装。'
+[[ $LANGUAGE != 2 ]] && T11='Maximum \$j attempts to get WARP IP...' || T11='后台获取 WARP IP 中,最大尝试\$j次……'
+[[ $LANGUAGE != 2 ]] && T12='Try \$i' || T12='第\$i次尝试'
+[[ $LANGUAGE != 2 ]] && T13='There have been more than \$i failures. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]' || T13='失败已超过\$i次，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]'
+[[ $LANGUAGE != 2 ]] && T14='Get the WARP IP successfully.' || T14='已成功获取 WARP 网络'
+[[ $LANGUAGE != 2 ]] && T15='WARP is turned off. It could be turned on again by [warp o]' || T15='已暂停 WARP，再次开启可以用 warp o'
+[[ $LANGUAGE != 2 ]] && T16='This project specifically adds WARP network interface for VPS, detailed description:[https://github.com/fscarmen/warp]\nFeatures:\n	* Support Warp+ account. Third-party increase quota Warp+ and upgrade kernel BBR script.\n	* Not only menus, but also commands with suffixes.\n	* Intelligent analysis of vps operating system：Ubuntu 18.04、Ubuntu 20.04、Debian 10、Debian 11、CentOS 7、CentOS 8. Be sure to choose the LTS system；Intelligent analysis of architecture：AMD or ARM\n	* Comprehensive analysis of Linux version and virtualization, automatically select three WireGuard solutions. Performance: Kernel integration WireGuard＞Install kernel module＞boringtun＞wireguard-go\n	* Intelligent analysis of the latest version of the WGCF\n	* Intelligent analysis of lan and wan IP to generate WGCF configuration file.\n	* Output the result: WARP status and the IP region\n' || T16='本项目专为 VPS 添加 wgcf 网络接口，详细说明：[https://github.com/fscarmen/warp]\n脚本特点:\n	* 支持 Warp+ 账户，附带第三方刷 Warp+ 流量和升级内核 BBR 脚本\n	* 普通用户友好的菜单，进阶者通过后缀选项快速搭建\n	* 智能判断vps操作系统：Ubuntu 18.04、Ubuntu 20.04、Debian 10、Debian 11、CentOS 7、CentOS 8，请务必选择 LTS 系统；智能判断硬件结构类型：AMD 或者 ARM\n	* 结合 Linux 版本和虚拟化方式，自动优选三个 WireGuard 方案。网络性能方面：内核集成 WireGuard＞安装内核模块＞boringtun＞wireguard-go\n	* 智能判断 WGCF 作者 github库的最新版本 （Latest release）\n	* 智能分析内网和公网IP生成 WGCF 配置文件\n	* 输出执行结果，提示是否使用 WARP IP ，IP 归属地\n'
+[[ $LANGUAGE != 2 ]] && T17='' || T17=''
+[[ $LANGUAGE != 2 ]] && T18='' || T18=''
+[[ $LANGUAGE != 2 ]] && T19='' || T19=''
+[[ $LANGUAGE != 2 ]] && T20='' || T20=''
+[[ $LANGUAGE != 2 ]] && T21='' || T21=''
+[[ $LANGUAGE != 2 ]] && T22='' || T22=''
+[[ $LANGUAGE != 2 ]] && T23='' || T23=''
+[[ $LANGUAGE != 2 ]] && T24='' || T24=''
+[[ $LANGUAGE != 2 ]] && T25='' || T25=''
 
 
 
@@ -43,7 +43,7 @@ VERSION=2.06
 TXT=" $T1 "
 
 help(){
-	yellow " $T5 " 
+	yellow " $T6 " 
 	}
 
 # 必须以root运行脚本
@@ -76,15 +76,15 @@ fi
 [[ $(echo $SYS | tr A-Z a-z) =~ ubuntu ]] && SYSTEM=ubuntu
 [[ $(echo $SYS | tr A-Z a-z) =~ centos|kernel|'oracle linux' ]] && SYSTEM=centos
 [[ $(echo $SYS | tr A-Z a-z) =~ 'amazon linux' ]] && SYSTEM=centos && COMPANY=amazon
-[[ -z $SYSTEM ]] && red " 本脚本只支持 Debian、Ubuntu 或 CentOS 系统,问题反馈:[https://github.com/fscarmen/warp/issues] " && exit 1
+[[ -z $SYSTEM ]] && red " $T5 " && exit 1
 
 green " 检查环境中…… "
 
 # 安装 curl
 [[ ! $(type -P curl) ]] && 
-( yellow " 安装curl中…… " && (apt -y install curl >/dev/null 2>&1 || yum -y install curl >/dev/null 2>&1) || 
-( yellow " 先升级软件库才能继续安装 curl，时间较长，请耐心等待…… " && apt -y update >/dev/null 2>&1 && apt -y install curl >/dev/null 2>&1 || 
-( yum -y update >/dev/null 2>&1 && yum -y install curl >/dev/null 2>&1 || ( yellow " 安装 curl 失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues] " && exit 1 ))))
+( yellow " $T7 " && (apt -y install curl >/dev/null 2>&1 || yum -y install curl >/dev/null 2>&1) || 
+( yellow " $T8 " && apt -y update >/dev/null 2>&1 && apt -y install curl >/dev/null 2>&1 || 
+( yum -y update >/dev/null 2>&1 && yum -y install curl >/dev/null 2>&1 || ( yellow " $T9 " && exit 1 ))))
 
 # 判断处理器架构
 [[ $(arch | tr A-Z a-z) =~ aarch ]] && ARCHITECTURE=arm64 || ARCHITECTURE=amd64
@@ -121,34 +121,34 @@ MODIFYD11='sed -i "7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/" wg
 
 # 由于warp bug，有时候获取不了ip地址，加入刷网络脚本手动运行，并在定时任务加设置 VPS 重启后自动运行,i=当前尝试次数，j=要尝试的次数
 net(){
-	[[ ! $(type -P wg-quick) || ! -e /etc/wireguard/wgcf.conf ]] && red " 没有安装 WireGuard tools 或者找不到配置文件 wgcf.conf，请重新安装 " && exit 1 ||
+	[[ ! $(type -P wg-quick) || ! -e /etc/wireguard/wgcf.conf ]] && red " $T10 " && exit 1 ||
 	i=1;j=10
-	yellow " 后台获取 WARP IP 中,最大尝试$j次……  "
-	yellow " 第$i次尝试 "
+	yellow " $T11  "
+	yellow " $T12 "
 	echo $UP | sh >/dev/null 2>&1
 	WAN4=$(curl -s4m10 https://ip.gs) &&
 	WAN6=$(curl -s6m10 https://ip.gs)
 	until [[ -n $WAN4 && -n $WAN6 ]]
 		do	let i++
-			yellow " 第$i次尝试 "
+			yellow " $T12 "
 			echo $DOWN | sh >/dev/null 2>&1
 			echo $UP | sh >/dev/null 2>&1
 			WAN4=$(curl -s4m10 https://ip.gs) &&
 			WAN6=$(curl -s6m10 https://ip.gs)
-			[[ $i = $j ]] && (echo $DOWN | sh >/dev/null 2>&1; red " 失败已超过$i次，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues] ") && exit 1
+			[[ $i = $j ]] && (echo $DOWN | sh >/dev/null 2>&1; red " $T13 ") && exit 1
         	done
-green " 已成功获取 WARP 网络\n IPv4:$WAN4\n IPv6:$WAN6 "
+green " $T14\n IPv4:$WAN4\n IPv6:$WAN6 "
 	}
 
 # WARP 开关
 onoff(){
-	[[ -n $(wg) ]] 2>/dev/null && (echo $DOWN | sh >/dev/null 2>&1; green " 已暂停 WARP，再次开启可以用 warp o ") || net
+	[[ -n $(wg) ]] 2>/dev/null && (echo $DOWN | sh >/dev/null 2>&1; green " $T15 ") || net
 	}
 
 # VPS 当前状态
 status(){
 	clear
-	yellow "本项目专为 VPS 添加 wgcf 网络接口，详细说明：[https://github.com/fscarmen/warp]\n脚本特点:\n	* 支持 Warp+ 账户，附带第三方刷 Warp+ 流量和升级内核 BBR 脚本\n	* 普通用户友好的菜单，进阶者通过后缀选项快速搭建\n	* 智能判断vps操作系统：Ubuntu 18.04、Ubuntu 20.04、Debian 10、Debian 11、CentOS 7、CentOS 8，请务必选择 LTS 系统；智能判断硬件结构类型：AMD 或者 ARM\n	* 结合 Linux 版本和虚拟化方式，自动优选三个 WireGuard 方案。网络性能方面：内核集成 WireGuard＞安装内核模块＞boringtun＞wireguard-go\n	* 智能判断 WGCF 作者 github库的最新版本 （Latest release）\n	* 智能分析内网和公网IP生成 WGCF 配置文件\n	* 输出执行结果，提示是否使用 WARP IP ，IP 归属地\n"
+	yellow " $T16 "
 	red "======================================================================================================================\n"
 	green " 脚本版本：$VERSION  功能新增：$TXT\n 系统信息：\n	当前操作系统：$SYS\n	内核：$(uname -r)\n	处理器架构：$ARCHITECTURE\n	虚拟化：$VIRT "
 	[[ $TRACE4 = plus ]] && green "	IPv4：$WAN4 ( WARP+ IPv4 ) $COUNTRY4 "
