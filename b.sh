@@ -3,7 +3,7 @@ VERSION=2.06
 TXT="1)添加自动检查是否开启 Tun 模块； 2)提高脚本适配性; 3)新增 hax、Amazon Linux 2 和 Oracle Linux 支持"
 
 help(){
-	yellow " warp h (帮助菜单)							(help）\n warp o (临时WRAP开关)							(Turn off WARP temporarily)\n warp u (卸载WARP)							(Turn off and uninstall WARP interface)\n warp b (升级内核、开启BBR及DD)						(Upgrade kernel, turn on BBR, change Linux system)\n warp d (免费 WARP 账户升级 WARP+ )					(Upgrade to WARP+ account)\n warp d N5670ljg-sS9jD334-6o6g4M9F (指定 License 升级 Warp+ )			(Upgrade to WARP+ account with the license)\n warp p (刷WARP+流量)							(Getting WARP+ quota by scripts)\n warp v (同步脚本至最新版本)			(Sync the latest version)\n warp 1 (Warp单栈)			(Add WARP IPv6 interface to native IPv4 VPS or WARP IPv4 interface to native IPv6 VPS)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F (指定 WARP+ License Warp 单栈)			(Add IPv4 or IPV6 WARP+ interface with the license)\n warp 2 (Warp双栈)			(add WARP dualstack interface IPv4 + IPv6)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F (指定 Warp+ License Warp 双栈)							(Add WARP dualstack interface with the license)\n " 
+	yellow " warp h (帮助菜单)							(help）\n warp o (临时WRAP开关)							(Turn off WARP temporarily)\n warp u (卸载WARP)							(Turn off and uninstall WARP interface)\n warp b (升级内核、开启BBR及DD)						(Upgrade kernel, turn on BBR, change Linux system)\n warp d (免费 WARP 账户升级 WARP+ )					(Upgrade to WARP+ account)\n warp d N5670ljg-sS9jD334-6o6g4M9F (指定 License 升级 Warp+ )		(Upgrade to WARP+ account with the license)\n warp p (刷WARP+流量)							(Getting WARP+ quota by scripts)\n warp v (同步脚本至最新版本)					(Sync the latest version)\n warp 1 (Warp单栈)							(Add WARP IPv6 interface to native IPv4 VPS or WARP IPv4 interface to native IPv6 VPS)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F (指定 WARP+ License Warp 单栈)	(Add IPv4 or IPV6 WARP+ interface with the license)\n warp 2 (Warp双栈)							(Add WARP dualstack interface IPv4 + IPv6)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F (指定 Warp+ License Warp 双栈)	(Add WARP dualstack interface with the license)\n " 
 	}
 
 # 字体彩色
@@ -383,12 +383,12 @@ menu1(){
 	status
 	[[ $IPV4$IPV6 = 01 ]] && green " 1. 为 IPv6 only 添加 IPv4 网络接口			1.Add WARP IPv4 interface to IPv6 only VPS " || green " 1. 为 IPv4 only 添加 IPv6 网络接口			1.Add WARP IPv6 interface to IPv4 only VPS "
 	[[ $IPV4$IPV6 = 01 ]] && green " 2. 为 IPv6 only 添加双栈网络接口			2.Add WARP dualstack interface to IPv6 only VPS " || green " 2. 为 IPv4 only 添加双栈网络接口			2.Add WARP dualstack interface to IPv6 only VPS "
-	[[ $PLAN = 3 ]] && green  " 3. 暂时关闭 WARP			3.Turn off WARP temporarily " || green " 3. 打开 WARP			3.Turn on WARP "
+	[[ $PLAN = 3 ]] && green  " 3. 暂时关闭 WARP					3.Turn off WARP temporarily " || green " 3. 打开 WARP			3.Turn on WARP "
 	green " 4. 永久关闭 WARP 网络接口，并删除 WGCF			4.Turn off and uninstall WARP interface "
-	green " 5. 升级内核、安装BBR、DD脚本			5.Upgrade kernel, turn on BBR, change Linux system "
-	green " 6. 刷 Warp+ 流量			6.Getting WARP+ quota by scripts "
-	green " 7. 同步最新版本			7.Sync the latest version "
-	green " 0. 退出脚本			0.exit \n "
+	green " 5. 升级内核、安装BBR、DD脚本				5.Upgrade kernel, turn on BBR, change Linux system "
+	green " 6. 刷 Warp+ 流量					6.Getting WARP+ quota by scripts "
+	green " 7. 同步最新版本					7.Sync the latest version "
+	green " 0. 退出脚本						0.exit \n "
 	read -p $' 请输入数字\n choose: ' CHOOSE1
 		case "$CHOOSE1" in
 		1 )	MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6);	install;;
