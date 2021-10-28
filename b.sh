@@ -3,7 +3,7 @@ VERSION=2.06
 TXT="1)添加自动检查是否开启 Tun 模块； 2)提高脚本适配性; 3)新增 hax、Amazon Linux 2 和 Oracle Linux 支持"
 
 help(){
-	yellow " warp h (帮助菜单--help）\n warp o (临时WRAP开关--Turn off WARP temporarily)\n warp u (卸载WARP--Turn off and uninstall WARP interface)\n warp b (升级内核、开启BBR及DD--Upgrade kernel, turn on BBR, change Linux system )\n warp d (免费 WARP 账户升级 WARP+ --Upgrade to WARP+ account)\n warp d N5670ljg-sS9jD334-6o6g4M9F (指定 License 升级 Warp+ --Upgrade to WARP+ account with the license)\n warp p (刷WARP+流量--Brush WARP+ quota)\n warp v (同步脚本至最新版本--Sync the latest version)\n warp 1 (Warp单栈--Add WARP IPv6 interface to native IPv4 VPS or WARP IPv4 interface to native IPv6 VPS)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F (指定 WARP+ License Warp 单栈--Add IPv4 or IPV6 WARP+ interface )\n warp 2 (Warp双栈--Change WARP dualstack interface IPv4 + IPv6 from native dualstack VPS)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F (指定 Warp+ License Warp 双栈--Change WARP dualstack interface with the license)\n " 
+	yellow " warp h (帮助菜单)			(help）\n warp o (临时WRAP开关)			(Turn off WARP temporarily)\n warp u (卸载WARP)			(Turn off and uninstall WARP interface)\n warp b (升级内核、开启BBR及DD)			(Upgrade kernel, turn on BBR, change Linux system)\n warp d (免费 WARP 账户升级 WARP+ )			(Upgrade to WARP+ account)\n warp d N5670ljg-sS9jD334-6o6g4M9F (指定 License 升级 Warp+ )			(Upgrade to WARP+ account with the license)\n warp p (刷WARP+流量)			(Getting WARP+ quota by scripts)\n warp v (同步脚本至最新版本)			(Sync the latest version)\n warp 1 (Warp单栈)			(Add WARP IPv6 interface to native IPv4 VPS or WARP IPv4 interface to native IPv6 VPS)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F (指定 WARP+ License Warp 单栈)			(Add IPv4 or IPV6 WARP+ interface )\n warp 2 (Warp双栈)			(Change WARP dualstack interface IPv4 + IPv6 from native dualstack VPS)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F (指定 Warp+ License Warp 双栈)			(Change WARP dualstack interface with the license)\n " 
 	}
 
 # 字体彩色
@@ -18,7 +18,7 @@ yellow(){
 }
 
 # 必须以root运行脚本
-[[ $(id -u) != 0 ]] && red " 必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]\n The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp/issues]" && exit 1
+[[ $(id -u) != 0 ]] && red " 必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]\n The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp/issues] " && exit 1
 
 # 必须加载 Tun 模块
 TUN=$(cat /dev/net/tun 2>&1 | tr A-Z a-z)
@@ -34,7 +34,7 @@ if [[ $IPV4$IPV6 = 00 && -n $(wg) ]]; then
 	ping6 -c2 -w10 2606:4700:d0::a29f:c001 >/dev/null 2>&1 && IPV6=1 && CDN=-6
 	ping -c2 -W10 162.159.192.1 >/dev/null 2>&1 && IPV4=1 && CDN=-4
 fi
-[[ $IPV4$IPV6 = 00 ]] && red " 与 WARP 的服务器不能连接,可能是大陆 VPS，可手动 ping 162.159.192.1 或 ping6 2606:4700:d0::a29f:c001，如能连通可再次运行脚本\n The WARP server cannot be connected. It may be a China Mainland VPS. You can manually ping 162.159.192.1 or ping6 2606:4700:d0::a29f:c001.You can run the script again if connect was successful. " && exit 1
+[[ $IPV4$IPV6 = 00 ]] && red " 与 WARP 的服务器不能连接,可能是大陆 VPS，可手动 ping 162.159.192.1 或 ping6 2606:4700:d0::a29f:c001，如能连通可再次运行脚本，问题反馈:[https://github.com/fscarmen/warp/issues]\n The WARP server cannot be connected. It may be a China Mainland VPS. You can manually ping 162.159.192.1 or ping6 2606:4700:d0::a29f:c001.You can run the script again if the connect is successful. Feedback: [https://github.com/fscarmen/warp/issues] " && exit 1
 
 # 判断操作系统，只支持 Debian、Ubuntu 或 Centos,如非上述操作系统，删除临时文件，退出脚本
 [[ -f /etc/os-release ]] && SYS=$(grep -i pretty_name /etc/os-release 2>/dev/null | cut -d \" -f2)
@@ -54,7 +54,7 @@ green " 检查环境中…… "
 # 安装 curl
 [[ ! $(type -P curl) ]] && 
 ( yellow " 安装curl中……\n Installing curl... " && (apt -y install curl >/dev/null 2>&1 || yum -y install curl >/dev/null 2>&1) || 
-( yellow " 先升级软件库才能继续安装 curl，时间较长，请耐心等待……\n Upgrade the latest package information is necessary before install curl.It will take a little time,please be patiently " && apt -y update >/dev/null 2>&1 && apt -y install curl >/dev/null 2>&1 || 
+( yellow " 先升级软件库才能继续安装 curl，时间较长，请耐心等待……\n It 's necessary to upgrade the latest package library before install curl.It will take a little time,please be patiently... " && apt -y update >/dev/null 2>&1 && apt -y install curl >/dev/null 2>&1 || 
 ( yum -y update >/dev/null 2>&1 && yum -y install curl >/dev/null 2>&1 || ( yellow " 安装 curl 失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]\n Failed to install curl. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues] " && exit 1 ))))
 
 # 判断处理器架构
@@ -94,8 +94,8 @@ MODIFYD11='sed -i "7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/" wg
 net(){
 	[[ ! $(type -P wg-quick) || ! -e /etc/wireguard/wgcf.conf ]] && red " 没有安装 WireGuard tools 或者找不到配置文件 wgcf.conf，请重新安装 " && exit 1 ||
 	i=1;j=10
-	yellow " 后台获取 WARP IP 中,最大尝试$j次…… --Maximum $j attempts to get WARP IP... "
-	yellow " 第$i次尝试 --Try $i"
+	yellow " 后台获取 WARP IP 中,最大尝试$j次……\n Maximum $j attempts to get WARP IP... "
+	yellow " 第$i次尝试\n Try $i "
 	echo $UP | sh >/dev/null 2>&1
 	WAN4=$(curl -s4m10 https://ip.gs) &&
 	WAN6=$(curl -s6m10 https://ip.gs)
@@ -108,12 +108,12 @@ net(){
 			WAN6=$(curl -s6m10 https://ip.gs)
 			[[ $i = $j ]] && (echo $DOWN | sh >/dev/null 2>&1; red " 失败已超过$i次，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]\n There have been more than $i failures. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues] ") && exit 1
         	done
-green " 已成功获取 WARP 网络 --got the WARP IP successfully\n IPv4:$WAN4\n IPv6:$WAN6 "
+green " 已成功获取 WARP 网络\n Get the WARP IP successfully.\n IPv4:$WAN4\n IPv6:$WAN6 "
 	}
 
 # WARP 开关
 onoff(){
-	[[ -n $(wg) ]] 2>/dev/null && (echo $DOWN | sh >/dev/null 2>&1; green " 已暂停 WARP，再次开启可以用 warp o\n WARP is turned off. You can use [warp o] to turn it on again. ") || net
+	[[ -n $(wg) ]] 2>/dev/null && (echo $DOWN | sh >/dev/null 2>&1; green " 已暂停 WARP，再次开启可以用 warp o\n WARP is turned off. It could be turned on again by [warp o] ") || net
 	}
 
 # VPS 当前状态
@@ -121,16 +121,16 @@ status(){
 	clear
 	yellow "本项目专为 VPS 添加 wgcf 网络接口，详细说明：[https://github.com/fscarmen/warp]\n脚本特点:\n	* 支持 Warp+ 账户，附带第三方刷 Warp+ 流量和升级内核 BBR 脚本\n	* 普通用户友好的菜单，进阶者通过后缀选项快速搭建\n	* 智能判断vps操作系统：Ubuntu 18.04、Ubuntu 20.04、Debian 10、Debian 11、CentOS 7、CentOS 8，请务必选择 LTS 系统；智能判断硬件结构类型：AMD 或者 ARM\n	* 结合 Linux 版本和虚拟化方式，自动优选三个 WireGuard 方案。网络性能方面：内核集成 WireGuard＞安装内核模块＞boringtun＞wireguard-go\n	* 智能判断 WGCF 作者 github库的最新版本 （Latest release）\n	* 智能分析内网和公网IP生成 WGCF 配置文件\n	* 输出执行结果，提示是否使用 WARP IP ，IP 归属地\n"
 	red "======================================================================================================================\n"
-	green " 脚本版本：$VERSION  功能新增：$TXT\n 系统信息：\n	当前操作系统：$SYS\n	内核：$(uname -r)\n	处理器架构：$ARCHITECTURE\n	虚拟化：$VIRT "
+	green " 脚本版本(Version)：$VERSION  功能新增(What's news)：$TXT\n 系统信息：\n	当前操作系统(Operating System)：$SYS\n	内核(Kernel)：$(uname -r)\n	处理器架构(Architecture)：$ARCHITECTURE\n	虚拟化(Virtualization)：$VIRT "
 	[[ $TRACE4 = plus ]] && green "	IPv4：$WAN4 ( WARP+ IPv4 ) $COUNTRY4 "
 	[[ $TRACE4 = on ]] && green "	IPv4：$WAN4 ( WARP IPv4 ) $COUNTRY4 "
 	[[ $TRACE4 = off ]] && green "	IPv4：$WAN4 $COUNTRY4 "
 	[[ $TRACE6 = plus ]] && green "	IPv6：$WAN6 ( WARP+ IPv6 ) $COUNTRY6 "
 	[[ $TRACE6 = on ]] && green "	IPv6：$WAN6 ( WARP IPv6 ) $COUNTRY6 "
 	[[ $TRACE6 = off ]] && green "	IPv6：$WAN6 $COUNTRY6 "
-	[[ $TRACE4 = plus || $TRACE6 = plus ]] && green "	WARP+ 已开启	设备名：$(grep name /etc/wireguard/info.log 2>/dev/null | awk '{ print $NF }') "
-	[[ $TRACE4 = on || $TRACE6 = on ]] && green "	WARP 已开启" 	
-	[[ $TRACE4 = off && $TRACE6 = off ]] && green "	WARP 未开启"
+	[[ $TRACE4 = plus || $TRACE6 = plus ]] && green "	WARP+ 已开启	设备名：$(grep name /etc/wireguard/info.log 2>/dev/null | awk '{ print $NF }')\n	WARP+ is turned on.	Device name：$(grep name /etc/wireguard/info.log 2>/dev/null | awk '{ print $NF }') "
+	[[ $TRACE4 = on || $TRACE6 = on ]] && green "	WARP 已开启	WARP is turned on " 	
+	[[ $TRACE4 = off && $TRACE6 = off ]] && green "	WARP 未开启	WARP is not turned on"
  	red "\n======================================================================================================================\n"
 	}
 
@@ -140,21 +140,21 @@ install(){
 	start=$(date +%s)
 	
 	# 输入 Warp+ 账户（如有），限制位数为空或者26位以防输入错误
-	[[ -z $LICENSE ]] && read -p " 如有 Warp+ License 请输入，没有可回车继续: " LICENSE
+	[[ -z $LICENSE ]] && read -p $' 如有 WARP+ License 请输入，没有可回车继续\n If there is a WARP+ License, please enter it, otherwise press Enter to continue: ' LICENSE
 	i=5
 	until [[ -z $LICENSE || ${#LICENSE} = 26 ]]
 		do
 			let i--
-			[[ $i = 0 ]] && red " 输入错误达5次，脚本退出 " && exit 1 || read -p " License 应为26位字符，请重新输入 Warp+ License，没有可回车继续（剩余$i次）: " LICENSE
+			[[ $i = 0 ]] && red " 输入错误达5次，脚本退出\n Input errors up to 5 times.The script is aborted. " && exit 1 || read -p $' License 应为26位字符，请重新输入 Warp+ License，没有可回车继续（剩余'$i'次)\n License should be 26 characters, please re-enter WARP+ License. Otherwise press Enter to continue. ('$i' times remaining): ' LICENSE
 		done
 
 	# OpenVZ / LXC 选择 Wireguard-GO 或者 BoringTun 方案，并重新定义相应的 UP 和 DOWN 指令
-	[[ $LXC = 1 ]] && read -p " LXC方案:1. Wireguard-GO 或者 2. BoringTun （默认值选项为 1）,请选择:" BORINGTUN
+	[[ $LXC = 1 ]] && read -p $' LXC方案:1. Wireguard-GO 或者 2. BoringTun （默认值选项为 1）,请选择\n LXC VPS choose:1. Wireguard-GO or 2. BoringTun （default is 1）: ' BORINGTUN
 	[[ $BORINGTUN = 2 ]] && UP='WG_QUICK_USERSPACE_IMPLEMENTATION=boringtun WG_SUDO=1 wg-quick up wgcf' || UP='wg-quick up wgcf'
 	[[ $BORINGTUN = 2 ]] && DOWN='wg-quick down wgcf && kill $(pgrep -f boringtun)' || DOWN='wg-quick down wgcf'
 	[[ $BORINGTUN = 2 ]] && WB=boringtun || WB=wireguard-go
 	
-	green " 进度  1/3： 安装系统依赖 "
+	green " 进度  1/3： 安装系统依赖\n Step 1/3: Install dependencies "
 	
 	# 先删除之前安装，可能导致失败的文件，添加环境变量
 	rm -rf /usr/local/bin/wgcf /usr/bin/boringtun /usr/bin/wireguard-go wgcf-account.toml wgcf-profile.conf
@@ -204,7 +204,7 @@ install(){
 	$SYSTEM
 
 	# 安装并认证 WGCF
-	green " 进度  2/3： 安装 WGCF "
+	green " 进度  2/3： 安装 WGCF\n Step 2/3: Install WGCF "
 
 	# 判断 wgcf 的最新版本,如因 github 接口问题未能获取，默认 v2.2.9
 	latest=$(wget --no-check-certificate -qO- -T1 -t1 $CDN "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/\"//g;s/v//g;s/,//g;s/ //g')
@@ -219,7 +219,7 @@ install(){
 	[[ $LXC = 1 ]] && wget --no-check-certificate -N $CDN -P /usr/bin https://cdn.jsdelivr.net/gh/fscarmen/warp/$WB && chmod +x /usr/bin/$WB
 
 	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息)
-	yellow " WGCF 注册中…… "
+	yellow " WGCF 注册中……\n Register new WGCF account... "
 	until [[ -e wgcf-account.toml ]]
 	  do
 	   echo | wgcf register >/dev/null 2>&1
@@ -228,7 +228,7 @@ install(){
 	# 如有 Warp+ 账户，修改 license 并升级，并把设备名等信息保存到 /etc/wireguard/info.log
 	mkdir -p /etc/wireguard/ >/dev/null 2>&1
 	[[ -n $LICENSE ]] && yellow " 升级 Warp+ 账户 " && sed -i "s/license_key.*/license_key = \"$LICENSE\"/g" wgcf-account.toml &&
-	( wgcf update > /etc/wireguard/info.log 2>&1 || red " 升级失败，Warp+ 账户错误或者已激活超过5台设备，自动更换免费 Warp 账户继续 " )
+	( wgcf update > /etc/wireguard/info.log 2>&1 || red " 升级失败，WARP+ 账户错误或者已激活超过5台设备，自动更换免费 Warp 账户继续\n The upgrade failed, WARP+ account error or more than 5 devices have been activated. It will replace the free WARP account to continu. " )
 	
 	# 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
 	wgcf generate >/dev/null 2>&1
@@ -251,12 +251,12 @@ install(){
 	
 	# 创建再次执行的软链接快捷方式，再次运行可以用 warp 指令
 	chmod +x /etc/wireguard/menu.sh >/dev/null 2>&1
-	ln -sf /etc/wireguard/menu.sh /usr/bin/warp && green " 创建快捷 warp 指令成功 "
+	ln -sf /etc/wireguard/menu.sh /usr/bin/warp && green " 创建快捷 warp 指令成功\n Create shortcut [warp] successfully "
 	
 	# 自动刷直至成功（ warp bug，有时候获取不了ip地址），重置之前的相关变量值，记录新的 IPv4 和 IPv6 地址和归属地
-	green " 进度  3/3： 运行 WGCF "
+	green " 进度  3/3： 运行 WGCF\n Step 3/3: Running WGCF "
 	unset WAN4 WAN6 COUNTRY4 COUNTRY6 TRACE4 TRACE6
-	[[ $COMPANY = amazon ]] && red " $COMPANY vps 需要重启后运行 warp n 才能打开 WARP,现执行重启 " && reboot || net
+	[[ $COMPANY = amazon ]] && red " $COMPANY vps 需要重启后运行 warp n 才能打开 WARP,现执行重启\n $COMPANY vps needs to restart and run [warp n] to open WARP. " && reboot || net
 	COUNTRY4=$(curl -s4 https://ip.gs/country)
 	TRACE4=$(curl -s4 https://www.cloudflare.com/cdn-cgi/trace | grep warp | cut -d= -f2)
 	COUNTRY6=$(curl -s6 https://ip.gs/country)
@@ -271,11 +271,11 @@ install(){
 	[[ $TRACE6 = on ]] && green " IPv6：$WAN6 ( WARP IPv6 ) $COUNTRY6 "
 	[[ $TRACE6 = off || -z $TRACE6 ]] && green " IPv6：$WAN6 $COUNTRY6 "
 	end=$(date +%s)
-	[[ $TRACE4 = plus || $TRACE6 = plus ]] && green " 恭喜！WARP+ 已开启，总耗时:$(( $end - $start ))秒\n 设备名：$(grep name /etc/wireguard/info.log | awk '{ print $NF }')\n 剩余流量：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }') "
+	[[ $TRACE4 = plus || $TRACE6 = plus ]] && green " 恭喜！WARP+ 已开启，总耗时:$(( $end - $start ))秒\n 设备名：$(grep name /etc/wireguard/info.log | awk '{ print $NF }')\n 剩余流量：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')\n Congratulations! WARP+ has been turned on. Total time spent: $(( $end-$start )) seconds.\n Device name: $(grep name /etc/wireguard/info.log | awk'{ print $NF }')\n Quota: $(grep Quota /etc/wireguard/info.log | awk'{ print $(NF-1), $NF }') "
 	[[ $TRACE4 = on || $TRACE6 = on ]] && green " 恭喜！WARP 已开启，总耗时:$(( $end - $start ))秒 "
 	red "\n==============================================================\n"
-	yellow " 再次运行用 warp [option] [lisence]，如\n " && help
-	[[ $TRACE4 = off && $TRACE6 = off ]] && red " WARP 安装失败，问题反馈:[https://github.com/fscarmen/warp/issues] "
+	yellow " 再次运行用 warp [option] [lisence]，如\n Run again with warp [option] [lisence], such as\n " && help
+	[[ $TRACE4 = off && $TRACE6 = off ]] && red " WARP 安装失败，问题反馈:[https://github.com/fscarmen/warp/issues]\n WARP installation failed. Feedback: [https://github.com/fscarmen/warp/issues] "
 	}
 
 # 关闭 WARP 网络接口，并删除 WGCF
@@ -297,9 +297,9 @@ uninstall(){
 # 安装BBR
 bbrInstall() {
 	red "\n=============================================================="
-	green "BBR、DD脚本用的[ylx2016]的成熟作品，地址[https://github.com/ylx2016/Linux-NetSpeed]，请熟知"
-	yellow "1.安装脚本【推荐原版BBR+FQ】"
-	yellow "2.回退主目录"
+	green " BBR、DD脚本用的[ylx2016]的成熟作品，地址[https://github.com/ylx2016/Linux-NetSpeed]，请熟知\n Upgrade kernel, turn on BBR, change Linux system by other authors [ylx2016],[https://github.com/ylx2016/Linux-NetSpeed] "
+	yellow " 1.安装脚本【推荐原版BBR+FQ】			1.Running scripts "
+	yellow " 2.回退主目录			2.return to main menu "
 	red "=============================================================="
 	read -p "请选择：" BBR
 	case "$BBR" in
@@ -310,9 +310,9 @@ bbrInstall() {
 	}
 
 
-# 刷 Warp+ 流量
+# 刷 WARP+ 流量
 input() {
-	read -p " 请输入 Warp+ ID: " ID
+	read -p $' 请输入 WARP+ ID\n Please input WARP+ ID: ' ID
 	i=5
 	until [[ ${#ID} = 36 ]]
 		do
