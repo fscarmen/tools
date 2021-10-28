@@ -123,14 +123,14 @@ status(){
 	red "======================================================================================================================\n"
 	green " 脚本版本：$VERSION  功能新增：$TXT\n Version: $VERSION	What's new: $TXT\n 系统信息：						System infomations:\n	当前操作系统：$SYS				Operating System: $SYS\n	内核：$(uname -r)			Kernel: $(uname -r)\n	处理器架构：$ARCHITECTURE					Architecture: $ARCHITECTURE\n	虚拟化：$VIRT						Virtualization: $VIRT "
 	[[ $TRACE4 = plus ]] && green "	IPv4：$WAN4 ( WARP+ IPv4 ) $COUNTRY4		IPv4：$WAN4 ( WARP+ IPv4 ) $COUNTRY4 "
-	[[ $TRACE4 = on ]] && green "	IPv4：$WAN4 ( WARP IPv4 ) $COUNTRY4			IPv4：$WAN4 ( WARP IPv4 ) $COUNTRY4 "
+	[[ $TRACE4 = on ]] && green "	IPv4：$WAN4 ( WARP IPv4 ) $COUNTRY4		IPv4：$WAN4 ( WARP IPv4 ) $COUNTRY4 "
 	[[ $TRACE4 = off ]] && green "	IPv4：$WAN4 $COUNTRY4			IPv4：$WAN4 $COUNTRY4 "
 	[[ $TRACE6 = plus ]] && green "	IPv6：$WAN6 ( WARP+ IPv6 ) $COUNTRY6	IPv6：$WAN6 ( WARP+ IPv6 ) $COUNTRY6 "
 	[[ $TRACE6 = on ]] && green "	IPv6：$WAN6 ( WARP IPv6 ) $COUNTRY6	IPv6：$WAN6 ( WARP IPv6 ) $COUNTRY6 "
 	[[ $TRACE6 = off ]] && green "	IPv6：$WAN6 $COUNTRY6			IPv6：$WAN6 $COUNTRY6  "
 	[[ $TRACE4 = plus || $TRACE6 = plus ]] && green "	WARP+ 已开启	设备名：$(grep name /etc/wireguard/info.log 2>/dev/null | awk '{ print $NF }')\n	WARP+ is turned on.	Device name：$(grep name /etc/wireguard/info.log 2>/dev/null | awk '{ print $NF }') "
-	[[ $TRACE4 = on || $TRACE6 = on ]] && green "	WARP 已开启							WARP is turned on " 	
-	[[ $TRACE4 = off && $TRACE6 = off ]] && green "	WARP 未开启							WARP is not turned on "
+	[[ $TRACE4 = on || $TRACE6 = on ]] && green "	WARP 已开启						WARP is turned on " 	
+	[[ $TRACE4 = off && $TRACE6 = off ]] && green "	WARP 未开启						WARP is not turned on "
  	red "\n======================================================================================================================\n"
 	}
 
@@ -383,7 +383,7 @@ menu1(){
 	status
 	[[ $IPV4$IPV6 = 01 ]] && green " 1. 为 IPv6 only 添加 IPv4 网络接口			1.Add WARP IPv4 interface to IPv6 only VPS " || green " 1. 为 IPv4 only 添加 IPv6 网络接口			1.Add WARP IPv6 interface to IPv4 only VPS "
 	[[ $IPV4$IPV6 = 01 ]] && green " 2. 为 IPv6 only 添加双栈网络接口			2.Add WARP dualstack interface to IPv6 only VPS " || green " 2. 为 IPv4 only 添加双栈网络接口			2.Add WARP dualstack interface to IPv6 only VPS "
-	[[ $PLAN = 3 ]] && green  " 3. 暂时关闭 WARP					3.Turn off WARP temporarily " || green " 3. 打开 WARP						3.Turn on WARP "
+	green " 3. 打开 WARP						3.Turn on WARP "
 	green " 4. 永久关闭 WARP 网络接口，并删除 WGCF			4.Turn off and uninstall WARP interface "
 	green " 5. 升级内核、安装BBR、DD脚本				5.Upgrade kernel, turn on BBR, change Linux system "
 	green " 6. 刷 Warp+ 流量					6.Getting WARP+ quota by scripts "
