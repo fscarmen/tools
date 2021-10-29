@@ -524,7 +524,7 @@ menu3(){
 	green " 2. $T72 "
 	green " 3. $T73 "
 	green " 4. $T74 "
-	green " 5. 升级为 WARP+ 账户 "
+	green " 5. $T78 "
 	green " 6. $T75 "
 	green " 0. $T76 \n "
 	read -p " $T50:" CHOOSE3
