@@ -9,7 +9,7 @@ yellow(){
 	echo -e "\033[33m\033[01m$1\033[0m"
 }
 
-[[ -n $1 ]] || read -p " 1.English	2.简体中文	Choose language (default is 1.English): " LANGUAGE
+[[ -n $1 && $1 != [Hh] ]] || read -p " 1.English	2.简体中文	Choose language (default is 1.English): " LANGUAGE
 [[ $LANGUAGE != 2 ]] && T1="1)check whether the Tun module is loaded; 2) Improve script adaptability; 3) Support hax, Amazon Linux 2 and Oracle Linux" || T1="1)添加自动检查是否开启 Tun 模块； 2)提高脚本适配性; 3)新增 hax、Amazon Linux 2 和 Oracle Linux 支持"
 [[ $LANGUAGE != 2 ]] && T2="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp/issues]" || T2="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]"
 [[ $LANGUAGE != 2 ]] && T3="The Tun module is not loaded. You should turn it on in the control panel. Ask the supplier for more help. Feedback: [https://github.com/fscarmen/warp/issues]" || T3="没有加载 Tun 模块，请在管理后台开启或联系供应商了解如何开启，问题反馈:[https://github.com/fscarmen/warp/issues]"
@@ -363,7 +363,7 @@ install(){
 	[[ $TRACE4 = plus || $TRACE6 = plus ]] && green " $T41 "
 	[[ $TRACE4 = on || $TRACE6 = on ]] && green " $T42 "
 	red "\n==============================================================\n"
-	yellow " $43\n " && help
+	yellow " $T43\n " && help
 	[[ $TRACE4 = off && $TRACE6 = off ]] && red " $T44 "
 	}
 
