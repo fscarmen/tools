@@ -23,53 +23,53 @@ yellow(){
 [[ $LANGUAGE != 2 ]] && T11="Maximum $j attempts to get WARP IP..." || T11="后台获取 WARP IP 中,最大尝试$j次……"
 [[ $LANGUAGE != 2 ]] && T12="Try $i" || T12="第$i次尝试"
 [[ $LANGUAGE != 2 ]] && T13="There have been more than \$i failures. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]" || T13="失败已超过\$i次，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
-[[ $LANGUAGE != 2 ]] && T14='Get the WARP IP successfully.' || T14='已成功获取 WARP 网络'
-[[ $LANGUAGE != 2 ]] && T15='WARP is turned off. It could be turned on again by [warp o]' || T15='已暂停 WARP，再次开启可以用 warp o'
-[[ $LANGUAGE != 2 ]] && T16='The script specifically adds WARP network interface for VPS, detailed:[https://github.com/fscarmen/warp]\n Features:\n	* Support Warp+ account. Third-party increase quota Warp+ and upgrade kernel BBR script.\n	* Not only menus, but also commands with suffixes.\n	* Intelligent analysis of vps operating system：Ubuntu 18.04、Ubuntu 20.04、Debian 10、Debian 11、CentOS 7、CentOS 8. Be sure to choose the LTS system；Intelligent analysis of architecture：AMD or ARM\n	* Comprehensive analysis of Linux version and virtualization, automatically select three WireGuard solutions. Performance: Kernel integration WireGuard＞Install kernel module＞boringtun＞wireguard-go\n	* Intelligent analysis of the latest version of the WGCF\n	* Intelligent analysis of lan and wan IP to generate WGCF configuration file.\n	* Output the result: WARP status and the IP region\n' || T16='本项目专为 VPS 添加 wgcf 网络接口，详细说明：[https://github.com/fscarmen/warp]\n脚本特点:\n	* 支持 Warp+ 账户，附带第三方刷 Warp+ 流量和升级内核 BBR 脚本\n	* 普通用户友好的菜单，进阶者通过后缀选项快速搭建\n	* 智能判断vps操作系统：Ubuntu 18.04、Ubuntu 20.04、Debian 10、Debian 11、CentOS 7、CentOS 8，请务必选择 LTS 系统；智能判断硬件结构类型：AMD 或者 ARM\n	* 结合 Linux 版本和虚拟化方式，自动优选三个 WireGuard 方案。网络性能方面：内核集成 WireGuard＞安装内核模块＞boringtun＞wireguard-go\n	* 智能判断 WGCF 作者 github库的最新版本 （Latest release）\n	* 智能分析内网和公网IP生成 WGCF 配置文件\n	* 输出执行结果，提示是否使用 WARP IP ，IP 归属地\n'
-[[ $LANGUAGE != 2 ]] && T17='Version' || T17='脚本版本'
-[[ $LANGUAGE != 2 ]] && T18='new features' || T18='功能新增'
-[[ $LANGUAGE != 2 ]] && T19='System infomations' || T19='系统信息'
-[[ $LANGUAGE != 2 ]] && T20='Operating System' || T20='当前操作系统'
-[[ $LANGUAGE != 2 ]] && T21='Kernel' || T21='内核'
-[[ $LANGUAGE != 2 ]] && T22='Architecture' || T22='处理器架构'
-[[ $LANGUAGE != 2 ]] && T23='Virtualization' || T23='虚拟化'
-[[ $LANGUAGE != 2 ]] && T24='is on' || T24='已开启'
-[[ $LANGUAGE != 2 ]] && T25='Device name' || T25='设备名'
-[[ $LANGUAGE != 2 ]] && T26='is off' || T26='未开启'
-[[ $LANGUAGE != 2 ]] && T27='Device name' || T27='设备名'
-[[ $LANGUAGE != 2 ]] && T28='If there is a WARP+ License, please enter it, otherwise press Enter to continue' || T28='如有 WARP+ License 请输入，没有可回车继续'
-[[ $LANGUAGE != 2 ]] && T29='Input errors up to 5 times.The script is aborted.' || T29='输入错误达5次，脚本退出'
+[[ $LANGUAGE != 2 ]] && T14="Get the WARP IP successfully." || T14="已成功获取 WARP 网络"
+[[ $LANGUAGE != 2 ]] && T15="WARP is turned off. It could be turned on again by [warp o]" || T15="已暂停 WARP，再次开启可以用 warp o"
+[[ $LANGUAGE != 2 ]] && T16="The script specifically adds WARP network interface for VPS, detailed:[https://github.com/fscarmen/warp]\n Features:\n	* Support Warp+ account. Third-party increase quota Warp+ and upgrade kernel BBR script.\n	* Not only menus, but also commands with suffixes.\n	* Intelligent analysis of vps operating system：Ubuntu 18.04、Ubuntu 20.04、Debian 10、Debian 11、CentOS 7、CentOS 8. Be sure to choose the LTS system；Intelligent analysis of architecture：AMD or ARM\n	* Comprehensive analysis of Linux version and virtualization, automatically select three WireGuard solutions. Performance: Kernel integration WireGuard＞Install kernel module＞boringtun＞wireguard-go\n	* Intelligent analysis of the latest version of the WGCF\n	* Intelligent analysis of lan and wan IP to generate WGCF configuration file.\n	* Output the result: WARP status and the IP region\n" || T16="本项目专为 VPS 添加 wgcf 网络接口，详细说明：[https://github.com/fscarmen/warp]\n脚本特点:\n	* 支持 Warp+ 账户，附带第三方刷 Warp+ 流量和升级内核 BBR 脚本\n	* 普通用户友好的菜单，进阶者通过后缀选项快速搭建\n	* 智能判断vps操作系统：Ubuntu 18.04、Ubuntu 20.04、Debian 10、Debian 11、CentOS 7、CentOS 8，请务必选择 LTS 系统；智能判断硬件结构类型：AMD 或者 ARM\n	* 结合 Linux 版本和虚拟化方式，自动优选三个 WireGuard 方案。网络性能方面：内核集成 WireGuard＞安装内核模块＞boringtun＞wireguard-go\n	* 智能判断 WGCF 作者 github库的最新版本 （Latest release）\n	* 智能分析内网和公网IP生成 WGCF 配置文件\n	* 输出执行结果，提示是否使用 WARP IP ，IP 归属地\n"
+[[ $LANGUAGE != 2 ]] && T17="Version" || T17="脚本版本"
+[[ $LANGUAGE != 2 ]] && T18="new features" || T18="功能新增"
+[[ $LANGUAGE != 2 ]] && T19="System infomations" || T19="系统信息"
+[[ $LANGUAGE != 2 ]] && T20="Operating System" || T20="当前操作系统"
+[[ $LANGUAGE != 2 ]] && T21="Kernel" || T21="内核"
+[[ $LANGUAGE != 2 ]] && T22="Architecture" || T22="处理器架构"
+[[ $LANGUAGE != 2 ]] && T23="Virtualization" || T23="虚拟化"
+[[ $LANGUAGE != 2 ]] && T24="is on" || T24="已开启"
+[[ $LANGUAGE != 2 ]] && T25="Device name" || T25="设备名"
+[[ $LANGUAGE != 2 ]] && T26="is off" || T26="未开启"
+[[ $LANGUAGE != 2 ]] && T27="Device name" || T27="设备名"
+[[ $LANGUAGE != 2 ]] && T28="If there is a WARP+ License, please enter it, otherwise press Enter to continue" || T28="如有 WARP+ License 请输入，没有可回车继续"
+[[ $LANGUAGE != 2 ]] && T29="Input errors up to 5 times.The script is aborted." || T29="输入错误达5次，脚本退出"
 [[ $LANGUAGE != 2 ]] && T130="License should be 26 characters, please re-enter WARP+ License. Otherwise press Enter to continue. ($i times remaining)" || T30="License 应为26位字符，请重新输入 Warp+ License，没有可回车继续（剩余$i次)"
-[[ $LANGUAGE != 2 ]] && T31='LXC VPS choose:1. Wireguard-GO or 2. BoringTun （default is 1. Wireguard-GO）,choose' || T31='LXC方案:1. Wireguard-GO 或者 2. BoringTun （默认值选项为 1. Wireguard-GO）,请选择'
-[[ $LANGUAGE != 2 ]] && T32='Step 1/3: Install dependencies' || T32='进度  1/3： 安装系统依赖'
-[[ $LANGUAGE != 2 ]] && T33='Step 2/3: Install WGCF' || T33='进度  2/3： 安装 WGCF'
-[[ $LANGUAGE != 2 ]] && T34='Register new WARP account...' || T34='WARP 注册中……'
-[[ $LANGUAGE != 2 ]] && T35='Update WARP+ account' || T35='升级 WARP+ 账户'
-[[ $LANGUAGE != 2 ]] && T36='The upgrade failed, WARP+ account error or more than 5 devices have been activated. Free WARP account to continu.' || T36='升级失败，WARP+ 账户错误或者已激活超过5台设备，自动更换免费 Warp 账户继续'
-[[ $LANGUAGE != 2 ]] && T37='Checking VPS infomations...' || T37='检查环境中……'
-[[ $LANGUAGE != 2 ]] && T38='Create shortcut [warp] successfully' || T38='创建快捷 warp 指令成功'
-[[ $LANGUAGE != 2 ]] && T39='Step 3/3: Running WARP' || T39='进度  3/3： 运行 WARP'
+[[ $LANGUAGE != 2 ]] && T31="LXC VPS choose:1. Wireguard-GO or 2. BoringTun （default is 1. Wireguard-GO）,choose" || T31="LXC方案:1. Wireguard-GO 或者 2. BoringTun （默认值选项为 1. Wireguard-GO）,请选择"
+[[ $LANGUAGE != 2 ]] && T32="Step 1/3: Install dependencies" || T32="进度  1/3： 安装系统依赖"
+[[ $LANGUAGE != 2 ]] && T33="Step 2/3: Install WGCF" || T33="进度  2/3： 安装 WGCF"
+[[ $LANGUAGE != 2 ]] && T34="Register new WARP account..." || T34="WARP 注册中……"
+[[ $LANGUAGE != 2 ]] && T35="Update WARP+ account" || T35="升级 WARP+ 账户"
+[[ $LANGUAGE != 2 ]] && T36="The upgrade failed, WARP+ account error or more than 5 devices have been activated. Free WARP account to continu." || T36="升级失败，WARP+ 账户错误或者已激活超过5台设备，自动更换免费 Warp 账户继续"
+[[ $LANGUAGE != 2 ]] && T37="Checking VPS infomations..." || T37="检查环境中……"
+[[ $LANGUAGE != 2 ]] && T38="Create shortcut [warp] successfully" || T38="创建快捷 warp 指令成功"
+[[ $LANGUAGE != 2 ]] && T39="Step 3/3: Running WARP" || T39="进度  3/3： 运行 WARP"
 [[ $LANGUAGE != 2 ]] && T40="$COMPANY vps needs to restart and run [warp n] to open WARP." || T40="$COMPANY vps 需要重启后运行 warp n 才能打开 WARP,现执行重启"
 [[ $LANGUAGE != 2 ]] && T41="Congratulations! WARP+ is turned on。 Spend time:$(( $end - $start )) seconds\n Device name：$(grep name /etc/wireguard/info.log | awk '{ print $NF }')\n Quota：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')" || T41="恭喜！WARP+ 已开启，总耗时:$(( $end - $start ))秒\n 设备名：$(grep name /etc/wireguard/info.log | awk '{ print $NF }')\n 剩余流量：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')"
-[[ $LANGUAGE != 2 ]] && T42="Congratulations! WARP is turned on。 Spend time:$(( $end - $start )) seconds" || T42='恭喜！WARP 已开启，总耗时:$(( $end - $start ))秒'
-[[ $LANGUAGE != 2 ]] && T43='Run again with warp [option] [lisence], such as' || T43='再次运行用 warp [option] [lisence]，如'
-[[ $LANGUAGE != 2 ]] && T44='WARP installation failed. Feedback: [https://github.com/fscarmen/warp/issues]' || T44='WARP 安装失败，问题反馈:[https://github.com/fscarmen/warp/issues]'
-[[ $LANGUAGE != 2 ]] && T45='' || T45=''
-[[ $LANGUAGE != 2 ]] && T46='' || T46=''
-[[ $LANGUAGE != 2 ]] && T47='' || T47=''
-[[ $LANGUAGE != 2 ]] && T48='' || T48=''
-[[ $LANGUAGE != 2 ]] && T49='' || T49=''
-[[ $LANGUAGE != 2 ]] && T50='' || T50=''
-[[ $LANGUAGE != 2 ]] && T51='' || T51=''
-[[ $LANGUAGE != 2 ]] && T52='' || T52=''
-[[ $LANGUAGE != 2 ]] && T53='' || T53=''
-[[ $LANGUAGE != 2 ]] && T54='' || T54=''
-[[ $LANGUAGE != 2 ]] && T55='' || T55=''
-[[ $LANGUAGE != 2 ]] && T56='' || T56=''
-[[ $LANGUAGE != 2 ]] && T57='' || T57=''
-[[ $LANGUAGE != 2 ]] && T58='' || T58=''
-[[ $LANGUAGE != 2 ]] && T59='' || T59=''
-[[ $LANGUAGE != 2 ]] && T60='' || T60=''
+[[ $LANGUAGE != 2 ]] && T42="Congratulations! WARP is turned on。 Spend time:$(( $end - $start )) seconds" || T42="恭喜！WARP 已开启，总耗时:$(( $end - $start ))秒"
+[[ $LANGUAGE != 2 ]] && T43="Run again with warp [option] [lisence], such as" || T43="再次运行用 warp [option] [lisence]，如"
+[[ $LANGUAGE != 2 ]] && T44="WARP installation failed. Feedback: [https://github.com/fscarmen/warp/issues]" || T44="WARP 安装失败，问题反馈:[https://github.com/fscarmen/warp/issues]"
+[[ $LANGUAGE != 2 ]] && T45="" || T45=""
+[[ $LANGUAGE != 2 ]] && T46="" || T46=""
+[[ $LANGUAGE != 2 ]] && T47="" || T47=""
+[[ $LANGUAGE != 2 ]] && T48="" || T48=""
+[[ $LANGUAGE != 2 ]] && T49="" || T49=""
+[[ $LANGUAGE != 2 ]] && T50="" || T50=""
+[[ $LANGUAGE != 2 ]] && T51="" || T51=""
+[[ $LANGUAGE != 2 ]] && T52="" || T52=""
+[[ $LANGUAGE != 2 ]] && T53="" || T53=""
+[[ $LANGUAGE != 2 ]] && T54="" || T54=""
+[[ $LANGUAGE != 2 ]] && T55="" || T55=""
+[[ $LANGUAGE != 2 ]] && T56="" || T56=""
+[[ $LANGUAGE != 2 ]] && T57="" || T57=""
+[[ $LANGUAGE != 2 ]] && T58="" || T58=""
+[[ $LANGUAGE != 2 ]] && T59="" || T59=""
+[[ $LANGUAGE != 2 ]] && T60="" || T60=""
 
 
 
