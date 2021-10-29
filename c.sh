@@ -19,7 +19,7 @@ yellow(){
 [[ $LANGUAGE != 2 ]] && T7="Installing curl..." || T7="安装curl中……"
 [[ $LANGUAGE != 2 ]] && T8="It is necessary to upgrade the latest package library before install curl.It will take a little time,please be patiently..." || T8="先升级软件库才能继续安装 curl，时间较长，请耐心等待……"
 [[ $LANGUAGE != 2 ]] && T9="Failed to install curl. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]" || T9="安装 curl 失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
-[[ $LANGUAGE != 2 ]] && T10='WireGuard tools are not installed or the configuration file wgcf.conf cannot be found, please reinstall." || T10="没有安装 WireGuard tools 或者找不到配置文件 wgcf.conf，请重新安装。"
+[[ $LANGUAGE != 2 ]] && T10="WireGuard tools are not installed or the configuration file wgcf.conf cannot be found, please reinstall." || T10="没有安装 WireGuard tools 或者找不到配置文件 wgcf.conf，请重新安装。"
 [[ $LANGUAGE != 2 ]] && T11="Maximum $j attempts to get WARP IP..." || T11="后台获取 WARP IP 中,最大尝试$j次……"
 [[ $LANGUAGE != 2 ]] && T12="Try $i" || T12="第$i次尝试"
 [[ $LANGUAGE != 2 ]] && T13="There have been more than \$i failures. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]" || T13="失败已超过\$i次，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
