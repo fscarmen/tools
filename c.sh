@@ -58,12 +58,12 @@ yellow(){
 [[ $LANGUAGE != 2 ]] && T46="Not cleaned up, please reboot and try again." || T46="没有清除干净，请重启(reboot)后尝试再次删除"
 [[ $LANGUAGE != 2 ]] && T47="Upgrade kernel, turn on BBR, change Linux system by other authors [ylx2016],[https://github.com/ylx2016/Linux-NetSpeed]" || T47="BBR、DD脚本用的[ylx2016]的成熟作品，地址[https://github.com/ylx2016/Linux-NetSpeed]，请熟知"
 [[ $LANGUAGE != 2 ]] && T48="Running scripts " || T48="安装脚本【推荐原版BBR+FQ】"
-[[ $LANGUAGE != 2 ]] && T49="return to main menu" || T49="回退主目录"
-[[ $LANGUAGE != 2 ]] && T50="choose" || T50="请选择"
+[[ $LANGUAGE != 2 ]] && T49="Return to main menu" || T49="回退主目录"
+[[ $LANGUAGE != 2 ]] && T50="Choose" || T50="请选择"
 [[ $LANGUAGE != 2 ]] && T51="Please enter the correct number" || T51="请输入正确数字"
 [[ $LANGUAGE != 2 ]] && T52="Please input WARP+ ID:" || T52="请输入 WARP+ ID:"
 #[[ $LANGUAGE != 2 ]] && T1153="" || T1153=""
-[[ $LANGUAGE != 2 ]] && T54="Getting the WARP+ quota by the following 2 authors:\n	* [ALIILAPRO]，[https://github.com/ALIILAPRO/warp-plus-cloudflare]\n	* [mixool]，[https://github.com/mixool/across/tree/master/wireguard]\n 1.Open the 1.1.1.1 app\n 2.Click on the hamburger menu button on the top-right corner\n 3.Navigate to: Account > Key\n Important：Refresh WARP+ quota： 三 --> Advanced --> Connection options --> Reset keys\n It is best to run script with screen." || T54="刷 WARP+ 流量用可选择以下两位作者的成熟作品，请熟知:\n	* [ALIILAPRO]，地址[https://github.com/ALIILAPRO/warp-plus-cloudflare]\n	* [mixool]，地址[https://github.com/mixool/across/tree/master/wireguard]\n 下载地址：https://1.1.1.1/，访问和苹果外区 ID 自理\n 获取 Warp+ ID 填到下面。方法：App右上角菜单 三 --> 高级 --> 诊断 --> ID\n 重要：刷脚本后流量没有增加处理：右上角菜单 三 --> 高级 --> 连接选项 --> 重置加密密钥\n 最好配合 screen 在后台运行任务"
+[[ $LANGUAGE != 2 ]] && T54="Getting the WARP+ quota by the following 2 authors:\n	* [ALIILAPRO]，[https://github.com/ALIILAPRO/warp-plus-cloudflare]\n	* [mixool]，[https://github.com/mixool/across/tree/master/wireguard]\n * Open the 1.1.1.1 app\n * Click on the hamburger menu button on the top-right corner\n * Navigate to: Account > Key\n Important：Refresh WARP+ quota： 三 --> Advanced --> Connection options --> Reset keys\n It is best to run script with screen." || T54="刷 WARP+ 流量用可选择以下两位作者的成熟作品，请熟知:\n	* [ALIILAPRO]，地址[https://github.com/ALIILAPRO/warp-plus-cloudflare]\n	* [mixool]，地址[https://github.com/mixool/across/tree/master/wireguard]\n 下载地址：https://1.1.1.1/，访问和苹果外区 ID 自理\n 获取 Warp+ ID 填到下面。方法：App右上角菜单 三 --> 高级 --> 诊断 --> ID\n 重要：刷脚本后流量没有增加处理：右上角菜单 三 --> 高级 --> 连接选项 --> 重置加密密钥\n 最好配合 screen 在后台运行任务"
 [[ $LANGUAGE != 2 ]] && T55="run [ALIILAPRO] script" || T55="运行[ALIILAPRO]脚本"
 [[ $LANGUAGE != 2 ]] && T56="run[mixool] script" || T56="运行[mixool]脚本"
 [[ $LANGUAGE != 2 ]] && T57="The target quota you want to get. The unit is GB, the default value is 10:" || T57="你希望获取的目标流量值，单位为 GB，输入数字即可，默认值为10 :"
@@ -390,7 +390,7 @@ bbrInstall() {
 	yellow " 1.$T48 "
 	yellow " 2.$T49 "
 	red "=============================================================="
-	read -p " $T50 " BBR
+	read -p " $T50: " BBR
 	case "$BBR" in
 		1 ) wget --no-check-certificate -N "https://raw.githubusercontent.com/ylx2016/Linux-NetSpeed/master/tcp.sh" && chmod +x tcp.sh && ./tcp.sh;;
 		2 ) menu$PLAN;;
@@ -413,12 +413,12 @@ input() {
 
 plus() {
 	red "\n=============================================================="
-	green " $T54 "
+	green " $T54\n "
 	yellow " 1.$T55 "
 	yellow " 2.$T56 "
-	yellow " 3.$T29 "
+	yellow " 3.$T49 "
 	red "=============================================================="
-	read -p "$T50：" CHOOSEPLUS
+	read -p " $T50: " CHOOSEPLUS
 	case "$CHOOSEPLUS" in
 		1 ) input
 		    [[ $(type -P git) ]] || apt -y install git 2>/dev/null || yum -y install git 2>/dev/null
