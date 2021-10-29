@@ -20,8 +20,8 @@ yellow(){
 [[ $LANGUAGE != 2 ]] && T8="It is necessary to upgrade the latest package library before install curl.It will take a little time,please be patiently..." || T8="先升级软件库才能继续安装 curl，时间较长，请耐心等待……"
 [[ $LANGUAGE != 2 ]] && T9="Failed to install curl. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]" || T9="安装 curl 失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
 [[ $LANGUAGE != 2 ]] && T10="WireGuard tools are not installed or the configuration file wgcf.conf cannot be found, please reinstall." || T10="没有安装 WireGuard tools 或者找不到配置文件 wgcf.conf，请重新安装。"
-[[ $LANGUAGE != 2 ]] && T111="Maximum $j attempts to get WARP IP..." || T11="后台获取 WARP IP 中,最大尝试$j次……"
-[[ $LANGUAGE != 2 ]] && T112="Try $i" || T12="第$i次尝试"
+#[[ $LANGUAGE != 2 ]] && T1111="Maximum $j attempts to get WARP IP..." || T11="后台获取 WARP IP 中,最大尝试$j次……"
+#[[ $LANGUAGE != 2 ]] && T1112="Try $i" || T12="第$i次尝试"
 [[ $LANGUAGE != 2 ]] && T13="There have been more than \$i failures. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]" || T13="失败已超过\$i次，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
 [[ $LANGUAGE != 2 ]] && T14="Get the WARP IP successfully." || T14="已成功获取 WARP 网络"
 [[ $LANGUAGE != 2 ]] && T15="WARP is turned off. It could be turned on again by [warp o]" || T15="已暂停 WARP，再次开启可以用 warp o"
@@ -39,7 +39,7 @@ yellow(){
 [[ $LANGUAGE != 2 ]] && T27="Device name" || T27="设备名"
 [[ $LANGUAGE != 2 ]] && T28="If there is a WARP+ License, please enter it, otherwise press Enter to continue" || T28="如有 WARP+ License 请输入，没有可回车继续"
 [[ $LANGUAGE != 2 ]] && T29="Input errors up to 5 times.The script is aborted." || T29="输入错误达5次，脚本退出"
-[[ $LANGUAGE != 2 ]] && T130="License should be 26 characters, please re-enter WARP+ License. Otherwise press Enter to continue. ($i times remaining)" || T30="License 应为26位字符，请重新输入 Warp+ License，没有可回车继续（剩余$i次)"
+#[[ $LANGUAGE != 2 ]] && T1130="License should be 26 characters, please re-enter WARP+ License. Otherwise press Enter to continue. ($i times remaining)" || T30="License 应为26位字符，请重新输入 Warp+ License，没有可回车继续（剩余$i次)"
 [[ $LANGUAGE != 2 ]] && T31="LXC VPS choose:1. Wireguard-GO or 2. BoringTun （default is 1. Wireguard-GO）,choose" || T31="LXC方案:1. Wireguard-GO 或者 2. BoringTun （默认值选项为 1. Wireguard-GO）,请选择"
 [[ $LANGUAGE != 2 ]] && T32="Step 1/3: Install dependencies" || T32="进度  1/3： 安装系统依赖"
 [[ $LANGUAGE != 2 ]] && T33="Step 2/3: Install WGCF" || T33="进度  2/3： 安装 WGCF"
@@ -50,8 +50,8 @@ yellow(){
 [[ $LANGUAGE != 2 ]] && T38="Create shortcut [warp] successfully" || T38="创建快捷 warp 指令成功"
 [[ $LANGUAGE != 2 ]] && T39="Step 3/3: Running WARP" || T39="进度  3/3： 运行 WARP"
 [[ $LANGUAGE != 2 ]] && T40="$COMPANY vps needs to restart and run [warp n] to open WARP." || T40="$COMPANY vps 需要重启后运行 warp n 才能打开 WARP,现执行重启"
-[[ $LANGUAGE != 2 ]] && T41="Congratulations! WARP+ is turned on。 Spend time:$(( $end - $start )) seconds\n Device name：$(grep name /etc/wireguard/info.log | awk '{ print $NF }')\n Quota：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')" || T41="恭喜！WARP+ 已开启，总耗时:$(( $end - $start ))秒\n 设备名：$(grep name /etc/wireguard/info.log | awk '{ print $NF }')\n 剩余流量：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')"
-[[ $LANGUAGE != 2 ]] && T42="Congratulations! WARP is turned on。 Spend time:$(( $end - $start )) seconds" || T42="恭喜！WARP 已开启，总耗时:$(( $end - $start ))秒"
+#[[ $LANGUAGE != 2 ]] && T1141="Congratulations! WARP+ is turned on。 Spend time:$(( $end - $start )) seconds\n Device name：$(grep name /etc/wireguard/info.log | awk '{ print $NF }')\n Quota：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')" || T41="恭喜！WARP+ 已开启，总耗时:$(( $end - $start ))秒\n 设备名：$(grep name /etc/wireguard/info.log | awk '{ print $NF }')\n 剩余流量：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')"
+#[[ $LANGUAGE != 2 ]] && T1142="Congratulations! WARP is turned on。 Spend time:$(( $end - $start )) seconds" || T42="恭喜！WARP 已开启，总耗时:$(( $end - $start ))秒"
 [[ $LANGUAGE != 2 ]] && T43="Run again with warp [option] [lisence], such as" || T43="再次运行用 warp [option] [lisence]，如"
 [[ $LANGUAGE != 2 ]] && T44="WARP installation failed. Feedback: [https://github.com/fscarmen/warp/issues]" || T44="WARP 安装失败，问题反馈:[https://github.com/fscarmen/warp/issues]"
 [[ $LANGUAGE != 2 ]] && T45="" || T45=""
@@ -161,13 +161,14 @@ net(){
 	i=1;j=10
 	[[ $LANGUAGE != 2 ]] && T11="Maximum $j attempts to get WARP IP..." || T11="后台获取 WARP IP 中,最大尝试$j次……"
 	[[ $LANGUAGE != 2 ]] && T12="Try $i" || T12="第$i次尝试"
-	yellow " $T11  "
+	yellow " $T11 "
 	yellow " $T12 "
 	echo $UP | sh >/dev/null 2>&1
 	WAN4=$(curl -s4m10 https://ip.gs) &&
 	WAN6=$(curl -s6m10 https://ip.gs)
 	until [[ -n $WAN4 && -n $WAN6 ]]
 		do	let i++
+			[[ $LANGUAGE != 2 ]] && T12="Try $i" || T12="第$i次尝试"
 			yellow " $T12 "
 			echo $DOWN | sh >/dev/null 2>&1
 			echo $UP | sh >/dev/null 2>&1
@@ -339,6 +340,8 @@ install(){
 	[[ $TRACE6 = on ]] && green " IPv6：$WAN6 ( WARP IPv6 ) $COUNTRY6 "
 	[[ $TRACE6 = off || -z $TRACE6 ]] && green " IPv6：$WAN6 $COUNTRY6 "
 	end=$(date +%s)
+	[[ $LANGUAGE != 2 ]] && T41="Congratulations! WARP+ is turned on。 Spend time:$(( $end - $start )) seconds\n Device name：$(grep name /etc/wireguard/info.log | awk '{ print $NF }')\n Quota：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')" || T41="恭喜！WARP+ 已开启，总耗时:$(( $end - $start ))秒\n 设备名：$(grep name /etc/wireguard/info.log | awk '{ print $NF }')\n 剩余流量：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')"
+	[[ $LANGUAGE != 2 ]] && T42="Congratulations! WARP is turned on。 Spend time:$(( $end - $start )) seconds" || T42="恭喜！WARP 已开启，总耗时:$(( $end - $start ))秒"
 	[[ $TRACE4 = plus || $TRACE6 = plus ]] && green " $T41 "
 	[[ $TRACE4 = on || $TRACE6 = on ]] && green " $T42 "
 	red "\n==============================================================\n"
