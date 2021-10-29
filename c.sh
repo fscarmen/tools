@@ -57,21 +57,39 @@ yellow(){
 [[ $LANGUAGE != 2 ]] && T45="WGCF has been completely deleted!" || T45="WGCF 已彻底删除!"
 [[ $LANGUAGE != 2 ]] && T46="Not cleaned up, please reboot and try again." || T46="没有清除干净，请重启(reboot)后尝试再次删除"
 [[ $LANGUAGE != 2 ]] && T47="Upgrade kernel, turn on BBR, change Linux system by other authors [ylx2016],[https://github.com/ylx2016/Linux-NetSpeed]" || T47="BBR、DD脚本用的[ylx2016]的成熟作品，地址[https://github.com/ylx2016/Linux-NetSpeed]，请熟知"
-[[ $LANGUAGE != 2 ]] && T48="1.Running scripts " || T48="1.安装脚本【推荐原版BBR+FQ】"
-[[ $LANGUAGE != 2 ]] && T49="2.return to main menu" || T49="2.回退主目录"
+[[ $LANGUAGE != 2 ]] && T48="Running scripts " || T48="安装脚本【推荐原版BBR+FQ】"
+[[ $LANGUAGE != 2 ]] && T49="return to main menu" || T49="回退主目录"
 [[ $LANGUAGE != 2 ]] && T50="choose" || T50="请选择"
 [[ $LANGUAGE != 2 ]] && T51="Please enter the correct number" || T51="请输入正确数字"
 [[ $LANGUAGE != 2 ]] && T52="Please input WARP+ ID:" || T52="请输入 WARP+ ID:"
-#[[ $LANGUAGE != 2 ]] && T53="" || T53=""
+#[[ $LANGUAGE != 2 ]] && T1153="" || T1153=""
 [[ $LANGUAGE != 2 ]] && T54="Getting the WARP+ quota by the following 2 authors:\n	* [ALIILAPRO]，[https://github.com/ALIILAPRO/warp-plus-cloudflare]\n	* [mixool]，[https://github.com/mixool/across/tree/master/wireguard]\n 1.Open the 1.1.1.1 app\n 2.Click on the hamburger menu button on the top-right corner\n 3.Navigate to: Account > Key\n Important：Refresh WARP+ quota： 三 --> Advanced --> Connection options --> Reset keys\n It is best to run script with screen." || T54="刷 WARP+ 流量用可选择以下两位作者的成熟作品，请熟知:\n	* [ALIILAPRO]，地址[https://github.com/ALIILAPRO/warp-plus-cloudflare]\n	* [mixool]，地址[https://github.com/mixool/across/tree/master/wireguard]\n 下载地址：https://1.1.1.1/，访问和苹果外区 ID 自理\n 获取 Warp+ ID 填到下面。方法：App右上角菜单 三 --> 高级 --> 诊断 --> ID\n 重要：刷脚本后流量没有增加处理：右上角菜单 三 --> 高级 --> 连接选项 --> 重置加密密钥\n 最好配合 screen 在后台运行任务"
-[[ $LANGUAGE != 2 ]] && T55="1.run [ALIILAPRO] script" || T55="1.运行[ALIILAPRO]脚本"
-[[ $LANGUAGE != 2 ]] && T56="2.run[mixool] script" || T56="2.运行[mixool]脚本"
+[[ $LANGUAGE != 2 ]] && T55="run [ALIILAPRO] script" || T55="运行[ALIILAPRO]脚本"
+[[ $LANGUAGE != 2 ]] && T56="run[mixool] script" || T56="运行[mixool]脚本"
 [[ $LANGUAGE != 2 ]] && T57="The target quota you want to get. The unit is GB, the default value is 10:" || T57="你希望获取的目标流量值，单位为 GB，输入数字即可，默认值为10 :"
-[[ $LANGUAGE != 2 ]] && T58="" || T58=""
-[[ $LANGUAGE != 2 ]] && T59="" || T59=""
-[[ $LANGUAGE != 2 ]] && T60="" || T60=""
-
-
+[[ $LANGUAGE != 2 ]] && T58="This is the WARP+ account, no need to upgrade." || T58="已经是 WARP+ 账户，不需要升级"
+[[ $LANGUAGE != 2 ]] && T59="Cannot find the account file: /etc/wireguard/wgcf-account.toml, you can reinstall with the WARP+ License" || T59="找不到账户文件：/etc/wireguard/wgcf-account.toml，可以卸载后重装，输入 WARP+ License"
+[[ $LANGUAGE != 2 ]] && T60="Cannot find the configuration file: /etc/wireguard/wgcf.conf, you can reinstall with the WARP+ License" || T60="找不到配置文件： /etc/wireguard/wgcf.conf，可以卸载后重装，输入 Warp+ License"
+[[ $LANGUAGE != 2 ]] && T61="Please Input WARP+ license:" || T61="请输入WARP+ License:"
+[[ $LANGUAGE != 2 ]] && T62="Successfully upgraded to a WARP+ account" || T62="已升级为 WARP+ 账户"
+[[ $LANGUAGE != 2 ]] && T63="WARP+ quota" || T63="剩余流量"
+[[ $LANGUAGE != 2 ]] && T64="Successfully synchronized the latest version" || T64="成功！已同步最新脚本，版本号"
+[[ $LANGUAGE != 2 ]] && T65="Upgrade failed. Feedback:[https://github.com/fscarmen/warp/issues]" || T65="升级失败，问题反馈:[https://github.com/fscarmen/warp/issues]"
+[[ $LANGUAGE != 2 ]] && T66="Add WARP IPv4 interface to IPv6 only VPS" || T66="为 IPv6 only 添加 IPv4 网络接口"
+[[ $LANGUAGE != 2 ]] && T67="Add WARP IPv6 interface to IPv4 only VPS" || T67="为 IPv4 only 添加 IPv6 网络接口"
+[[ $LANGUAGE != 2 ]] && T68="Add WARP dualstack interface to IPv6 only VPS" || T68="为 IPv6 only 添加双栈网络接口"
+[[ $LANGUAGE != 2 ]] && T69="Add WARP dualstack interface to IPv4 only VPS" || T69="为 IPv4 only 添加双栈网络接口"
+[[ $LANGUAGE != 2 ]] && T70="Add WARP dualstack interface to native dualstack" || T70="为 原生双栈 添加 WARP双栈 网络接口"
+[[ $LANGUAGE != 2 ]] && T71="Turn on WARP" || T71="打开 WARP"
+[[ $LANGUAGE != 2 ]] && T72="Turn off and uninstall WARP interface" || T72="永久关闭 WARP 网络接口，并删除 WARP"
+[[ $LANGUAGE != 2 ]] && T73="Upgrade kernel, turn on BBR, change Linux system" || T73="升级内核、安装BBR、DD脚本"
+[[ $LANGUAGE != 2 ]] && T74="Getting WARP+ quota by scripts" || T74="刷 Warp+ 流量"
+[[ $LANGUAGE != 2 ]] && T75="Sync the latest version" || T75="同步最新版本"
+[[ $LANGUAGE != 2 ]] && T76="exit" || T76="退出脚本"
+[[ $LANGUAGE != 2 ]] && T77="Turn off WARP" || T77="暂时关闭 WARP"
+[[ $LANGUAGE != 2 ]] && T78="Upgrade to WARP+ account" || T78="升级为 WARP+ 账户"
+[[ $LANGUAGE != 2 ]] && T79="This system is a native dualstack. You can only choose the WARP dualstack, please enter [y] to continue, and other keys to exit" || T79="此系统为原生双栈，只能选择 Warp 双栈方案，继续请输入 y，其他按键退出"
+[[ $LANGUAGE != 2 ]] && T80="The WARP is working. It will be closed, please run the previous command to install or enter !!" || T80="检测 WARP 已开启，自动关闭后运行上一条命令安装或者输入 !!"
 
 
 # 当前脚本版本号和新增功能
@@ -369,8 +387,8 @@ uninstall(){
 bbrInstall() {
 	red "\n=============================================================="
 	green " $T47 "
-	yellow " $T48 "
-	yellow " $T49 "
+	yellow " 1.$T48 "
+	yellow " 2.$T49 "
 	red "=============================================================="
 	read -p " $T50 " BBR
 	case "$BBR" in
@@ -396,8 +414,8 @@ input() {
 plus() {
 	red "\n=============================================================="
 	green " $T54 "
-	yellow " $T55 "
-	yellow " $T56 "
+	yellow " 1.$T55 "
+	yellow " 2.$T56 "
 	yellow " 3.$T29 "
 	red "=============================================================="
 	read -p "$T50：" CHOOSEPLUS
@@ -419,15 +437,16 @@ plus() {
 
 # 免费 Warp 账户升级 Warp+ 账户
 update() {
-	[[ $TRACE4 = plus || $TRACE6 = plus ]] && red " 已经是 WARP+ 账户，不需要升级 " && exit 1
-	[[ ! -e /etc/wireguard/wgcf-account.toml ]] && red " 找不到账户文件：/etc/wireguard/wgcf-account.toml，可以卸载后重装，输入 Warp+ License " && exit 1
-	[[ ! -e /etc/wireguard/wgcf.conf ]] && red " 找不到配置文件： /etc/wireguard/wgcf.conf，可以卸载后重装，输入 Warp+ License " && exit 1
-	[[ -z $LICENSE ]] && read -p " 请输入Warp+ License:" LICENSE
+	[[ $TRACE4 = plus || $TRACE6 = plus ]] && red " $T58 " && exit 1
+	[[ ! -e /etc/wireguard/wgcf-account.toml ]] && red " $T59 " && exit 1
+	[[ ! -e /etc/wireguard/wgcf.conf ]] && red " $T60 " && exit 1
+	[[ -z $LICENSE ]] && read -p " $T61 " LICENSE
 	i=5
 	until [[ ${#LICENSE} = 26 ]]
 	do
 	let i--
-	[[ $i = 0 ]] && red " 输入错误达5次，脚本退出 " && exit 1 || read -p " License 应为26位字符,请重新输入 Warp+ License（剩余$i次）: " LICENSE
+	[[ $LANGUAGE != 2 ]] && T62=" License should be 26 characters, please re-enter WARP+ License. Otherwise press Enter to continue. ($i times remaining) " || T62=" License 应为26位字符,请重新输入 Warp+ License（剩余$i次）: "
+	[[ $i = 0 ]] && red " $T29 " && exit 1 || read -p " $T62 " LICENSE
         done
 	cd /etc/wireguard
 	sed -i "s#license_key.*#license_key = \"$LICENSE\"#g" wgcf-account.toml &&
@@ -439,7 +458,7 @@ update() {
 	echo $DOWN | sh >/dev/null 2>&1
 	net
 	[[ $(wget --no-check-certificate -qO- -4 https://www.cloudflare.com/cdn-cgi/trace | grep warp | cut -d= -f2) = plus || $(wget --no-check-certificate -qO- -6 https://www.cloudflare.com/cdn-cgi/trace | grep warp | cut -d= -f2) = plus ]] &&
-	green " 已升级为Warp+ 账户\n 设备名：$(grep name /etc/wireguard/info.log | awk '{ print $NF }')\n 剩余流量：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')" ) || red " 升级失败，Warp+ 账户错误或者已激活超过5台设备，继续使用免费的 Warp "
+	green " $T62\n $T27：$(grep name /etc/wireguard/info.log | awk '{ print $NF }')\n $T63：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')" ) || red " 升级失败，Warp+ 账户错误或者已激活超过5台设备，继续使用免费的 Warp "
 	}
 
 # 同步脚本至最新版本
@@ -447,21 +466,21 @@ ver(){
 	wget -N $CDN -P /etc/wireguard https://cdn.jsdelivr.net/gh/fscarmen/warp/menu.sh &&
 	chmod +x /etc/wireguard/menu.sh &&
 	ln -sf /etc/wireguard/menu.sh /usr/bin/warp &&
-	green " 成功！已同步最新脚本，版本号：$(grep ^VERSION /etc/wireguard/menu.sh | cut -d = -f2)  功能新增：$(grep ^TXT /etc/wireguard/menu.sh | cut -d \" -f2) " || red " 升级失败，问题反馈:[https://github.com/fscarmen/warp/issues] "
+	green " $T64:$(grep ^VERSION /etc/wireguard/menu.sh | cut -d = -f2)  $T18：$(grep ^TXT /etc/wireguard/menu.sh | cut -d \" -f2) " || red " $T65 "
 	exit
 	}
 # 单栈
 menu1(){
 	status
-	[[ $IPV4$IPV6 = 01 ]] && green " 1. 为 IPv6 only 添加 IPv4 网络接口 " || green " 1. 为 IPv4 only 添加 IPv6 网络接口 "
-	[[ $IPV4$IPV6 = 01 ]] && green " 2. 为 IPv6 only 添加双栈网络接口 " || green " 2. 为 IPv4 only 添加双栈网络接口 "
-  	green " 3. 打开 WARP "
-	green " 4. 永久关闭 WARP 网络接口，并删除 WGCF "
-	green " 5. 升级内核、安装BBR、DD脚本 "
-	green " 6. 刷 Warp+ 流量 "
-	green " 7. 同步最新版本 "
-	green " 0. 退出脚本 \n "
-	read -p " 请输入数字:" CHOOSE1
+	[[ $IPV4$IPV6 = 01 ]] && green " 1. $T66 " || green " 1. $T67 "
+	[[ $IPV4$IPV6 = 01 ]] && green " 2. $T68 " || green " 2. $T69 "
+  	green " 3. $T71 "
+	green " 4. $T72 "
+	green " 5. $T73 "
+	green " 6. $T74 "
+	green " 7. $T75 "
+	green " 0. $T76 \n "
+	read -p " $T50:" CHOOSE1
 		case "$CHOOSE1" in
 		1 )	MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6);	install;;
 		2 )	MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6);	install;;
@@ -471,21 +490,21 @@ menu1(){
 		6 )	plus;;
 		7 )	ver;;
 		0 )	exit;;
-		* )	red " 请输入正确数字 [0-7] "; sleep 1; menu1;;
+		* )	red " $T51 [0-7] "; sleep 1; menu1;;
 		esac
 	}
 
 # 双栈
 menu2(){ 
 	status
-	green " 1. 为 原生双栈 添加 WARP双栈 网络接口 "
-	green " 2. 打开 WARP "
-	green " 3. 永久关闭 WARP 网络接口，并删除 WGCF "
-	green " 4. 升级内核、安装BBR、DD脚本 "
-	green " 5. 刷 Warp+ 流量 "
-	green " 6. 同步最新版本 "
-	green " 0. 退出脚本 \n "
-	read -p " 请输入数字:" CHOOSE2
+	green " 1. $T70 "
+	green " 2. $T71 "
+	green " 3. $T72 "
+	green " 4. $T73 "
+	green " 5. $T74 "
+	green " 6. $T75 "
+	green " 0. $T76 \n "
+	read -p " $T50:" CHOOSE2
 		case "$CHOOSE2" in
 		1 )	MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6);	install;;
 		2 )	net;;
@@ -494,21 +513,21 @@ menu2(){
 		5 )	plus;;
 		6 )	ver;;
 		0 )	exit;;
-		* )	red " 请输入正确数字 [0-6] "; sleep 1; menu2;;
+		* )	red " $T51 [0-6] "; sleep 1; menu2;;
 		esac
 	}
 
 # 已开启 warp 网络接口
 menu3(){ 
 	status
-	green " 1. 暂时关闭 WARP "
-	green " 2. 永久关闭 WARP 网络接口，并删除 WGCF "
-	green " 3. 升级内核、安装BBR、DD脚本 "
-	green " 4. 刷 Warp+ 流量 "
+	green " 1. $T77 "
+	green " 2. $T72 "
+	green " 3. $T73 "
+	green " 4. $T74 "
 	green " 5. 升级为 WARP+ 账户 "
-	green " 6. 同步最新版本 "
-	green " 0. 退出脚本 \n "
-	read -p " 请输入数字:" CHOOSE3
+	green " 6. $T75 "
+	green " 0. $T76 \n "
+	read -p " $T50:" CHOOSE3
         case "$CHOOSE3" in
 		1 )	echo $DOWN | sh >/dev/null 2>&1;;
 		2 )	uninstall;;
@@ -517,7 +536,7 @@ menu3(){
 		5 )	update;;
 		6 )	ver;;
 		0 )	exit;;
-		* )	red " 请输入正确数字 [0-6] "; sleep 1; menu3;;
+		* )	red " $T51 [0-6] "; sleep 1; menu3;;
 		esac
 	}
 
@@ -529,12 +548,12 @@ OPTION=$1
 
 # 设置后缀
 case "$OPTION" in
-1 )	[[ $PLAN = 2 ]] && read -p " 此系统为原生双栈，只能选择 Warp 双栈方案，继续请输入 y，其他退出 ：" DUAL &&
+1 )	[[ $PLAN = 2 ]] && read -p " $T79 " DUAL &&
 	[[ $DUAL != [Yy] ]] && exit 1 || MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6)
 	[[ $PLAN = 1 ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6)
- 	[[ $PLAN = 3 ]] && yellow " 检测 WARP 已开启，自动关闭后运行上一条命令安装或者输入 !! " && echo $DOWN | sh >/dev/null 2>&1 && exit 1
+ 	[[ $PLAN = 3 ]] && yellow " $T80 " && echo $DOWN | sh >/dev/null 2>&1 && exit 1
 	install;;
-2 )	[[ $PLAN = 3 ]] && yellow " 检测 WARP 已开启，自动关闭后运行上一条命令安装或者输入 !! " && echo $DOWN | sh >/dev/null 2>&1 && exit 1
+2 )	[[ $PLAN = 3 ]] && yellow " $T80 " && echo $DOWN | sh >/dev/null 2>&1 && exit 1
 	MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6);	install;;
 [Bb] )	bbrInstall;;
 [Pp] )	plus;;
