@@ -10,7 +10,7 @@ yellow(){
 }
 
 [[ -n $1 ]] || read -p " 1.English	2.简体中文	Choose language (default is 1.English): " LANGUAGE
-[[ $LANGUAGE != 2 ]] && T1="1)check whether the Tun module is turned on automatically; 2) Improve script adaptability; 3) Support hax, Amazon Linux 2 and Oracle Linux" || T1="1)添加自动检查是否开启 Tun 模块； 2)提高脚本适配性; 3)新增 hax、Amazon Linux 2 和 Oracle Linux 支持"
+[[ $LANGUAGE != 2 ]] && T1="1)check whether the Tun module is loaded; 2) Improve script adaptability; 3) Support hax, Amazon Linux 2 and Oracle Linux" || T1="1)添加自动检查是否开启 Tun 模块； 2)提高脚本适配性; 3)新增 hax、Amazon Linux 2 和 Oracle Linux 支持"
 [[ $LANGUAGE != 2 ]] && T2="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp/issues]" || T2="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]"
 [[ $LANGUAGE != 2 ]] && T3="The Tun module is not loaded. You should turn it on in the control panel. Ask the supplier for more help. Feedback: [https://github.com/fscarmen/warp/issues]" || T3="没有加载 Tun 模块，请在管理后台开启或联系供应商了解如何开启，问题反馈:[https://github.com/fscarmen/warp/issues]"
 [[ $LANGUAGE != 2 ]] && T4="The WARP server cannot be connected. It may be a China Mainland VPS. You can manually ping 162.159.192.1 or ping6 2606:4700:d0::a29f:c001.You can run the script again if the connect is successful. Feedback: [https://github.com/fscarmen/warp/issues]" || T4="与 WARP 的服务器不能连接,可能是大陆 VPS，可手动 ping 162.159.192.1 或 ping6 2606:4700:d0::a29f:c001，如能连通可再次运行脚本，问题反馈:[https://github.com/fscarmen/warp/issues]"
@@ -25,7 +25,7 @@ yellow(){
 [[ $LANGUAGE != 2 ]] && T13="There have been more than \$i failures. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]" || T13="失败已超过\$i次，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
 [[ $LANGUAGE != 2 ]] && T14="Get the WARP IP successfully." || T14="已成功获取 WARP 网络"
 [[ $LANGUAGE != 2 ]] && T15="WARP is turned off. It could be turned on again by [warp o]" || T15="已暂停 WARP，再次开启可以用 warp o"
-[[ $LANGUAGE != 2 ]] && T16="The script specifically adds WARP network interface for VPS, detailed:[https://github.com/fscarmen/warp]\n Features:\n	* Support Warp+ account. Third-party increase quota Warp+ and upgrade kernel BBR script.\n	* Not only menus, but also commands with suffixes.\n	* Intelligent analysis of vps operating system：Ubuntu 18.04、Ubuntu 20.04、Debian 10、Debian 11、CentOS 7、CentOS 8. Be sure to choose the LTS system；Intelligent analysis of architecture：AMD or ARM\n	* Comprehensive analysis of Linux version and virtualization, automatically select three WireGuard solutions. Performance: Kernel integration WireGuard＞Install kernel module＞boringtun＞wireguard-go\n	* Intelligent analysis of the latest version of the WGCF\n	* Intelligent analysis of lan and wan IP to generate WGCF configuration file.\n	* Output the result: WARP status and the IP region\n" || T16="本项目专为 VPS 添加 wgcf 网络接口，详细说明：[https://github.com/fscarmen/warp]\n脚本特点:\n	* 支持 Warp+ 账户，附带第三方刷 Warp+ 流量和升级内核 BBR 脚本\n	* 普通用户友好的菜单，进阶者通过后缀选项快速搭建\n	* 智能判断vps操作系统：Ubuntu 18.04、Ubuntu 20.04、Debian 10、Debian 11、CentOS 7、CentOS 8，请务必选择 LTS 系统；智能判断硬件结构类型：AMD 或者 ARM\n	* 结合 Linux 版本和虚拟化方式，自动优选三个 WireGuard 方案。网络性能方面：内核集成 WireGuard＞安装内核模块＞boringtun＞wireguard-go\n	* 智能判断 WGCF 作者 github库的最新版本 （Latest release）\n	* 智能分析内网和公网IP生成 WGCF 配置文件\n	* 输出执行结果，提示是否使用 WARP IP ，IP 归属地\n"
+[[ $LANGUAGE != 2 ]] && T16="The script specifically adds WARP network interface for VPS, detailed:[https://github.com/fscarmen/warp]\n Features:\n	* Support Warp+ account. Third-party increase quota Warp+ and upgrade kernel BBR script.\n	* Not only menus, but also commands with suffixes.\n	* Intelligent analysis of vps operating system：Ubuntu 18.04、20.04，Debian 10、11，CentOS 7、8. Be sure to choose the LTS system；Intelligent analysis of architecture：AMD or ARM\n	* Automatically select three WireGuard solutions. Performance: Kernel integration WireGuard＞Install kernel module＞boringtun＞wireguard-go\n	* Intelligent analysis of the latest version of the WGCF\n	* Intelligent analysis of lan and wan IP to generate WGCF configuration file.\n	* Output the result: WARP status and the IP region\n" || T16="本项目专为 VPS 添加 wgcf 网络接口，详细说明：[https://github.com/fscarmen/warp]\n脚本特点:\n	* 支持 Warp+ 账户，附带第三方刷 Warp+ 流量和升级内核 BBR 脚本\n	* 普通用户友好的菜单，进阶者通过后缀选项快速搭建\n	* 智能判断vps操作系统：Ubuntu 18.04、Ubuntu 20.04、Debian 10、Debian 11、CentOS 7、CentOS 8，请务必选择 LTS 系统；智能判断硬件结构类型：AMD 或者 ARM\n	* 结合 Linux 版本和虚拟化方式，自动优选三个 WireGuard 方案。网络性能方面：内核集成 WireGuard＞安装内核模块＞boringtun＞wireguard-go\n	* 智能判断 WGCF 作者 github库的最新版本 （Latest release）\n	* 智能分析内网和公网IP生成 WGCF 配置文件\n	* 输出执行结果，提示是否使用 WARP IP ，IP 归属地\n"
 [[ $LANGUAGE != 2 ]] && T17="Version" || T17="脚本版本"
 [[ $LANGUAGE != 2 ]] && T18="new features" || T18="功能新增"
 [[ $LANGUAGE != 2 ]] && T19="System infomations" || T19="系统信息"
@@ -54,19 +54,19 @@ yellow(){
 #[[ $LANGUAGE != 2 ]] && T1142="Congratulations! WARP is turned on。 Spend time:$(( $end - $start )) seconds" || T42="恭喜！WARP 已开启，总耗时:$(( $end - $start ))秒"
 [[ $LANGUAGE != 2 ]] && T43="Run again with warp [option] [lisence], such as" || T43="再次运行用 warp [option] [lisence]，如"
 [[ $LANGUAGE != 2 ]] && T44="WARP installation failed. Feedback: [https://github.com/fscarmen/warp/issues]" || T44="WARP 安装失败，问题反馈:[https://github.com/fscarmen/warp/issues]"
-[[ $LANGUAGE != 2 ]] && T45="" || T45=""
-[[ $LANGUAGE != 2 ]] && T46="" || T46=""
-[[ $LANGUAGE != 2 ]] && T47="" || T47=""
-[[ $LANGUAGE != 2 ]] && T48="" || T48=""
-[[ $LANGUAGE != 2 ]] && T49="" || T49=""
-[[ $LANGUAGE != 2 ]] && T50="" || T50=""
-[[ $LANGUAGE != 2 ]] && T51="" || T51=""
-[[ $LANGUAGE != 2 ]] && T52="" || T52=""
-[[ $LANGUAGE != 2 ]] && T53="" || T53=""
-[[ $LANGUAGE != 2 ]] && T54="" || T54=""
-[[ $LANGUAGE != 2 ]] && T55="" || T55=""
-[[ $LANGUAGE != 2 ]] && T56="" || T56=""
-[[ $LANGUAGE != 2 ]] && T57="" || T57=""
+[[ $LANGUAGE != 2 ]] && T45="WGCF has been completely deleted!" || T45="WGCF 已彻底删除!"
+[[ $LANGUAGE != 2 ]] && T46="Not cleaned up, please reboot and try again." || T46="没有清除干净，请重启(reboot)后尝试再次删除"
+[[ $LANGUAGE != 2 ]] && T47="Upgrade kernel, turn on BBR, change Linux system by other authors [ylx2016],[https://github.com/ylx2016/Linux-NetSpeed]" || T47="BBR、DD脚本用的[ylx2016]的成熟作品，地址[https://github.com/ylx2016/Linux-NetSpeed]，请熟知"
+[[ $LANGUAGE != 2 ]] && T48="1.Running scripts " || T48="1.安装脚本【推荐原版BBR+FQ】"
+[[ $LANGUAGE != 2 ]] && T49="2.return to main menu" || T49="2.回退主目录"
+[[ $LANGUAGE != 2 ]] && T50="choose" || T50="请选择"
+[[ $LANGUAGE != 2 ]] && T51="Please enter the correct number" || T51="请输入正确数字"
+[[ $LANGUAGE != 2 ]] && T52="Please input WARP+ ID:" || T52="请输入 WARP+ ID:"
+#[[ $LANGUAGE != 2 ]] && T53="" || T53=""
+[[ $LANGUAGE != 2 ]] && T54="Getting the WARP+ quota by the following 2 authors:\n	* [ALIILAPRO]，[https://github.com/ALIILAPRO/warp-plus-cloudflare]\n	* [mixool]，[https://github.com/mixool/across/tree/master/wireguard]\n 1.Open the 1.1.1.1 app\n 2.Click on the hamburger menu button on the top-right corner\n 3.Navigate to: Account > Key\n Important：Refresh WARP+ quota： 三 --> Advanced --> Connection options --> Reset keys\n It is best to run script with screen." || T54="刷 WARP+ 流量用可选择以下两位作者的成熟作品，请熟知:\n	* [ALIILAPRO]，地址[https://github.com/ALIILAPRO/warp-plus-cloudflare]\n	* [mixool]，地址[https://github.com/mixool/across/tree/master/wireguard]\n 下载地址：https://1.1.1.1/，访问和苹果外区 ID 自理\n 获取 Warp+ ID 填到下面。方法：App右上角菜单 三 --> 高级 --> 诊断 --> ID\n 重要：刷脚本后流量没有增加处理：右上角菜单 三 --> 高级 --> 连接选项 --> 重置加密密钥\n 最好配合 screen 在后台运行任务"
+[[ $LANGUAGE != 2 ]] && T55="1.run [ALIILAPRO] script" || T55="1.运行[ALIILAPRO]脚本"
+[[ $LANGUAGE != 2 ]] && T56="2.run[mixool] script" || T56="2.运行[mixool]脚本"
+[[ $LANGUAGE != 2 ]] && T57="The target quota you want to get. The unit is GB, the default value is 10:" || T57="你希望获取的目标流量值，单位为 GB，输入数字即可，默认值为10 :"
 [[ $LANGUAGE != 2 ]] && T58="" || T58=""
 [[ $LANGUAGE != 2 ]] && T59="" || T59=""
 [[ $LANGUAGE != 2 ]] && T60="" || T60=""
@@ -340,7 +340,7 @@ install(){
 	[[ $TRACE6 = on ]] && green " IPv6：$WAN6 ( WARP IPv6 ) $COUNTRY6 "
 	[[ $TRACE6 = off || -z $TRACE6 ]] && green " IPv6：$WAN6 $COUNTRY6 "
 	end=$(date +%s)
-	[[ $LANGUAGE != 2 ]] && T41="Congratulations! WARP+ is turned on。 Spend time:$(( $end - $start )) seconds\n Device name：$(grep name /etc/wireguard/info.log | awk '{ print $NF }')\n Quota：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')" || T41="恭喜！WARP+ 已开启，总耗时:$(( $end - $start ))秒\n 设备名：$(grep name /etc/wireguard/info.log | awk '{ print $NF }')\n 剩余流量：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')"
+	[[ $LANGUAGE != 2 ]] && T41="Congratulations! WARP+ is turned on。 Spend time:$(( $end - $start )) seconds\n Device name：$(grep -s name /etc/wireguard/info.log | awk '{ print $NF }')\n Quota：$(grep -s Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')" || T41="恭喜！WARP+ 已开启，总耗时:$(( $end - $start ))秒\n 设备名：$(grep -s name /etc/wireguard/info.log | awk '{ print $NF }')\n 剩余流量：$(grep -s Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')"
 	[[ $LANGUAGE != 2 ]] && T42="Congratulations! WARP is turned on。 Spend time:$(( $end - $start )) seconds" || T42="恭喜！WARP 已开启，总耗时:$(( $end - $start ))秒"
 	[[ $TRACE4 = plus || $TRACE6 = plus ]] && green " $T41 "
 	[[ $TRACE4 = on || $TRACE6 = on ]] && green " $T42 "
@@ -362,44 +362,45 @@ uninstall(){
 	WAN6=$(curl -s6m10 https://ip.gs)
 	COUNTRY4=$(curl -s4m10 https://ip.gs/country)
 	COUNTRY6=$(curl -s6m10 https://ip.gs/country)
-	[[ -z $(wg) ]] >/dev/null 2>&1 && green " WGCF 已彻底删除!\n IPv4：$WAN4 $COUNTRY4\n IPv6：$WAN6 $COUNTRY6 " || red " 没有清除干净，请重启(reboot)后尝试再次删除 "
+	[[ -z $(wg) ]] >/dev/null 2>&1 && green " $T45\n IPv4：$WAN4 $COUNTRY4\n IPv6：$WAN6 $COUNTRY6 " || red " $T46 "
 	}
 
 # 安装BBR
 bbrInstall() {
 	red "\n=============================================================="
-	green "BBR、DD脚本用的[ylx2016]的成熟作品，地址[https://github.com/ylx2016/Linux-NetSpeed]，请熟知"
-	yellow "1.安装脚本【推荐原版BBR+FQ】"
-	yellow "2.回退主目录"
+	green " $T47 "
+	yellow " $T48 "
+	yellow " $T49 "
 	red "=============================================================="
-	read -p "请选择：" BBR
+	read -p " $T50 " BBR
 	case "$BBR" in
 		1 ) wget --no-check-certificate -N "https://raw.githubusercontent.com/ylx2016/Linux-NetSpeed/master/tcp.sh" && chmod +x tcp.sh && ./tcp.sh;;
 		2 ) menu$PLAN;;
-		* ) red " 请输入正确数字 [1-2] "; sleep 1; bbrInstall;;
+		* ) red " $T51 [1-2]"; sleep 1; bbrInstall;;
 	esac
 	}
 
 
-# 刷 Warp+ 流量
+# 刷 WARP+ 流量
 input() {
-	read -p " 请输入 Warp+ ID: " ID
+	read -p " $T52 " ID
 	i=5
 	until [[ ${#ID} = 36 ]]
 		do
 		let i--
-		[[ $i = 0 ]] && red " 输入错误达5次，脚本退出 " && exit 1 || read -p " Warp+ ID 应为36位字符，请重新输入 Warp+ ID （剩余$i次）: " ID
+		[[ $LANGUAGE != 2 ]] && T53="Warp+ ID should be 36 characters, please re-enter ($i times remaining):" || T53="Warp+ ID 应为36位字符，请重新输入 Warp+ ID （剩余$i次）:"
+		[[ $i = 0 ]] && red " $T29 " && exit 1 || read -p " $T53 " ID
 	done
 	}
 
 plus() {
 	red "\n=============================================================="
-	green " 刷 Warp+ 流量用可选择以下两位作者的成熟作品，请熟知:\n	* [ALIILAPRO]，地址[https://github.com/ALIILAPRO/warp-plus-cloudflare]\n	* [mixool]，地址[https://github.com/mixool/across/tree/master/wireguard]\n 下载地址：https://1.1.1.1/，访问和苹果外区 ID 自理\n 获取 Warp+ ID 填到下面。方法：App右上角菜单 三 --> 高级 --> 诊断 --> ID\n 重要：刷脚本后流量没有增加处理：右上角菜单 三 --> 高级 --> 连接选项 --> 重置加密密钥\n 最好配合 screen 在后台运行任务 "
-	yellow "1.运行[ALIILAPRO]脚本 "
-	yellow "2.运行[mixool]脚本 "
-	yellow "3.回退主目录"
+	green " $T54 "
+	yellow " $T55 "
+	yellow " $T56 "
+	yellow " 3.$T29 "
 	red "=============================================================="
-	read -p "请选择：" CHOOSEPLUS
+	read -p "$T50：" CHOOSEPLUS
 	case "$CHOOSEPLUS" in
 		1 ) input
 		    [[ $(type -P git) ]] || apt -y install git 2>/dev/null || yum -y install git 2>/dev/null
@@ -407,12 +408,12 @@ plus() {
 		    [[ -d ~/warp-plus-cloudflare ]] || git clone https://github.com/aliilapro/warp-plus-cloudflare.git
 		    echo $ID | python3 ~/warp-plus-cloudflare/wp-plus.py;;
 		2 ) input
-		    read -p " 你希望获取的目标流量值，单位为 GB，输入数字即可，默认值为10 :" MISSION
+		    read -p " $T57" MISSION
 		    wget --no-check-certificate $CDN -N https://cdn.jsdelivr.net/gh/mixool/across/wireguard/warp_plus.sh
 		    sed -i "s/eb86bd52-fe28-4f03-a944-60428823540e/$ID/g" warp_plus.sh
 		    bash warp_plus.sh $(echo $MISSION | sed 's/[^0-9]*//g');;
 		3 ) menu$PLAN;;
-		* ) red " 请输入正确数字 [1-3] "; sleep 1; plus;;
+		* ) red " $T51 [1-3] "; sleep 1; plus;;
 	esac
 	}
 
