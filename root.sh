@@ -1,6 +1,6 @@
 [[ $(id -u) != 0 ]] && echo -e "\033[31m 必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues] \033[0m" && exit 1
 password=$1
-[[ -z $password ]] && read -p "请输入root密码:" password
+[[ -z $password || $password = '[PASSWORD]' ]] && read -p "请输入root密码:" password
 echo root:$password | sudo chpasswd root
 sudo sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/g' /etc/ssh/sshd_config;
 sudo sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/ssh/sshd_config;
