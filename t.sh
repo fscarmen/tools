@@ -610,8 +610,7 @@ install(){
 
 	[Install]
 	WantedBy=multi-user.target
-
-	EOF
+EOF
 	
 	[[ $BORINGTUN = 2 ]] && systemctl start boringtun@wgcf >/dev/null 2>&1
 	[[ $BORINGTUN = 2 ]] && systemctl enable --now boringtun@wgcf >/dev/null 2>&1
@@ -619,7 +618,7 @@ install(){
 	[[ $BORINGTUN != 2 ]] && systemctl enable --now wg-quick@wgcf >/dev/null 2>&1
 
 	# 如是 LXC，安装 Wireguard-GO 或者 BoringTun。部分较低内核版本的KVM，即使安装了wireguard-dkms, 仍不能正常工作，兜底使用 wireguard-go
-	[[ $LXC = 1 ]] && wget --no-check-certificate -N $CDN -P /usr/bin https://cdn.jsdelivr.net/gh/fscarmen/warp/$WB && chmod +x /usr/bin/$WB
+	[[ $LXC = 1 ]] && wget --no-check-certificate -N $CDN -P /usr/bin https://cdn.jsdelivr.net/gh/fscarmen/tools/$WB && chmod +x /usr/bin/$WB
 	[[ $WG = 1 ]] && [[ $(systemctl is-active wg-quick@wgcf) != active || $(systemctl is-enabled wg-quick@wgcf) != enabled ]] &&
 	wget --no-check-certificate -N $CDN -P /usr/bin https://cdn.jsdelivr.net/gh/fscarmen/warp/wireguard-go && chmod +x /usr/bin/wireguard-go
 
