@@ -590,7 +590,7 @@ install(){
 
 	# 修改配置文件
 	while true; do 
-	sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf && green " \n$T81\n " && break
+	sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf >/dev/null 2>&1 && green " \n$T81\n " && break
 	done
 	}&
 
