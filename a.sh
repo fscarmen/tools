@@ -215,7 +215,7 @@ change_ip(){
 	REGION=$(tr [:lower:] [:upper:] <<< $(curl --user-agent "${UA_Browser}" -$NF -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-]\{1,\}\).*/\1/g'))
 	[[ $RESULT = 200 ]] && REGION=${REGION:-US}
 	ip${NF}_info
-	[[ $LANGUAGE != 2 ]] && COUNTRY=$(eval echo \$COUNTRY$NF) || COUNTRY=$(expr $(curl -sm4 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$(eval echo \$COUNTRY$NF)") : '.*tgt\":\"\([^"]*\).*')
+	[[ $LANGUAGE != 2 ]] && COUNTRY=$(eval echo \$COUNTRY$NF) || COUNTRY=$(expr $(curl -sm4 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$(eval echo \$COUNTRY$NF)") : '.*tgt\":\"\([^"]*\).*' 2>/dev/null)
 	[[ $LANGUAGE != 2 ]] && T125="Region: $REGION Done. IPv$NF: $(eval echo \$WAN$NF)  $COUNTRY  $(eval echo \$ASNORG$NF).Retest after 60 seconds."  || T125="$REGION 区域解锁成功，IPv$NF: $(eval echo \$WAN$NF)  $COUNTRY  $(eval echo \$ASNORG$NF)，60秒后重新测试"
 	[[ $LANGUAGE != 2 ]] && T126="Try $i. IPv$NF: $(eval echo \$WAN$NF)  $COUNTRY  $(eval echo \$ASNORG$NF)"  || T126="尝试第$i次，解锁失败，IPv$NF: $(eval echo \$WAN$NF)  $COUNTRY  $(eval echo \$ASNORG$NF)"
 	[[ -n $REGION ]] && green " $T125 " && sleep 60
@@ -283,8 +283,8 @@ uninstall(){
 	[[ $(type -P warp-cli) ]] && (uninstall_proxy; green " $T119 ")
 
 	# 显示卸载结果
-	ip4_info && [[ $LANGUAGE = 2 ]] && COUNTRY4=$(expr $(curl -sm4 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$COUNTRY4") : '.*tgt\":\"\([^"]*\).*')
-	ip6_info && [[ $LANGUAGE = 2 ]] && COUNTRY6=$(expr $(curl -sm4 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$COUNTRY6") : '.*tgt\":\"\([^"]*\).*')
+	ip4_info && [[ $LANGUAGE = 2 ]] && COUNTRY4=$(expr $(curl -sm4 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$COUNTRY4") : '.*tgt\":\"\([^"]*\).*' 2>/dev/null)
+	ip6_info && [[ $LANGUAGE = 2 ]] && COUNTRY6=$(expr $(curl -sm4 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$COUNTRY6") : '.*tgt\":\"\([^"]*\).*' 2>/dev/null)
 	green " $T45\n IPv4：$WAN4 $COUNTRY4 $ASNORG4\n IPv6：$WAN6 $COUNTRY6 $ASNORG6 "
 	}
 	
@@ -323,8 +323,8 @@ net(){
 			[[ $i = "$j" ]] && (echo "$DOWN" | sh >/dev/null 2>&1; red " $T13 ") && exit 1
         	done
 	green " $T14 "
-	[[ $LANGUAGE = 2 ]] && COUNTRY4=$(expr $(curl -sm4 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$COUNTRY4") : '.*tgt\":\"\([^"]*\).*')
-	[[ $LANGUAGE = 2 ]] && COUNTRY6=$(expr $(curl -sm4 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$COUNTRY6") : '.*tgt\":\"\([^"]*\).*')
+	[[ $LANGUAGE = 2 ]] && COUNTRY4=$(expr $(curl -sm4 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$COUNTRY4") : '.*tgt\":\"\([^"]*\).*' 2>/dev/null)
+	[[ $LANGUAGE = 2 ]] && COUNTRY6=$(expr $(curl -sm4 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$COUNTRY6") : '.*tgt\":\"\([^"]*\).*' 2>/dev/null)
 	[[ $OPTION = [OoNn] ]] && green " IPv4:$WAN4 $COUNTRY4 $ASNORG4\n IPv6:$WAN6 $COUNTRY6 $ASNORG6 "
 	}
 
@@ -340,7 +340,7 @@ proxy_info(){
 	PROXYJASON=$(curl -s4m7 --socks5 "$PROXYSOCKS5" https://ip.gs/json)
 	PROXYIP=$(expr "$PROXYJASON" : '.*ip\":\"\([^"]*\).*')
 	PROXYCOUNTRY=$(expr "$PROXYJASON" : '.*country\":\"\([^"]*\).*')
-	[[ $LANGUAGE = 2 ]] && PROXYCOUNTRY=$(expr $(curl -sm4 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$PROXYCOUNTRY") : '.*tgt\":\"\([^"]*\).*')
+	[[ $LANGUAGE = 2 ]] && PROXYCOUNTRY=$(expr $(curl -sm4 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$PROXYCOUNTRY") : '.*tgt\":\"\([^"]*\).*' 2>/dev/null)
 	PROXYASNORG=$(expr "$PROXYJASON" : '.*asn_org\":\"\([^"]*\).*')
 	ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null)
 	[[ $ACCOUNT =~ 'Limited' ]] && QUOTA=$(($(echo $ACCOUNT | awk '{ print $(NF-3) }')/1000000000000)) && AC=+
@@ -423,8 +423,8 @@ type -P curl >/dev/null 2>&1 || (yellow " $T7 " && ${APTYUM} install curl) || (y
 [[ $(arch | tr '[:upper:]' '[:lower:]') =~ aarch ]] && ARCHITECTURE=arm64 || ARCHITECTURE=amd64
 
 # 判断当前 IPv4 与 IPv6 ，IP归属 及 WARP, Linux Client 是否开启
-[[ $IPV4 = 1 ]] && ip4_info && [[ $LANGUAGE = 2 ]] && COUNTRY4=$(expr $(curl -sm4 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$COUNTRY4") : '.*tgt\":\"\([^"]*\).*')
-[[ $IPV6 = 1 ]] && ip6_info && [[ $LANGUAGE = 2 ]] && COUNTRY6=$(expr $(curl -sm4 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$COUNTRY6") : '.*tgt\":\"\([^"]*\).*')
+[[ $IPV4 = 1 ]] && ip4_info && [[ $LANGUAGE = 2 ]] && COUNTRY4=$(expr $(curl -sm4 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$COUNTRY4") : '.*tgt\":\"\([^"]*\).*' 2>/dev/null)
+[[ $IPV6 = 1 ]] && ip6_info && [[ $LANGUAGE = 2 ]] && COUNTRY6=$(expr $(curl -sm4 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$COUNTRY6") : '.*tgt\":\"\([^"]*\).*' 2>/dev/null)
 
 # 判断当前 WARP 状态，决定变量 PLAN，变量 PLAN 含义：1=单栈  2=双栈  3=WARP已开启
 [[ $TRACE4 = plus || $TRACE4 = on || $TRACE6 = plus || $TRACE6 = on ]] && PLAN=3 || PLAN=$((IPV4+IPV6))
