@@ -542,6 +542,8 @@ install(){
 	{
 	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息)
 	# 判断 wgcf 的最新版本,如因 github 接口问题未能获取，默认 v2.2.9
+	green " $T33 "
+	
 	latest=$(wget --no-check-certificate -qO- -T1 -t1 $CDN "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
 	[[ -z $latest ]] && latest='2.2.9'
 
@@ -604,7 +606,10 @@ install(){
         sysctl -w net.ipv6.conf.all.disable_ipv6=0)
 	}&
 
-        # 根据系统选择需要安装的依赖
+        # 优先使用 IPv4 /IPv6 网络
+	{ stack_priority; }&
+	
+	# 根据系统选择需要安装的依赖
 	Debian(){
 		# 更新源
 		${APTYUM} update
@@ -664,9 +669,6 @@ install(){
 	[[ $LXC = 1 ]] && wget --no-check-certificate -N $CDN -P /usr/bin https://cdn.jsdelivr.net/gh/fscarmen/warp/$WB && chmod +x /usr/bin/$WB
 	[[ $WG = 1 ]] && [[ $(systemctl is-active wg-quick@wgcf) != active || $(systemctl is-enabled wg-quick@wgcf) != enabled ]] &&
 	wget --no-check-certificate -N $CDN -P /usr/bin https://cdn.jsdelivr.net/gh/fscarmen/warp/wireguard-go && chmod +x /usr/bin/wireguard-go
-
-	# 优先使用 IPv4 /IPv6 网络
-	stack_priority
 
 	# 保存好配置文件
 	mv -f wgcf-account.toml wgcf-profile.conf menu.sh /etc/wireguard >/dev/null 2>&1
