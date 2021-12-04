@@ -540,20 +540,70 @@ install(){
 	rm -rf /usr/local/bin/wgcf /usr/bin/boringtun /usr/bin/wireguard-go wgcf-account.toml wgcf-profile.conf
 	
 	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息)
-	{yellow " $T34 "
+	{
+	# 判断 wgcf 的最新版本,如因 github 接口问题未能获取，默认 v2.2.9
+	latest=$(wget --no-check-certificate -qO- -T1 -t1 $CDN "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
+	[[ -z $latest ]] && latest='2.2.9'
+
+	# 安装 wgcf，尽量下载官方的最新版本，如官方 wgcf 下载不成功，将使用 jsDelivr 的 CDN，以更好的支持双栈。并添加执行权限
+	wget --no-check-certificate -T1 -t1 -N $CDN -O /usr/local/bin/wgcf https://github.com/ViRb3/wgcf/releases/download/v"$latest"/wgcf_"$latest"_linux_$ARCHITECTURE
+	[[ $? != 0 ]] && wget --no-check-certificate -N $CDN -O /usr/local/bin/wgcf https://cdn.jsdelivr.net/gh/fscarmen/warp/wgcf_"$latest"_linux_$ARCHITECTURE
+	chmod +x /usr/local/bin/wgcf
+	
+	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息)
 	until [[ -e wgcf-account.toml ]]
 	  do
 	   wgcf register --accept-tos >/dev/null 2>&1
+	done
+
+	# 如有 WARP+ 账户，修改 license 并升级，并把设备名等信息保存到 /etc/wireguard/info.log
+	mkdir -p /etc/wireguard/ >/dev/null 2>&1
+	[[ -n $LICENSE ]] && yellow " $T35 " && sed -i "s/license_key.*/license_key = \"$LICENSE\"/g" wgcf-account.toml &&
+	( wgcf update --name "$NAME" > /etc/wireguard/info.log 2>&1 || red " $T36 " )
+
+	# 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
+	wgcf generate >/dev/null 2>&1
+	}&
+
+	{
+	# 反复测试最佳 MTU。 Wireguard Header：IPv4=60 bytes,IPv6=80 bytes，1280 ≤1 MTU ≤ 1420。 ping = 8(ICMP回显示请求和回显应答报文格式长度) + 20(IP首部) 。
+	# 详细说明：<[WireGuard] Header / MTU sizes for Wireguard>：https://lists.zx2c4.com/pipermail/wireguard/2017-December/002201.html
+	yellow " $T81 "
+	MTU=$((1500-28))
+	[[ $IPV4$IPV6 = 01 ]] && ping6 -c1 -W1 -s $MTU -Mdo 2606:4700:d0::a29f:c001 >/dev/null 2>&1 || ping -c1 -W1 -s $MTU -Mdo 162.159.192.1 >/dev/null 2>&1
+	until [[ $? = 0 || $MTU -le $((1280+80-28)) ]]
+	do
+	MTU=$((MTU-10))
+	[[ $IPV4$IPV6 = 01 ]] && ping6 -c1 -W1 -s $MTU -Mdo 2606:4700:d0::a29f:c001 >/dev/null 2>&1 || ping -c1 -W1 -s $MTU -Mdo 162.159.192.1 >/dev/null 2>&1
+	done
+	
+	if [[ $MTU -eq $((1500-28)) ]]; then MTU=$MTU
+	elif [[ $MTU -le $((1280+80-28)) ]]; then MTU=$((1280+80-28))
+	else
+		for ((i=0; i<9; i++)); do
+		(( MTU++ ))
+		( [[ $IPV4$IPV6 = 01 ]] && ping6 -c1 -W1 -s $MTU -Mdo 2606:4700:d0::a29f:c001 >/dev/null 2>&1 || ping -c1 -W1 -s $MTU -Mdo 162.159.192.1 >/dev/null 2>&1 ) || break
+		done
+		(( MTU-- ))
+	fi
+	
+	MTU=$((MTU+28-80))
+
+	# 修改配置文件
+	until [[ -e wgcf-profile.conf ]]; do
+	sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf
 	done
 	}&
 
 	# 对于 IPv4 only VPS 开启 IPv6 支持
 	# 感谢 P3terx 大神项目这块的技术指导。项目:https://github.com/P3TERX/warp.sh/blob/main/warp.sh
-    	[[ $IPV4$IPV6 = 10 ]] && [[ $(sysctl -a 2>/dev/null | grep 'disable_ipv6.*=.*1') || $(grep -s "disable_ipv6.*=.*1" /etc/sysctl.{conf,d/*} ) ]] &&
+    	{
+	[[ $IPV4$IPV6 = 10 ]] && [[ $(sysctl -a 2>/dev/null | grep 'disable_ipv6.*=.*1') || $(grep -s "disable_ipv6.*=.*1" /etc/sysctl.{conf,d/*} ) ]] &&
 	(sed -i '/disable_ipv6/d' /etc/sysctl.{conf,d/*}
         echo 'net.ipv6.conf.all.disable_ipv6 = 0' >/etc/sysctl.d/ipv6.conf
         sysctl -w net.ipv6.conf.all.disable_ipv6=0)
-	
+	}&
+
         # 根据系统选择需要安装的依赖
 	Debian(){
 		# 更新源
@@ -598,55 +648,10 @@ install(){
 
 	$SYSTEM
 
-	# 安装并认证 WGCF
-	green " $T33 "
-
-	# 判断 wgcf 的最新版本,如因 github 接口问题未能获取，默认 v2.2.9
-	latest=$(wget --no-check-certificate -qO- -T1 -t1 $CDN "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
-	[[ -z $latest ]] && latest='2.2.9'
-
-	# 安装 wgcf，尽量下载官方的最新版本，如官方 wgcf 下载不成功，将使用 jsDelivr 的 CDN，以更好的支持双栈。并添加执行权限
-	wget --no-check-certificate -T1 -t1 -N $CDN -O /usr/local/bin/wgcf https://github.com/ViRb3/wgcf/releases/download/v"$latest"/wgcf_"$latest"_linux_$ARCHITECTURE
-	[[ $? != 0 ]] && wget --no-check-certificate -N $CDN -O /usr/local/bin/wgcf https://cdn.jsdelivr.net/gh/fscarmen/warp/wgcf_"$latest"_linux_$ARCHITECTURE
-	chmod +x /usr/local/bin/wgcf
-
 	for pid in $(jobs -p)
 	do wait $pid
 	done
-	
-	# 如有 WARP+ 账户，修改 license 并升级，并把设备名等信息保存到 /etc/wireguard/info.log
-	mkdir -p /etc/wireguard/ >/dev/null 2>&1
-	[[ -n $LICENSE ]] && yellow " $T35 " && sed -i "s/license_key.*/license_key = \"$LICENSE\"/g" wgcf-account.toml &&
-	( wgcf update --name "$NAME" > /etc/wireguard/info.log 2>&1 || red " $T36 " )
 
-	# 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
-	wgcf generate >/dev/null 2>&1
-
-	# 反复测试最佳 MTU。 Wireguard Header：IPv4=60 bytes,IPv6=80 bytes，1280 ≤1 MTU ≤ 1420。 ping = 8(ICMP回显示请求和回显应答报文格式长度) + 20(IP首部) 。
-	# 详细说明：<[WireGuard] Header / MTU sizes for Wireguard>：https://lists.zx2c4.com/pipermail/wireguard/2017-December/002201.html
-	yellow " $T81 "
-	MTU=$((1500-28))
-	[[ $IPV4$IPV6 = 01 ]] && ping6 -c1 -W1 -s $MTU -Mdo 2606:4700:d0::a29f:c001 >/dev/null 2>&1 || ping -c1 -W1 -s $MTU -Mdo 162.159.192.1 >/dev/null 2>&1
-	until [[ $? = 0 || $MTU -le $((1280+80-28)) ]]
-	do
-	MTU=$((MTU-10))
-	[[ $IPV4$IPV6 = 01 ]] && ping6 -c1 -W1 -s $MTU -Mdo 2606:4700:d0::a29f:c001 >/dev/null 2>&1 || ping -c1 -W1 -s $MTU -Mdo 162.159.192.1 >/dev/null 2>&1
-	done
-	
-	if [[ $MTU -eq $((1500-28)) ]]; then MTU=$MTU
-	elif [[ $MTU -le $((1280+80-28)) ]]; then MTU=$((1280+80-28))
-	else
-		for ((i=0; i<9; i++)); do
-		(( MTU++ ))
-		( [[ $IPV4$IPV6 = 01 ]] && ping6 -c1 -W1 -s $MTU -Mdo 2606:4700:d0::a29f:c001 >/dev/null 2>&1 || ping -c1 -W1 -s $MTU -Mdo 162.159.192.1 >/dev/null 2>&1 ) || break
-		done
-		(( MTU-- ))
-	fi
-	
-	MTU=$((MTU+28-80))
-
-	# 修改配置文件
-	sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf
 	echo "$MODIFY" | sh
 
 	# 把 wgcf-profile.conf 复制到/etc/wireguard/ 并命名为 wgcf.conf
