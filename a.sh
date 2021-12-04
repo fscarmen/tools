@@ -653,9 +653,7 @@ install(){
 	# 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
 	wgcf generate >/dev/null 2>&1
 	
-	for pid in $(jobs -p)
-	do wait $pid
-	done
+	wait
 
 	echo "$MODIFY" | sh
 	
