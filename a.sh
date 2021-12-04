@@ -589,7 +589,7 @@ install(){
 	MTU=$((MTU+28-80))
 
 	# 修改配置文件
-	while [[ -e wgcf-profile.conf ]] >/dev/null 2>&1; do
+	while [[ -e wgcf-profile.conf ]]; do
 	sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf && green " \n$T81\n " && break
 	done
 	}&
