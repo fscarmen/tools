@@ -554,7 +554,7 @@ install(){
 	   wgcf register --accept-tos >/dev/null 2>&1
 	done
 
-	green " $T33 "
+	green " \n$T33\n "
 	}&
 
 	# 反复测试最佳 MTU。 Wireguard Header：IPv4=60 bytes,IPv6=80 bytes，1280 ≤1 MTU ≤ 1420。 ping = 8(ICMP回显示请求和回显应答报文格式长度) + 20(IP首部) 。
@@ -582,7 +582,7 @@ install(){
 
 	# 修改配置文件
 	while [[ -e wgcf-profile.conf ]] >/dev/null 2>&1; do
-	sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf && green " $T81 " && break
+	sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf && green " \n$T81\n " && break
 	done
 	}&
 
@@ -599,7 +599,7 @@ install(){
 	{ stack_priority; }&
 	
 	# 根据系统选择需要安装的依赖
-	green " $T32 "
+	green " \n$T32\n "
 	
 	Debian(){
 		# 更新源
@@ -644,18 +644,19 @@ install(){
 
 	$SYSTEM
 
-	for pid in $(jobs -p)
-	do wait $pid
-	done
-
 	# 如有 WARP+ 账户，修改 license 并升级，并把设备名等信息保存到 /etc/wireguard/info.log
 	mkdir -p /etc/wireguard/ >/dev/null 2>&1
 	[[ -n $LICENSE ]] && yellow " $T35 " && sed -i "s/license_key.*/license_key = \"$LICENSE\"/g" wgcf-account.toml &&
 	( wgcf update --name "$NAME" > /etc/wireguard/info.log 2>&1 || red " $T36 " )
 
+
 	# 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
 	wgcf generate >/dev/null 2>&1
 	
+	for pid in $(jobs -p)
+	do wait $pid
+	done
+
 	echo "$MODIFY" | sh
 	
 	# 把 wgcf-profile.conf 复制到/etc/wireguard/ 并命名为 wgcf.conf
