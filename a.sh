@@ -555,6 +555,13 @@ install(){
 	   sleep 3
 	done
 
+	# 如有 WARP+ 账户，修改 license 并升级，并把设备名等信息保存到 /etc/wireguard/info.log
+	mkdir -p /etc/wireguard/ >/dev/null 2>&1
+	[[ -n $LICENSE ]] && yellow " \n$T35\n " && sed -i "s/license_key.*/license_key = \"$LICENSE\"/g" wgcf-account.toml &&
+	( wgcf update --name "$NAME" > /etc/wireguard/info.log 2>&1 || red " \n$T36\n " )
+
+	# 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
+	wgcf generate >/dev/null 2>&1
 	green " \n$T33\n "
 	}&
 
@@ -646,14 +653,6 @@ install(){
 
 	$SYSTEM
 
-	# 如有 WARP+ 账户，修改 license 并升级，并把设备名等信息保存到 /etc/wireguard/info.log
-	mkdir -p /etc/wireguard/ >/dev/null 2>&1
-	[[ -n $LICENSE ]] && yellow " $T35 " && sed -i "s/license_key.*/license_key = \"$LICENSE\"/g" wgcf-account.toml &&
-	( wgcf update --name "$NAME" > /etc/wireguard/info.log 2>&1 || red " $T36 " )
-
-	# 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
-	wgcf generate >/dev/null 2>&1
-	
 	wait
 
 	echo "$MODIFY" | sh
