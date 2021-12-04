@@ -36,8 +36,8 @@ type -P yum >/dev/null 2>&1 && APTYUM="yum -y" || APTYUM="apt -y"
 [[ $LANGUAGE != 2 ]] && T28="If there is a WARP+ License, please enter it, otherwise press Enter to continue:" || T28="如有 WARP+ License 请输入，没有可回车继续:"
 [[ $LANGUAGE != 2 ]] && T29="Input errors up to 5 times.The script is aborted." || T29="输入错误达5次，脚本退出"
 [[ $LANGUAGE != 2 ]] && T31="LXC VPS choose（default is 1. Wireguard-GO):\n 1. Wireguard-GO\n 2. BoringTun\n Choose:" || T31="LXC方案（默认值选项为 1. Wireguard-GO):\n 1. Wireguard-GO\n 2. BoringTun\n 请选择："
-[[ $LANGUAGE != 2 ]] && T32="Step 3/3: Install dependencies..." || T32="进度 3/3： 安装系统依赖……"
-[[ $LANGUAGE != 2 ]] && T33="Step 1/3: WGCF is ready" || T33="进度 1/3： 已安装 WGCF"
+[[ $LANGUAGE != 2 ]] && T32="Step 1/3: Install dependencies..." || T32="进度 1/3： 安装系统依赖……"
+[[ $LANGUAGE != 2 ]] && T33="Step 2/3: WGCF is ready" || T33="进度 2/3： 已安装 WGCF"
 #[[ $LANGUAGE != 2 ]] && T34="Register new WARP account..." || T34="WARP 注册中……"
 [[ $LANGUAGE != 2 ]] && T35="Update WARP+ account..." || T35="升级 WARP+ 账户中……"
 [[ $LANGUAGE != 2 ]] && T36="The upgrade failed, WARP+ account error or more than 5 devices have been activated. Free WARP account to continu." || T36="升级失败，WARP+ 账户错误或者已激活超过5台设备，自动更换免费 WARP 账户继续"
@@ -81,7 +81,7 @@ type -P yum >/dev/null 2>&1 && APTYUM="yum -y" || APTYUM="apt -y"
 [[ $LANGUAGE != 2 ]] && T78="Upgrade to WARP+ account" || T78="升级为 WARP+ 账户"
 [[ $LANGUAGE != 2 ]] && T79="This system is a native dualstack. You can only choose the WARP dualstack, please enter [y] to continue, and other keys to exit:" || T79="此系统为原生双栈，只能选择 Warp 双栈方案，继续请输入 y，其他按键退出:"
 [[ $LANGUAGE != 2 ]] && T80="The WARP is working. It will be closed, please run the previous command to install or enter !!" || T80="检测 WARP 已开启，自动关闭后运行上一条命令安装或者输入 !!"
-[[ $LANGUAGE != 2 ]] && T81="Step 2/3: Searching for the best MTU value is ready." || T81="进度 2/3：寻找 MTU 最优值已完成"
+[[ $LANGUAGE != 2 ]] && T81="Step 3/3: Searching for the best MTU value is ready." || T81="进度 3/3：寻找 MTU 最优值已完成"
 [[ $LANGUAGE != 2 ]] && T82="Install WARP Client for Linux and Proxy Mode" || T82="安装 WARP 的 Linux Client 和代理模式"
 [[ $LANGUAGE != 2 ]] && T83="Step 1/2: Installing WARP Client..." || T83="进度 1/2： 安装 Client……"
 [[ $LANGUAGE != 2 ]] && T84="Step 2/2: Setting to Proxy Mode" || T84="进度 2/2： 设置代理模式"
@@ -553,7 +553,7 @@ install(){
 	until [[ -e wgcf-account.toml ]] >/dev/null 2>&1; do
 	   wgcf register --accept-tos >/dev/null 2>&1
 	done
-	
+
 	green " $T33 "
 	}&
 
@@ -567,7 +567,7 @@ install(){
 	MTU=$((MTU-10))
 	[[ $IPV4$IPV6 = 01 ]] && ping6 -c1 -W1 -s $MTU -Mdo 2606:4700:d0::a29f:c001 >/dev/null 2>&1 || ping -c1 -W1 -s $MTU -Mdo 162.159.192.1 >/dev/null 2>&1
 	done
-	
+
 	if [[ $MTU -eq $((1500-28)) ]]; then MTU=$MTU
 	elif [[ $MTU -le $((1280+80-28)) ]]; then MTU=$((1280+80-28))
 	else
@@ -577,13 +577,15 @@ install(){
 		done
 		(( MTU-- ))
 	fi
-	
+
 	MTU=$((MTU+28-80))
 
 	# 修改配置文件
 	while [[ -e wgcf-profile.conf ]] >/dev/null 2>&1; do
 	sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf && break
 	done
+
+	green " $T81 "
 	}&
 
 	# 对于 IPv4 only VPS 开启 IPv6 支持
