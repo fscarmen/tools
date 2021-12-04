@@ -582,10 +582,8 @@ install(){
 
 	# 修改配置文件
 	while [[ -e wgcf-profile.conf ]] >/dev/null 2>&1; do
-	sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf && break
+	sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf && green " $T81 " && break
 	done
-
-	green " $T81 "
 	}&
 
 	# 对于 IPv4 only VPS 开启 IPv6 支持
