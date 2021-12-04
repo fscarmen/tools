@@ -552,7 +552,6 @@ install(){
 	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息)
 	until [[ -e wgcf-account.toml ]] >/dev/null 2>&1; do
 	   wgcf register --accept-tos >/dev/null 2>&1 && break
-	   sleep 3
 	done
 
 	# 如有 WARP+ 账户，修改 license 并升级，并把设备名等信息保存到 /etc/wireguard/info.log
@@ -590,8 +589,7 @@ install(){
 
 	# 修改配置文件
 	while true; do 
-	sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf >/dev/null 2>&1 && green " \n$T81\n " && break
-	sleep 3
+	[[ -e wgcf-profile.conf ]] && sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf >/dev/null 2>&1 && green " \n$T81\n " && break
 	done
 	}&
 
