@@ -521,6 +521,9 @@ stack_priority(){
 
 # WGCF 安装
 install(){
+	# 先删除之前安装，可能导致失败的文件
+	rm -rf /usr/local/bin/wgcf /usr/bin/boringtun /usr/bin/wireguard-go wgcf-account.toml wgcf-profile.conf
+	
 	INPUT_LICENSE=1 && input_license
 
 	# OpenVZ / LXC 选择 Wireguard-GO 或者 BoringTun 方案，并重新定义相应的 UP 和 DOWN 指令
@@ -535,12 +538,9 @@ install(){
 	# 脚本开始时间
 	start=$(date +%s)
 	green " $T32 "
-	
-	# 先删除之前安装，可能导致失败的文件
-	rm -rf /usr/local/bin/wgcf /usr/bin/boringtun /usr/bin/wireguard-go wgcf-account.toml wgcf-profile.conf
-	
-	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息)
+		
 	{
+	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息)
 	# 判断 wgcf 的最新版本,如因 github 接口问题未能获取，默认 v2.2.9
 	latest=$(wget --no-check-certificate -qO- -T1 -t1 $CDN "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
 	[[ -z $latest ]] && latest='2.2.9'
@@ -551,7 +551,7 @@ install(){
 	chmod +x /usr/local/bin/wgcf
 	
 	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息)
-	until [[ -e wgcf-account.toml ]]
+	until [[ -e wgcf-account.toml >/dev/null 2>&1 ]] 
 	  do
 	   wgcf register --accept-tos >/dev/null 2>&1
 	done
@@ -590,7 +590,7 @@ install(){
 	MTU=$((MTU+28-80))
 
 	# 修改配置文件
-	until [[ -e wgcf-profile.conf ]]; do
+	until [[ -e wgcf-profile.conf >/dev/null 2>&1 ]]; do
 	sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf
 	done
 	}&
