@@ -553,8 +553,7 @@ install(){
 	chmod +x /usr/local/bin/wgcf
 	
 	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息)
-	until [[ -e wgcf-account.toml >/dev/null 2>&1 ]] 
-	  do
+	until [[ -e wgcf-account.toml ]] >/dev/null 2>&1; do
 	   wgcf register --accept-tos >/dev/null 2>&1
 	done
 
@@ -592,7 +591,7 @@ install(){
 	MTU=$((MTU+28-80))
 
 	# 修改配置文件
-	while [[ -e wgcf-profile.conf >/dev/null 2>&1 ]]; do
+	while [[ -e wgcf-profile.conf ]] >/dev/null 2>&1; do
 	sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf
 	done
 	}&
