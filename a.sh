@@ -134,20 +134,20 @@ NAME=$3
 
 # 自定义 IP信息 函数
 ip4_info(){
-	IP4=$(curl -s4m7 https://ip.gs/json) &&
-	LAN4=$(ip route get 162.159.192.1 2>/dev/null | grep -oP 'src \K\S+') &&
-	WAN4=$(expr "$IP4" : '.*ip\":\"\([^"]*\).*') &&
-	COUNTRY4=$(expr "$IP4" : '.*country\":\"\([^"]*\).*') &&
-	ASNORG4=$(expr "$IP4" : '.*asn_org\":\"\([^"]*\).*') &&
+	IP4=$(curl -s4m7 https://ip.gs/json)
+	LAN4=$(ip route get 162.159.192.1 2>/dev/null | grep -oP 'src \K\S+')
+	WAN4=$(expr "$IP4" : '.*ip\":\"\([^"]*\).*')
+	COUNTRY4=$(expr "$IP4" : '.*country\":\"\([^"]*\).*')
+	ASNORG4=$(expr "$IP4" : '.*asn_org\":\"\([^"]*\).*')
 	TRACE4=$(curl -s4 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 	}
 
 ip6_info(){
-	IP6=$(curl -s6m7 https://ip.gs/json) &&
-	LAN6=$(ip route get 2606:4700:d0::a29f:c001 2>/dev/null | grep -oP 'src \K\S+') &&
-	WAN6=$(expr "$IP6" : '.*ip\":\"\([^"]*\).*') &&
-	COUNTRY6=$(expr "$IP6" : '.*country\":\"\([^"]*\).*') &&
-	ASNORG6=$(expr "$IP6" : '.*asn_org\":\"\([^"]*\).*') &&
+	IP6=$(curl -s6m7 https://ip.gs/json)
+	LAN6=$(ip route get 2606:4700:d0::a29f:c001 2>/dev/null | grep -oP 'src \K\S+')
+	WAN6=$(expr "$IP6" : '.*ip\":\"\([^"]*\).*')
+	COUNTRY6=$(expr "$IP6" : '.*country\":\"\([^"]*\).*')
+	ASNORG6=$(expr "$IP6" : '.*asn_org\":\"\([^"]*\).*')
 	TRACE6=$(curl -s6 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 	}
 
