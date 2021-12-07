@@ -345,7 +345,7 @@ plus(){
 		    wget --no-check-certificate "$CDN" -N https://cdn.jsdelivr.net/gh/mixool/across/wireguard/warp_plus.sh
 		    sed -i "s/eb86bd52-fe28-4f03-a944-60428823540e/$ID/g" warp_plus.sh
 		    bash warp_plus.sh "${MISSION//[^0-9]/}";;
-		3 ) [[ -n $PLAN ]] && menu"$PLAN" || exit;;
+		3 ) [[ -n $PLAN ]] && menu "$PLAN" || exit;;
 		* ) red " ${T[${L}51]} [1-3] "; sleep 1; plus;;
 	esac
 	}
@@ -402,7 +402,7 @@ bbrInstall(){
 	reading " ${T[${L}50]} " BBR
 	case "$BBR" in
 		1 ) wget --no-check-certificate -N "https://raw.githubusercontent.com/ylx2016/Linux-NetSpeed/master/tcp.sh" && chmod +x tcp.sh && ./tcp.sh;;
-		2 ) [[ -n $PLAN ]] && menu"$PLAN" || exit;;
+		2 ) [[ -n $PLAN ]] && menu "$PLAN" || exit;;
 		* ) red " ${T[${L}51]} [1-2]"; sleep 1; bbrInstall;;
 	esac
 	}
@@ -963,7 +963,7 @@ menu(){
 		7 )	plus;;
 		8 )	ver;;
 		0 )	exit;;
-		* )	red " ${T[${L}51]} [0-8] "; sleep 1; menu1;;
+		* )	red " ${T[${L}51]} [0-8] "; sleep 1; [[ $CLIENT -gt 2 ]] && menu 3 || menu $PLAN;;
 		esac
 	}
 
@@ -991,5 +991,5 @@ case "$OPTION" in
 
 [Cc] )	[[ $CLIENT = 3 ]] && red " ${T[${L}92]} " && exit 1 || proxy;;
 [Dd] )	update;;
-* )	[[ $CLIENT -gt 2 ]] && menu 3 || menu $PLAN;;
+* )	[[ $CLIENT -gt 2 ]] && menu 3 || menu "$PLAN";;
 esac
