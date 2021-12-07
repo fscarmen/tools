@@ -912,16 +912,16 @@ update(){
 # 单栈
 menu(){
 	if [[ $1 != 3 ]]; then
-	case $IPV4$IPV6 in
-	01 ) OPTION1=${T[${L}66]} && OPTION2=${T[${L}68]} && OPTION3=${T[${L}71]};;
-	10 ) OPTION1=${T[${L}67]} && OPTION2=${T[${L}69]} && OPTION3=${T[${L}71]};;
-	11 ) OPTION1=${T[${L}70]} && OPTION2=${T[${L}70]} && OPTION3=${T[${L}71]};;	
+		case $IPV4$IPV6 in
+		01 ) OPTION1=${T[${L}66]} && OPTION2=${T[${L}68]} && OPTION3=${T[${L}71]};;
+		10 ) OPTION1=${T[${L}67]} && OPTION2=${T[${L}69]} && OPTION3=${T[${L}71]};;
+		11 ) OPTION1=${T[${L}70]} && OPTION2=${T[${L}70]} && OPTION3=${T[${L}71]};;	
 	esac
-	else OPTION1=${T[${L}77]} && OPTION2=${T[${L}78]} && OPTION3=${T[${L}123]}
+	else	OPTION1=${T[${L}77]} && OPTION2=${T[${L}78]} && OPTION3=${T[${L}123]}
 	fi
 	
 	case $CLIENT in
-	2 ) OPTION4=${T[${L}88]};; 3 ) OPTION4=${T[${L}89]};; * ) OPTION4=${T[${L}89]};;
+	2 )	OPTION4=${T[${L}88]};; 3 ) OPTION4=${T[${L}89]};; * ) OPTION4=${T[${L}82]};;
 	esac
 	
 	clear
@@ -939,15 +939,7 @@ menu(){
 	[[ $CLIENT = 2 ]] && green "	${T[${L}113]} "
 	[[ $CLIENT = 3 ]] && green "	WARP$AC ${T[${L}24]}	$(eval echo "${T[${L}27]}") "
  	red "\n======================================================================================================================\n"
-	green " 1. $OPTION1 "
-	green " 2. $OPTION2 "
-	green " 3. $OPTION3 "
-	green " 4. $OPTION4 "
-	green " 5. ${T[${L}72]} "
-	green " 6. ${T[${L}73]} "
-	green " 7. ${T[${L}74]} "
-	green " 8. ${T[${L}75]} "
-	green " 0. ${T[${L}76]} \n "
+	green " 1. $OPTION1\n 2. $OPTION2\n 3. $OPTION3\n 4. $OPTION4\n 5. ${T[${L}72]}\n 6. ${T[${L}73]}\n 7. ${T[${L}74]}\n 8. ${T[${L}75]}\n 0. ${T[${L}76]}\n "
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
 		1 )	[[ $OPTION1 = ${T[${L}66]} || $OPTION1 = ${T[${L}67]} ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6) && install
