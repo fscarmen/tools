@@ -914,7 +914,7 @@ menu(){
 		case $IPV4$IPV6 in
 		01 ) OPTION1=${T[${L}66]} && OPTION2=${T[${L}68]} && OPTION3=${T[${L}71]};;
 		10 ) OPTION1=${T[${L}67]} && OPTION2=${T[${L}69]} && OPTION3=${T[${L}71]};;
-		11 ) OPTION1=${T[${L}70]} && OPTION2=${T[${L}70]} && OPTION3=${T[${L}71]};;	
+		11 ) OPTION1=${T[${L}70]} && OPTION2=${T[${L}34]} && OPTION3=${T[${L}71]};;	
 	esac
 	else	OPTION1=${T[${L}77]} && OPTION2=${T[${L}78]} && OPTION3=${T[${L}123]}
 	fi
