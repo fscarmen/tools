@@ -593,10 +593,6 @@ MODIFYS10='sed -i "/0\.\0\/0/d;s/engage.cloudflareclient.com/162.159.192.1/g;s/1
 MODIFYD10='sed -i "7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/engage.cloudflareclient.com/162.159.192.1/g;s/1.1.1.1/9.9.9.9,8.8.8.8,1.1.1.1/g" wgcf-profile.conf'
 MODIFYD11='sed -i "7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/1.1.1.1/9.9.9.9,8.8.8.8,1.1.1.1/g" wgcf-profile.conf'
 
-# VPS 当前状态
-status(){
-	}
-
 # 输入 WARP+ 账户（如有），限制位数为空或者26位以防输入错误
 input_license(){
 	[[ -z $LICENSE ]] && reading " ${T[${L}28]} " LICENSE
@@ -954,12 +950,12 @@ menu(){
 	green " 0. ${T[${L}76]} \n "
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
-		1 )	[[ $OPTION1 = ${T[${L}66]} || OPTION1=${T[${L}67]} ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6); install;;
-			[[ $OPTION1 = ${T[${L}70]} ]] && MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6); install;;
+		1 )	[[ $OPTION1 = ${T[${L}66]} || $OPTION1 = ${T[${L}67]} ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6); install
+			[[ $OPTION1 = ${T[${L}70]} ]] && MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6); install
 			[[ $OPTION1 = ${T[${L}77]} ]] && onoff;;
-		2 )	[[ $OPTION2 = ${T[${L}68]} || OPTION2=${T[${L}69]} || $OPTION2 = ${T[${L}70]} ]] && MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6); install;;
+		2 )	[[ $OPTION2 = ${T[${L}68]} || OPTION2=${T[${L}69]} || $OPTION2 = ${T[${L}70]} ]] && MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6); install
 			[[ $OPTION2 = ${T[${L}78]} ]] && update;;
-		3 )	[[ $OPTION3 = ${T[${L}71]} ]] && OPTION=o; net;;
+		3 )	[[ $OPTION3 = ${T[${L}71]} ]] && OPTION=o; net
 			[[ $OPTION3 = ${T[${L}123]} ]] && change_ip;;
 		4 )	[[ $CLIENT = 2 || $CLIENT = 3 ]] && proxy_onoff || proxy;;
 		5 )	uninstall;;
