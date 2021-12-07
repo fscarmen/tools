@@ -367,7 +367,7 @@ change_ip(){
 	[[ $RESULT = 200 ]] && REGION=${REGION:-US}
 	ip${NF}_info
 	[[ $LANGUAGE != 2 ]] && WAN=$(eval echo \$WAN$NF) && ASNORG=$(eval echo \$ASNORG$NF) && COUNTRY=$(eval echo \$COUNTRY$NF)
-	[[ $LANGUAGE = 2 ]] && WAN=$(eval echo \$WAN$NF) && ASNORG=$(eval echo \$ASNORG$NF) && COUNTRY="$(translate $(eval echo \$COUNTRY$NF)")
+	[[ $LANGUAGE = 2 ]] && WAN=$(eval echo \$WAN$NF) && ASNORG=$(eval echo \$ASNORG$NF) && COUNTRY=$(translate "$(eval echo \$COUNTRY$NF)")
 	[[ -n $REGION ]] && green " $(eval echo "${T[${L}125]}") " && sleep 60
 	[[ -z $REGION ]] && red " $(eval echo "${T[${L}126]}") " && systemctl restart wg-quick@wgcf && sleep 2
 	done
