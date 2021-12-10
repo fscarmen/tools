@@ -298,17 +298,6 @@ uninstall(){
 	echo -e "${Info} 请记得重启以停止 lkl bbrplus"
 }
 
-menu(){
-echo -e "$STATUS "
-echo -e "1.$OPTION\n2.退出脚本\n"
-read -p "输入数字以选择:" function
-case "$function" in
-1 ) [[ $OPTION = "安装 lkl bbrplus" ]] && install || uninstall;;
-2 ) exit;;
-* ) echo -e "${Error} 无效输入" && echo -e "${Info} 请重新选择" && menu;;
-esac
-}
-
 CMD=(	"$(grep -i pretty_name /etc/os-release 2>/dev/null | cut -d \" -f2)"
 	"$(hostnamectl 2>/dev/null | grep -i system | cut -d : -f2)"
 	"$(lsb_release -sd 2>/dev/null)"
@@ -332,9 +321,9 @@ done
 [[ -z $SYSTEM ]] && echo -e "不支持的 linux 发行版" && exit 1
 
 if ping 10.0.0.2 -c 2 >/dev/null 2>&1; then
-	STATUS="${Info} lkl-haproxy 正在运行 !" && OPTION="卸载 lkl bbrplus"
+	echo -e "${Info} lkl-haproxy 正在运行 !" read -rp "卸载请按 y，按其他键退出: " CHOOSE
+	[[ $CHOOSE != [Yy] ]] && exit 0 || uninstall
 else 
-	STATUS="${Error} lkl-haproxy 没有运行 !" && OPTION="安装 lkl bbrplus"
+	echo -e "${Info} lkl-haproxy 没有运行 !" read -rp "安装请按 y，按其他键退出: " CHOOSE
+	[[ $CHOOSE != [Yy] ]] && exit 0 || install
 fi
-
-menu
