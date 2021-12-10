@@ -339,7 +339,7 @@ uninstall(){
 }
 
 menu(){
-echo -e "${Info} $STATUS "
+echo -e "$STATUS "
 echo -e "1.$OPTION\n2.退出脚本\n"
 read -p "输入数字以选择:" function
 case "$function" in
