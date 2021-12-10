@@ -594,23 +594,21 @@ install(){
 
 	# 设置开机启动
 	[[ $BORINGTUN = 2 ]] && cat <<EOF >/lib/systemd/system/boringtun@.service
-	[Unit]
-	Description=BoringTUN via wg-quick for %I
-	Before=network-pre.target
-
-	[Service]
-	Type=oneshot
-	RemainAfterExit=yes
-	User=root
-	WorkingDirectory=/root
-	ExecStart=/usr/bin/wg-quick up %i
-	ExecStop=/usr/bin/wg-quick down %i
-	Environment=WG_QUICK_USERSPACE_IMPLEMENTATION=boringtun
-	Environment=WG_SUDO=1
-	Restart=on-failure
-
-	[Install]
-	WantedBy=multi-user.target
+[Unit]
+Description=BoringTUN via wg-quick for %I
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=root
+WorkingDirectory=/root
+ExecStart=/usr/bin/wg-quick up %i
+ExecStop=/usr/bin/wg-quick down %i
+Environment=WG_QUICK_USERSPACE_IMPLEMENTATION=boringtun
+Environment=WG_SUDO=1
+[Install]
+WantedBy=multi-user.target
 EOF
 	
 	[[ $BORINGTUN = 2 ]] && systemctl start boringtun@wgcf >/dev/null 2>&1
