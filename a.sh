@@ -349,7 +349,7 @@ done
 
 REGEX=("debian" "ubuntu" "centos" "alpine")
 RELEASE=("Debian" "Ubuntu" "CentOS" "alpine")
-UPDATE=("apt-get update" "apt-get update" "echo 'ok'" "apk update")
+UPDATE=("apt-get update" "apt-get update" "" "apk update")
 INSTALL=("apt-get install -y" "apt-get install -y" "yum install -y" "apk add")
 
 for ((i=0; i<${#REGEX[@]}; i++)); do
