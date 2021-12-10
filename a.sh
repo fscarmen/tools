@@ -275,10 +275,10 @@ check_all(){
 	[[ ! -f liblkl-hijack.so ]] && echo -e "${Error} 下载 liblkl-hijack.so 失败 !" && exit 1
 
 	# check haproxy
-	pkg_install iptables bc
+	${UPDATE[i]} && ${INSTALL[i]} iptables bc
 	if [ "`cat /etc/issue | grep -iE "debian"`" ] || [ "`cat /etc/issue | grep -iE "ubuntu"`" ] || ([ -f "/etc/redhat-release" ] && [ "`cat /etc/redhat-release | grep -iE "centos"`" ])
 	then
-		pkg_install haproxy
+		${UPDATE[i]} && ${INSTALL[i]} haproxy
 	elif [ "`cat /etc/issue | grep -iE "alpine"`" ]
 	then
 		wget -O ./haproxy https://github.com/mzz2017/lkl-haproxy/raw/master/requirement/alpine/haproxy
@@ -291,7 +291,7 @@ check_all(){
 	command -v haproxy || (echo -e "${Error} 安装 haproxy 失败 !" && exit 1)
 
 	# check iproute2
-	ip tuntap > /dev/null 2>&1 || pkg_install iproute2
+	ip tuntap > /dev/null 2>&1 || ${UPDATE[i]} && ${INSTALL[i]} iproute2
 
 	# give privilege
 	chmod -R +x /etc/lklhaproxy
@@ -300,10 +300,10 @@ check_all(){
 
 install(){
 	# check wget
-	command -v wget > /dev/null 2>&1 || pkg_install wget
+	command -v wget > /dev/null 2>&1 || ${UPDATE[i]} && ${INSTALL[i]} wget
 
 	# check curl
-	command -v curl > /dev/null 2>&1 || pkg_install curl
+	command -v curl > /dev/null 2>&1 || ${UPDATE[i]} && ${INSTALL[i]} curl
 
 	check_system
 	check_root
@@ -363,7 +363,7 @@ UPDATE=("apt-get update" "apt-get update" "echo 'ok'" "apk update")
 INSTALL=("apt-get install -y $@" "apt-get install -y $@" "yum install -y $@" "apk add $@")
 
 for ((i=0; i<${#REGEX[@]}; i++)); do
-	[[ $(echo "$SYS" | tr '[:upper:]' '[:lower:]') =~ ${REGEX[i]} ]] && ${UPDATE[i]} && ${INSTALL[i]} &&SYSTEM="${RELEASE[i]}" && [[ -n $SYSTEM ]] && break
+	[[ $(echo "$SYS" | tr '[:upper:]' '[:lower:]') =~ ${REGEX[i]} ]] && SYSTEM="${RELEASE[i]}" && [[ -n $SYSTEM ]] && break
 done
 [[ -z $SYSTEM ]] && echo -e "不支持的 linux 发行版" && exit 1
 
