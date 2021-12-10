@@ -289,6 +289,9 @@ check_all(){
 
 
 install(){
+	# update
+	${UPDATE[i]}
+	
 	# check wget
 	command -v wget > /dev/null 2>&1 || ${INSTALL[i]} wget
 
@@ -353,7 +356,7 @@ UPDATE=("apt-get update" "apt-get update" "" "apk update")
 INSTALL=("apt-get install -y" "apt-get install -y" "yum install -y" "apk add")
 
 for ((i=0; i<${#REGEX[@]}; i++)); do
-	[[ $(echo "$SYS" | tr '[:upper:]' '[:lower:]') =~ ${REGEX[i]} ]] && ${UPDATE[i]} && SYSTEM="${RELEASE[i]}" && [[ -n $SYSTEM ]] && break
+	[[ $(echo "$SYS" | tr '[:upper:]' '[:lower:]') =~ ${REGEX[i]} ]] && SYSTEM="${RELEASE[i]}" && [[ -n $SYSTEM ]] && break
 done
 [[ -z $SYSTEM ]] && echo -e "不支持的 linux 发行版" && exit 1
 
