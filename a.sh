@@ -338,6 +338,17 @@ uninstall(){
 	echo -e "${Info} 请记得重启以停止 lkl bbrplus"
 }
 
+menu(){
+echo -e "${Info} $STATUS "
+echo -e "1.$OPTION\n2.退出脚本\n"
+read -p "输入数字以选择:" function
+case "$function" in
+1 ) [[ $OPTION = "安装 lkl bbrplus" ]] && install || uninstall
+2 ) exit
+* ) echo -e "${Error} 无效输入" && echo -e "${Info} 请重新选择" && menu
+esac
+}
+
 CMD=(	"$(grep -i pretty_name /etc/os-release 2>/dev/null | cut -d \" -f2)"
 	"$(hostnamectl 2>/dev/null | grep -i system | cut -d : -f2)"
 	"$(lsb_release -sd 2>/dev/null)"
@@ -360,22 +371,31 @@ for ((i=0; i<${#REGEX[@]}; i++)); do
 done
 [[ -z $SYSTEM ]] && echo -e "不支持的 linux 发行版" && exit 1
 
-echo -e "${Info} 选择你要使用的功能: "
-echo -e "1.安装 lkl bbrplus\n2.检查 lkl bbrplus运行状态\n3.卸载 lkl bbrplus"
-read -p "输入数字以选择:" function
-
-while [[ ! "${function}" =~ ^[1-3]$ ]]
-	do
-		echo -e "${Error} 无效输入"
-		echo -e "${Info} 请重新选择" && read -p "输入数字以选择:" function
-	done
-
-if [[ "${function}" == "1" ]]; then
-	install
-elif [[ "${function}" == "2" ]]; then
-	status
-elif [[ "${function}" == "3" ]]; then
-	uninstall
-else
-	echo "${Error} 读取选项失败，可能是因为本脚本不能在当前shell上执行"
+if ping 10.0.0.2 -c 2; then
+	STATUS="${Info} lkl-haproxy 正在运行 !" && OPTION="卸载 lkl bbrplus"
+else 
+	STATUS="${Error} lkl-haproxy 没有运行 !" && OPTION="安装 lkl bbrplus"
 fi
+
+menu
+
+#ping 10.0.0.2 -c 3 && echo -e "${Info} lkl-haproxy 正在运行 !" || 
+#if [[ ! -z "${pingstatus}" ]]; then
+#	echo -e "${Info} lkl-haproxy 正在运行 !"
+#	else echo -e "${Error} lkl-haproxy 没有运行 !"
+#
+#while [[ ! "${function}" =~ ^[1-3]$ ]]
+#	do
+#		echo -e "${Error} 无效输入"
+#		echo -e "${Info} 请重新选择" && read -p "输入数字以选择:" function
+#	done
+#
+#if [[ "${function}" == "1" ]]; then
+#	install
+#elif [[ "${function}" == "2" ]]; then
+#	status
+#elif [[ "${function}" == "3" ]]; then
+#	uninstall
+#else
+#	echo "${Error} 读取选项失败，可能是因为本脚本不能在当前shell上执行"
+#fi
