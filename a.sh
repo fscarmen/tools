@@ -343,9 +343,9 @@ echo -e "${Info} $STATUS "
 echo -e "1.$OPTION\n2.退出脚本\n"
 read -p "输入数字以选择:" function
 case "$function" in
-1 ) [[ $OPTION = "安装 lkl bbrplus" ]] && install || uninstall
-2 ) exit
-* ) echo -e "${Error} 无效输入" && echo -e "${Info} 请重新选择" && menu
+1 ) [[ $OPTION = "安装 lkl bbrplus" ]] && install || uninstall;;
+2 ) exit;;
+* ) echo -e "${Error} 无效输入" && echo -e "${Info} 请重新选择" && menu;;
 esac
 }
 
@@ -371,7 +371,7 @@ for ((i=0; i<${#REGEX[@]}; i++)); do
 done
 [[ -z $SYSTEM ]] && echo -e "不支持的 linux 发行版" && exit 1
 
-if ping 10.0.0.2 -c 2; then
+if ping 10.0.0.2 -c 2 >/dev/null 2>&1; then
 	STATUS="${Info} lkl-haproxy 正在运行 !" && OPTION="卸载 lkl bbrplus"
 else 
 	STATUS="${Error} lkl-haproxy 没有运行 !" && OPTION="安装 lkl bbrplus"
