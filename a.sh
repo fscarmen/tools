@@ -321,9 +321,9 @@ done
 [[ -z $SYSTEM ]] && echo -e "不支持的 linux 发行版" && exit 1
 
 if ping 10.0.0.2 -c 2 >/dev/null 2>&1; then
-	echo -e "${Info} lkl-haproxy 正在运行 !" && read -rp "卸载请按 y，按其他键退出: " CHOOSE
+	echo -e "${Info} lkl-haproxy 正在运行 !\c" && read -rp " 卸载请按 y，按其他键退出: " CHOOSE
 	[[ $CHOOSE != [Yy] ]] && exit 0 || uninstall
 else 
-	echo -e "${Info} lkl-haproxy 没有运行 !" && read -rp "安装请按 y，按其他键退出: " CHOOSE
+	echo -e "${Info} lkl-haproxy 没有运行 !\c" && read -rp " 安装请按 y，按其他键退出: " CHOOSE
 	[[ $CHOOSE != [Yy] ]] && exit 0 || install
 fi
