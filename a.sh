@@ -11,46 +11,6 @@ ${Green_font}
 # Github: https://github.com/mzz2017/lkl-haproxy
 #================================================
 ${Font_suffix}"
-#Updated=""
-#
-#pkg_update(){
-#	if [ "`cat /etc/issue | grep -iE "debian"`" ] || [ "`cat /etc/issue | grep -iE "ubuntu"`" ]
-#	then
-#		apt-get update
-#	elif [ -f "/etc/redhat-release" ] && [ "`cat /etc/redhat-release | grep -iE "centos"`" ]
-#	then
-#		# yum update
-#		echo "ok"
-#	elif [ "`cat /etc/issue | grep -iE "alpine"`" ]
-#	then
-#		apk update
-#	else
-#		echo -e "不支持的 linux 发行版: $(cut -d\\ -f 1 /etc/issue|head -n 1)"
-#		exit 1
-#	fi
-#	Updated="1"
-#}
-#
-#pkg_install(){
-#	if [[ -z $Updated ]]
-#	then
-#		pkg_update
-#	fi
-#
-#	if [ "`cat /etc/issue | grep -iE "debian"`" ] || [ "`cat /etc/issue | grep -iE "ubuntu"`" ]
-#	then
-#		apt-get install -y $@
-#	elif [ -f "/etc/redhat-release" ] && [ "`cat /etc/redhat-release | grep -iE "centos"`" ]
-#	then
-#		yum install -y $@
-#	elif [ "`cat /etc/issue | grep -iE "alpine"`" ]
-#	then
-#		apk add $@
-#	else
-#		echo -e "不支持的 linux 发行版: $(cut -d\\ -f 1 /etc/issue|head -n 1)"
-#		exit 1
-#	fi
-#}
 
 pkg_uninstall(){
 	if [ "`cat /etc/issue | grep -iE "debian"`" ] || [ "`cat /etc/issue | grep -iE "ubuntu"`" ]
@@ -378,24 +338,3 @@ else
 fi
 
 menu
-
-#ping 10.0.0.2 -c 3 && echo -e "${Info} lkl-haproxy 正在运行 !" || 
-#if [[ ! -z "${pingstatus}" ]]; then
-#	echo -e "${Info} lkl-haproxy 正在运行 !"
-#	else echo -e "${Error} lkl-haproxy 没有运行 !"
-#
-#while [[ ! "${function}" =~ ^[1-3]$ ]]
-#	do
-#		echo -e "${Error} 无效输入"
-#		echo -e "${Info} 请重新选择" && read -p "输入数字以选择:" function
-#	done
-#
-#if [[ "${function}" == "1" ]]; then
-#	install
-#elif [[ "${function}" == "2" ]]; then
-#	status
-#elif [[ "${function}" == "3" ]]; then
-#	uninstall
-#else
-#	echo "${Error} 读取选项失败，可能是因为本脚本不能在当前shell上执行"
-#fi
