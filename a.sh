@@ -268,7 +268,7 @@ install(){
 	enable
 	start
 	#status
-	echo -e "${Info} 已完成，请稍后使用此脚本第二项判断 lkl 是否成功。"
+	echo -e "${Info} 已完成安装。"
 }
 
 status(){
