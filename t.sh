@@ -606,6 +606,7 @@ install(){
 	ExecStart=/usr/bin/wg-quick up %i
 	ExecStop=/usr/bin/wg-quick down %i
 	Environment=WG_QUICK_USERSPACE_IMPLEMENTATION=boringtun
+	Environment=WG_SUDO=1
 	Restart=on-failure
 
 	[Install]
