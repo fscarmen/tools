@@ -159,19 +159,9 @@ check_tuntap(){
 		fi
 	fi
 
-	cat /dev/net/tun
+	tuntap=$(cat /dev/net/tun 2>&1 | tr '[:upper:]' '[:lower:]')
 
-	echo -e "${Info} 请确认上一行的返回值是否为 'File descriptor in bad state'（文件描述符处于错误状态） ？"
-	echo -e "1.是\n2.否"
-	read -p "输入数字以选择:" tuntap
-
-	while [[ ! "${tuntap}" =~ ^[1-2]$ ]]
-	do
-		echo -e "${Error} 无效输入"
-		echo -e "${Info} 请重新选择" && read -p "输入数字以选择:" tuntap
-	done
-
-	[[ -z "${tuntap}" || "${tuntap}" == "2" ]] && echo -e "${Error} 未开启 tun/tap，请开启后再尝试该脚本 !" && exit 1
+	[[ ! $tuntap =~ 'in bad state' ]] && [[ ! $tuntap =~ '处于错误状态' ]] && echo -e "${Error} 未开启 tun/tap，请开启后再尝试该脚本 !" && exit 1
 
 	#以下为失败，grep 无效
 	#echo -n "`cat /dev/net/tun`" | grep "device"
