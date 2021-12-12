@@ -3,7 +3,7 @@ root+自定义密码登陆，可以带上密码，如果没有填，运行时会
 bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/root.sh) [PASSWORD]
 ```
 
-测vps回程线路，可以带上本地IP，如果没有填，运行时会要求输入，只支持AMD64的VPS
+测vps回程线路，可以带上本地IP，如果没有填，运行时会要求输入，暂只支持 AMD64 和 ARM64 的VPS
 ```bash
 bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/return.sh) [LOCAL_IP]
 
