@@ -12,6 +12,6 @@ esac
 ip=$1
 green " 本脚说明：测 VPS ——> 本地网络 经过的地区及线路，核心测速程序来由: https://www.ipip.net/ ，请知悉！"
 [[ -z "$ip" || $ip = '[LOCAL_IP]' ]] && reading " 请输入本地网络IP: " ip
-[[ -f "$FILE" ]] || wget -N https://github.com/fscarmen/tools/raw/main/besttrace/$FILE
-chmod +x "$FILE"
-./"$FILE" "$ip" -g cn || red "  "
+[[ -f "$FILE" ]] || ( green " 下载 IPIP.net 测回程文件 " && wget -N https://github.com/fscarmen/tools/raw/main/besttrace/$FILE )
+chmod +x "$FILE" >/dev/null 2>&1
+./"$FILE" "$ip" -g cn >/dev/null 2>&1
