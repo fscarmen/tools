@@ -6,6 +6,7 @@ ARCHITECTURE="$(arch)"
 case $ARCHITECTURE in
 x86_64 )  FILE=besttrace;;
 aarch64 ) FILE=besttracearm;;
+i386 )    FILE=besttracemac;;
 * ) red " 只支持 AMD64 和 ARM64 架构的 VPS 使用，问题反馈:[https://github.com/fscarmen/tools/issues] " && exit 1;;
 esac
 
