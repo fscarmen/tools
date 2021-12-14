@@ -806,8 +806,8 @@ install(){
 	red "\n==============================================================\n"
 	green " IPv4：$WAN4 $WARPSTATUS4 $COUNTRY4  $ASNORG4 "
 	green " IPv6：$WAN6 $WARPSTATUS6 $COUNTRY6  $ASNORG6 "
-	[[ $TEAM != 1 ]] && [[ $TRACE4 = plus || $TRACE6 = plus ]] && green " $(eval echo "${T[${L}41]}") "
-	[[ $TEAM = 1 || $TRACE4 = on || $TRACE6 = on ]] && green " $(eval echo "${T[${L}42]}") "
+	[[ $TEAM != [Yy] ]] && [[ $TRACE4 = plus || $TRACE6 = plus ]] && green " $(eval echo "${T[${L}41]}") "
+	[[ $TEAM = [Yy] || $TRACE4 = on || $TRACE6 = on ]] && green " $(eval echo "${T[${L}42]}") "
 	green " $PRIORITY "
 	red "\n==============================================================\n"
 	yellow " ${T[${L}43]}\n " && help
