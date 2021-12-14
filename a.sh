@@ -84,7 +84,7 @@ T[C29]="输入错误达5次，脚本退出"
 T[E30]="License should be 26 characters, please re-enter WARP+ License. Otherwise press Enter to continue. \(\$i times remaining\):"
 T[C30]="License 应为26位字符，请重新输入 Warp+ License，没有可回车继续\(剩余\$i次\):"
 T[E31]="Press [y] to use the TEAM account provided by the author. You no longer need to brush Plus traffic. Other keys skip:"
-T[C31]="按 Y 使用作者提供的 Team 账户，你将不需要刷PLus流量，其他按键跳过:"
+T[C31]="按 y 使用作者提供的 Team 账户，你将不需要刷PLus流量，其他按键跳过:"
 T[E32]="Step 1/3: Install dependencies..."
 T[C32]="进度 1/3：安装系统依赖……"
 T[E33]="Step 2/3: WGCF is ready"
@@ -592,6 +592,15 @@ MODIFYS10='sed -i "s/1.1.1.1/8.8.8.8,8.8.4.4,1.1.1.1,2001:4860:4860::8888,2001:4
 MODIFYD10='sed -i "s/1.1.1.1/8.8.8.8,8.8.4.4,1.1.1.1,2001:4860:4860::8888,2001:4860:4860::8844,2606:4700:4700::1111/g;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
 MODIFYD11='sed -i "s/1.1.1.1/8.8.8.8,8.8.4.4,1.1.1.1,2001:4860:4860::8888,2001:4860:4860::8844,2606:4700:4700::1111/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/" wgcf-profile.conf'
 
+# 如需要 Team 账户，修改以下信息
+team_account(){
+	sed -i "s#PrivateKey.*#PrivateKey = nNVkiqTFmuxQYAXSrr6nQCTIzcYYsHNnHilOxCyD3jY=#g;s#Address.*32#Address = 172.16.0.2/32#g;s#Address.*128#Address = fd01:5ca1:ab1e:8721:59b2:dcb9:cc10:7fbf/128#g;s#PublicKey.*#PublicKey = bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=#g" /etc/wireguard/wgcf.conf
+	case $IPV4$IPV6 in
+	01 ) sed -i "s#Endpoint.*#Endpoint = [2606:4700:100::a29f:c106]:2408#g" /etc/wireguard/wgcf.conf;;
+	10 ) sed -i "s#Endpoint.*#Endpoint = 162.159.193.6:2408#g" /etc/wireguard/wgcf.conf;;
+	esac
+	}
+
 # 输入 WARP+ 账户（如有），限制位数为空或者26位以防输入错误
 input_license(){
 	[[ -z $LICENSE ]] && reading " ${T[${L}28]} " LICENSE
@@ -766,15 +775,11 @@ install(){
 
 	echo "$MODIFY" | sh
 	
-	# 如需要 Team 账户，修改以下信息
-	[[ $TEAM = [Yh] ]] && sed -i "s#PrivateKey.*#PrivateKey = nNVkiqTFmuxQYAXSrr6nQCTIzcYYsHNnHilOxCyD3jY=#g;s#Address.*32#Address = 172.16.0.2/32#g;s#Address.*128#Address = fd01:5ca1:ab1e:8721:59b2:dcb9:cc10:7fbf/128#g;s#PublicKey.*#PublicKey = bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=#g" wgcf-profile.conf &&
-	case $IPV4$IPV6 in
-	01 ) sed -i "s#Endpoint.*#Endpoint = [2606:4700:100::a29f:c106]:2408#g" wgcf-profile.conf;;
-	10 ) sed -i "s#Endpoint.*#Endpoint = 162.159.193.6:2408#g" wgcf-profile.conf;;
-	esac
-	
 	# 把 wgcf-profile.conf 复制到/etc/wireguard/ 并命名为 wgcf.conf
 	cp -f wgcf-profile.conf /etc/wireguard/wgcf.conf >/dev/null 2>&1
+	
+	# 修改为 TEAM 账户
+	[[ $TEAM = [Yy] ]] && team_account
 
 	# 设置开机启动
 	systemctl enable --now wg-quick@wgcf >/dev/null 2>&1
