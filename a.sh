@@ -769,8 +769,9 @@ install(){
 	# 如需要 Team 账户，修改以下信息
 	[[ $TEAM = [Yh] ]] && sed -i "s#PrivateKey.*#PrivateKey = nNVkiqTFmuxQYAXSrr6nQCTIzcYYsHNnHilOxCyD3jY=#g;s#Address.*32#Address = 172.16.0.2/32#g;s#Address.*128#Address = fd01:5ca1:ab1e:8721:59b2:dcb9:cc10:7fbf/128#g;s#PublicKey.*#PublicKey = bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=#g" wgcf-profile.conf &&
 	case $IPV4$IPV6 in
-	01 ) sed -i "s#Endpoint.*#Endpoint = [2606:4700:100::a29f:c106]:2408#g";;
-	10 ) sed -i "s#Endpoint.*#Endpoint = 162.159.193.6:2408#g";;
+	01 ) sed -i "s#Endpoint.*#Endpoint = [2606:4700:100::a29f:c106]:2408#g" wgcf-profile.conf;;
+	10 ) sed -i "s#Endpoint.*#Endpoint = 162.159.193.6:2408#g" wgcf-profile.conf;;
+	esac
 	
 	# 把 wgcf-profile.conf 复制到/etc/wireguard/ 并命名为 wgcf.conf
 	cp -f wgcf-profile.conf /etc/wireguard/wgcf.conf >/dev/null 2>&1
