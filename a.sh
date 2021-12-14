@@ -3,7 +3,7 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/b
 export LANG=en_US.UTF-8
 
 # 当前脚本版本号和新增功能
-VERSION=2.21
+VERSION=2.22
 
 # 自定义字体彩色，read 函数，友道翻译函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -106,7 +106,7 @@ T[C40]="\$COMPANY vps 需要重启后运行 warp n 才能打开 WARP,现执行�
 T[E41]="Congratulations! WARP+ is turned on. Spend time:\$(( end - start )) seconds.\\\n The script runs today: \$TODAY. Total:\$TOTAL\\\n Device name：\$(grep -s 'Device name' /etc/wireguard/info.log | awk '{ print \$NF }')\\\n Quota：\$(grep -s Quota /etc/wireguard/info.log | awk '{ print \$(NF-1), \$NF }')"
 T[C41]="恭喜！WARP+ 已开启，总耗时:\$(( end - start ))秒， 脚本当天运行次数:\$TODAY，累计运行次数：\$TOTAL\\\n 设备名:\$(grep -s 'Device name' /etc/wireguard/info.log | awk '{ print \$NF }')\\\n 剩余流量:\$(grep -s Quota /etc/wireguard/info.log | awk '{ print \$(NF-1), \$NF }')"
 T[E42]="Congratulations! WARP is turned on. Spend time:\$(( end - start )) seconds.\\\n The script runs on today: \$TODAY. Total:\$TOTAL"
-T[C42]="恭喜！WARP 已开启，总耗时:\$(( end - start ))秒， 脚本当天运行次数:\$TODAY，累计运行次数：\$TOTAL"
+T[C42]="恭喜！WARP\$TM 已开启，总耗时:\$(( end - start ))秒， 脚本当天运行次数:\$TODAY，累计运行次数：\$TOTAL"
 T[E43]="Run again with warp [option] [lisence], such as"
 T[C43]="再次运行用 warp [option] [lisence]，如"
 T[E44]="WARP installation failed. Feedback: [https://github.com/fscarmen/warp/issues]"
@@ -779,7 +779,7 @@ install(){
 	cp -f wgcf-profile.conf /etc/wireguard/wgcf.conf >/dev/null 2>&1
 	
 	# 修改为 TEAM 账户
-	[[ $TEAM = [Yy] ]] && team_account
+	[[ $TEAM = [Yy] ]] && team_account && TM=+
 
 	# 设置开机启动
 	systemctl enable --now wg-quick@wgcf >/dev/null 2>&1
@@ -806,8 +806,8 @@ install(){
 	red "\n==============================================================\n"
 	green " IPv4：$WAN4 $WARPSTATUS4 $COUNTRY4  $ASNORG4 "
 	green " IPv6：$WAN6 $WARPSTATUS6 $COUNTRY6  $ASNORG6 "
-	[[ $TRACE4 = plus || $TRACE6 = plus ]] && green " $(eval echo "${T[${L}41]}") "
-	[[ $TRACE4 = on || $TRACE6 = on ]] && green " $(eval echo "${T[${L}42]}") "
+	[[ $TEAM != 1 ]] && [[ $TRACE4 = plus || $TRACE6 = plus ]] && green " $(eval echo "${T[${L}41]}") "
+	[[ $TEAM = 1 || $TRACE4 = on || $TRACE6 = on ]] && green " $(eval echo "${T[${L}42]}") "
 	green " $PRIORITY "
 	red "\n==============================================================\n"
 	yellow " ${T[${L}43]}\n " && help
