@@ -477,6 +477,7 @@ uninstall(){
 	warp-cli --accept-tos delete >/dev/null 2>&1
 	${APTYUM} autoremove cloudflare-warp 2>/dev/null
 	systemctl disable --now warp-svc >/dev/null 2>&1
+	rm -rf /usr/local/bin/wgcf /etc/wireguard /usr/bin/wireguard-go wgcf-account.toml wgcf-profile.conf /usr/bin/warp
 	}
 	
 	# 根据已安装情况执行卸载任务并显示结果
