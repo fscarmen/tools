@@ -407,7 +407,7 @@ change_ip(){
 	[[ $LANGUAGE != 2 ]] && WAN=$PROXYIP && ASNORG=$PROXYASNORG && NF=4 && COUNTRY=$PROXYCOUNTRY
 	[[ $LANGUAGE = 2 ]] && WAN=$PROXYIP && ASNORG=$PROXYASNORG && NF=4 && COUNTRY=$(translate "$PROXYCOUNTRY")
 	[[ -n $REGION ]] && green " $(eval echo "${T[${L}125]}") " && i=0 && sleep 6
-	[[ -z $REGION ]] && red " $(eval echo "${T[${L}126]}") " && warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 && sleep 3
+	[[ -z $REGION ]] && red " $(eval echo "${T[${L}126]}") " && warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 && sleep 1 &&
 	[[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license)>/dev/null 2>&1 && sleep 3
 	done
 	}
