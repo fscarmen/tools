@@ -419,7 +419,7 @@ change_ip(){
 	01 ) change_sock5;;
 	10 ) change_wgcf;;
 	11 ) yellow " ${T[${L}108]} " && reading " ${T[${L}50]} " CHOOSESTATUS
-		case "CHOOSESTATUS" in
+		case "$CHOOSESTATUS" in
 		1 ) change_wgcf;;	2 ) change_sock5;;	* ) red " ${T[${L}51]} [1-2]"; change_ip;;
 		esac;;
 	00 ) red " ${T[${L}122]} " && exit;;
