@@ -921,15 +921,18 @@ update(){
 	}
 
 	# 根据 WARP interface 和 Client 的安装情况判断升级的对象
-	[[ $(type -P wg-quick) && ! $(type -P warp-cli) ]] && (wgcf_account; exit 0)
-	[[ ! $(type -P wg-quick) && $(type -P warp-cli) ]] && (client_account; exit 0)
-	[[ $(type -P wg-quick) && $(type -P warp-cli) ]] && 
-	(yellow " ${T[${L}98]} " && reading " ${T[${L}50]} " MODE
+	[[ $(type -P wg-quick) ]] && WGCFINSTALL=1 || WGCFINSTALL=0
+	[[ $(type -P warp-cli) ]] && SOCK5INSTALL=1 || SOCK5INSTALL=0
+	case $WGCFINSTALL$SOCK5INSTALL in
+	01 ) client_account; exit 0;;
+	10 ) wgcf_account; exit 0;;
+	11 ) yellow " ${T[${L}98]} " && reading " ${T[${L}50]} " MODE
 		case "$MODE" in
 		1 ) wgcf_account; exit 0;;
 		2 ) client_account; exit 0;;
 		* ) red " ${T[${L}51]} [1-2] "; sleep 1; update;;
-		esac)
+		esac;;
+	esac
 }
 
 # 显示菜单
