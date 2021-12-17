@@ -848,7 +848,7 @@ proxy(){
 		[[ -n $LICENSE ]] && ( yellow " ${T[${L}35]} " && 
 		warp-cli --accept-tos set-license "$LICENSE" >/dev/null 2>&1 && sleep 1 &&
 		ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null) &&
-		[[ $ACCOUNT =~ Limited ]] && echo "$LICENSE" >/etc/wireguard/license && green " ${T[${L}62]} " ||
+		[[ $ACCOUNT =~ Limited ]] && mkdir -p /etc/wireguard/ >/dev/null 2>&1 && echo "$LICENSE" >/etc/wireguard/license && green " ${T[${L}62]} " ||
 		red " ${T[${L}36]} " )
 		sleep 2 && [[ ! $(ss -nltp) =~ 'warp-svc' ]] && red " ${T[${L}87]} " && exit 1 || green " $(eval echo "${T[${L}86]}") "
 		}
@@ -918,7 +918,7 @@ update(){
 	update_license
 	warp-cli --accept-tos set-license "$LICENSE" >/dev/null 2>&1; sleep 1
 	ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null)
-	[[ $ACCOUNT =~ Limited ]] && echo "$LICENSE" >/etc/wireguard/license && green " ${T[${L}62]}\n ${T[${L}63]}：$(($(echo "$ACCOUNT" | awk '{ print $(NF-3) }')/1000000000000)) TB " || red " ${T[${L}36]} "
+	[[ $ACCOUNT =~ Limited ]] && mkdir -p /etc/wireguard/ >/dev/null 2>&1 && echo "$LICENSE" >/etc/wireguard/license && green " ${T[${L}62]}\n ${T[${L}63]}：$(($(echo "$ACCOUNT" | awk '{ print $(NF-3) }')/1000000000000)) TB " || red " ${T[${L}36]} "
 	}
 
 	# 根据 WARP interface 和 Client 的安装情况判断升级的对象
