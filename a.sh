@@ -423,7 +423,6 @@ change_ip(){
 		1 ) change_wgcf;;	2 ) change_sock5;;	* ) red " ${T[${L}51]} [1-2]"; change_ip;;
 		esac;;
 	00 ) red " ${T[${L}122]} " && exit;;
-	* ) red " ${T[${L}51]} [1-2]"; change_ip;;
 	esac	
 	}
 
