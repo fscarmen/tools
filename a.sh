@@ -538,7 +538,7 @@ proxy_onoff(){
     [[ ! $(ss -nltp) =~ 'warp-svc' ]] && green " ${T[${L}91]} "  && exit 0
     [[ $PROXY =~ Disconnected ]] && warp-cli --accept-tos connect >/dev/null 2>&1 && warp-cli --accept-tos enable-always-on >/dev/null 2>&1 && STATUS=1 && proxy_info
   #  [[ $LANGUAGE != 2 ]] && T99="Local Socks5:$PROXYSOCKS5	WARP$AC	IPv4:$PROXYIP $PROXYCOUNTRY	$PROXYASNORG" || T99="本地 Socks5:$PROXYSOCKS5	WARP$AC	IPv4:$PROXYIP $PROXYCOUNTRY	$PROXYASNORG"
-    [[ $STATUS = 1 ]] && [[ $(ss -nltp) =~ 'warp-svc' ]] && green " ${T[${L}90]} && $(eval echo "${T[${L}99]}") " && exit 0
+    [[ $STATUS = 1 ]] && [[ $(ss -nltp) =~ 'warp-svc' ]] && green " ${T[${L}90]}\n $(eval echo "${T[${L}99]}") " && exit 0
     [[ $STATUS = 1 ]] && [[ $(warp-cli --accept-tos status 2>/dev/null) =~ Connecting ]] && red " ${T[${L}96]} " && exit 1
     }
 
