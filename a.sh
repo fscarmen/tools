@@ -901,7 +901,7 @@ install(){
 	[[ $CONFIRM = [Yy] ]] && teams_change && echo "$TEAMS" > /etc/wireguard/info.log 2>&1
 
 	# 设置开机启动
-	systemctl enable --now wg-quick@wgcf >/dev/null 2>&1
+	systemctl start wg-quick@wgcf >/dev/null 2>&1
 
 	# 如是 LXC，安装 Wireguard-GO。部分较低内核版本的KVM，即使安装了wireguard-dkms, 仍不能正常工作，兜底使用 wireguard-go
 	[[ $ARCHITECTURE = s390x ]] && S390X='-s390x'
