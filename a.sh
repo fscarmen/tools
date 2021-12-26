@@ -906,7 +906,7 @@ install(){
 	# 如是 LXC，安装 Wireguard-GO。部分较低内核版本的KVM，即使安装了wireguard-dkms, 仍不能正常工作，兜底使用 wireguard-go
 	[[ $ARCHITECTURE = s390x ]] && S390X='-s390x'
 	[[ $LXC = 1 ]] || ([[ $WG = 1 ]] && [[ $(systemctl is-active wg-quick@wgcf) != active || $(systemctl is-enabled wg-quick@wgcf) != enabled ]]) &&
-	wget --no-check-certificate -N $CDN -P /usr/bin https://cdn.jsdelivr.net/gh/fscarmen/warp/wireguard-go$S390X && chmod +x /usr/bin/wireguard-go
+	wget --no-check-certificate -N $CDN -O /usr/bin/wireguard-go https://cdn.jsdelivr.net/gh/fscarmen/warp/wireguard-go$S390X && chmod +x /usr/bin/wireguard-go
 
 	# 保存好配置文件
 	mv -f wgcf-account.toml wgcf-profile.conf menu.sh /etc/wireguard >/dev/null 2>&1
