@@ -3,14 +3,14 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/b
 export LANG=en_US.UTF-8
 
 # 当前脚本版本号和新增功能
-VERSION=2.24
+VERSION=2.25
 
 # 自定义字体彩色，read 函数，友道翻译函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
 green(){ echo -e "\033[32m\033[01m$1\033[0m"; }
 yellow(){ echo -e "\033[33m\033[01m$1\033[0m"; }
 reading(){ read -rp "$(green "$1")" "$2"; }
-translate(){ curl -sm4 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$1" | cut -d \" -f18 2>/dev/null; }
+translate(){ [[ -n "$1" ]] && curl -sm8 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$1" | cut -d \" -f18 2>/dev/null; }
 
 # 传参选项 OPTION：1=为 IPv4 或者 IPv6 补全另一栈WARP; 2=安装双栈 WARP; u=卸载 WARP; b=升级内核、开启BBR及DD; o=WARP开关；p=刷 WARP+ 流量; 其他或空值=菜单界面
 [[ $1 != '[option]' ]] && OPTION=$(tr '[:upper:]' '[:lower:]' <<< "$1")
@@ -18,7 +18,7 @@ translate(){ curl -sm4 "http://fanyi.youdao.com/translate?&doctype=json&type=AUT
 if [[ $2 != '[lisence]' ]]; then
 	if [[ $2 =~ 'http' ]]; then
 	LICENSETYPE=2 && URL=$2
-	elif [[ ${#2} = 26 ]]; then
+	elif [[ $2 =~ ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}$ ]]; then
 	LICENSETYPE=1 && LICENSE=$2
 	fi
 fi
@@ -30,16 +30,16 @@ declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
-T[E1]="1.Important: First publication on a global scale. Support architecture s390x for IBM Linux One(Choose WARP ipv6 single stack) 2.The default language will set to the one selected during installation; 3.Support HAX LXC VPS"
-T[C1]="1.重要:全网首发，支持IBM Linux One 的 s390x 架构 CPU (请选用 WARP ipv6单栈) 2.默认语言设置为安装时候选择的; 3.支持 HAX LXC VPS"
+T[E1]="1.Important: First publication on a global scale. Support architecture s390x for IBM Linux One(Choose WARP ipv6 single stack) 2.support Alpine Linux 3.support Debian bookworm"
+T[C1]="1.重要:全网首发，支持IBM Linux One 的 s390x 架构 CPU (请选用 WARP ipv6单栈) 2.支持 Alpine Linux 系统 3.支持 Debian bookworm"
 T[E2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E3]="The TUN module is not loaded. You should turn it on in the control panel. Ask the supplier for more help. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C3]="没有加载 TUN 模块，请在管理后台开启或联系供应商了解如何开启，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E4]="The WARP server cannot be connected. It may be a China Mainland VPS. You can manually ping 162.159.192.1 or ping6 2606:4700:d0::a29f:c001.You can run the script again if the connect is successful. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C4]="与 WARP 的服务器不能连接,可能是大陆 VPS，可手动 ping 162.159.192.1 或 ping6 2606:4700:d0::a29f:c001，如能连通可再次运行脚本，问题反馈:[https://github.com/fscarmen/warp/issues]"
-T[E5]="The script supports Debian, Ubuntu or CentOS systems only. Feedback: [https://github.com/fscarmen/warp/issues]"
-T[C5]="本脚本只支持 Debian、Ubuntu 或 CentOS 系统,问题反馈:[https://github.com/fscarmen/warp/issues]"
+T[E5]="The script supports Debian, Ubuntu, CentOS or Alpine systems only. Feedback: [https://github.com/fscarmen/warp/issues]"
+T[C5]="本脚本只支持 Debian、Ubuntu、CentOS 或 Alpine 系统,问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E6]="warp h (help)\n warp o (Turn off WARP temporarily)\n warp u (Turn off and uninstall WARP interface and Socks5 Linux Client)\n warp b (Upgrade kernel, turn on BBR, change Linux system)\n warp d (Upgrade to WARP+ account)\n warp d N5670ljg-sS9jD334-6o6g4M9F (Upgrade to WARP+ account with the license)\n warp d http://gist.github.com/teams.xml (Upgrade to Teams account with the URL)\n warp p (Getting WARP+ quota by scripts)\n warp v (Sync the latest version)\n warp r (Connect/Disconnect WARP Linux Client)\n warp 1 (Add WARP IPv6 interface to native IPv4 VPS or WARP IPv4 interface to native IPv6 VPS)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F Goodluck (Add IPv4 or IPV6 WARP+ interface with the license and named Goodluck)\n warp 2 (Add WARP dualstack interface IPv4 + IPv6)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F Goodluck (Add WARP+ dualstack interface with the license and named Goodluck)\n warp c (Install WARP Linux Client)\n warp c N5670ljg-sS9jD334-6o6g4M9F(Install WARP+ Linux Client with the license)\n warp i (Change the WARP IP to support Netflix)"
 T[C6]="warp h (帮助菜单）\n warp o (临时warp开关)\n warp u (卸载 WARP 网络接口和 Socks5 Client)\n warp b (升级内核、开启BBR及DD)\n warp d (免费 WARP 账户升级 WARP+)\n warp d N5670ljg-sS9jD334-6o6g4M9F (指定 License 升级 WARP+)\n warp d http://gist.github.com/teams.xml (指定 URL 升级 Teams)\n warp p (刷WARP+流量)\n warp v (同步脚本至最新版本)\n warp r (WARP Linux Client 开关)\n warp 1 (Warp单栈)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F Goodluck (指定 WARP+ License Warp 单栈，设备名为 Goodluck)\n warp 2 (WARP 双栈)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F Goodluck (指定 WARP+ License 双栈，设备名为 Goodluck)\n warp c (安装 WARP Linux Client，开启 Socks5 代理模式)\n warp c N5670ljg-sS9jD334-6o6g4M9F (指定 Warp+ License 安装 WARP Linux Client，开启 Socks5 代理模式)\n warp i (更换支持 Netflix 的IP)"
 T[E7]="Installing curl..."
@@ -51,7 +51,7 @@ T[C9]="安装 curl 失败，脚本中止，问题反馈:[https://github.com/fsca
 T[E10]="WireGuard tools are not installed or the configuration file wgcf.conf cannot be found, please reinstall."
 T[C10]="没有安装 WireGuard tools 或者找不到配置文件 wgcf.conf，请重新安装。"
 T[E11]="Maximum \$j attempts to get WARP IP..."
-T[C11]="后台获取 WARP IP 中,最大尝\$j次……"
+T[C11]="后台获取 WARP IP 中,最大尝试\$j次……"
 T[E12]="Try \$i"
 T[C12]="第\$i次尝试"
 T[E13]="There have been more than \$j failures. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
@@ -60,8 +60,8 @@ T[E14]="Got the WARP IP successfully."
 T[C14]="已成功获取 WARP 网络"
 T[E15]="WARP is turned off. It could be turned on again by [warp o]"
 T[C15]="已暂停 WARP，再次开启可以用 warp o"
-T[E16]="The script specifically adds WARP network interface for VPS, detailed:[https://github.com/fscarmen/warp]\n Features:\n	* Support WARP+ account. Third-party scripts are use to increase WARP+ quota or upgrade kernel.\n	* Not only menus, but commands with option.\n	* Intelligent analysis of operating system：Ubuntu 18.04、20.04，Debian 10、11，CentOS 7、8. Be sure to choose the LTS system. And architecture：AMD or ARM\n	* Automatically select four WireGuard solutions. Performance: Kernel with WireGuard integration＞Install kernel module＞wireguard-go\n	* Intelligent analysis of the latest version of the WGCF\n	* Suppert WARP Linux client.\n	* Output WARP status, IP region and asn\n"
-T[C16]="本项目专为 VPS 添加 wgcf 网络接口，详细说明：[https://github.com/fscarmen/warp]\n脚本特点:\n	* 支持 WARP+ 账户，附带第三方刷 WARP+ 流量和升级内核 BBR 脚本\n	* 普通用户友好的菜单，进阶者通过后缀选项快速搭建\n	* 智能判断操作系统：Ubuntu 18.04、Ubuntu 20.04、Debian 10、Debian 11、CentOS 7、CentOS 8，请务必选择 LTS 系统；硬件结构类型：AMD 或者 ARM\n	* 结合 Linux 版本和虚拟化方式，自动优选4个 WireGuard 方案。网络性能方面：内核集成 WireGuard＞安装内核模块＞wireguard-go\n	* 智能判断 WGCF 作者 github库的最新版本 （Latest release）\n	* 支持 WARP Linux Socks5 Client\n	* 输出执行结果，提示是否使用 WARP IP ，IP 归属地和线路提供商\n"
+T[E16]="The script specifically adds WARP network interface for VPS, detailed:[https://github.com/fscarmen/warp]\n Features:\n	* Support WARP+ account. Third-party scripts are use to increase WARP+ quota or upgrade kernel.\n	* Not only menus, but commands with option.\n	* Intelligent analysis of operating system：Ubuntu 18.04、20.04，Debian 10、11，CentOS 7、8, Alpine 3. Be sure to choose the LTS system. And architecture：AMD or ARM\n	* Automatically select four WireGuard solutions. Performance: Kernel with WireGuard integration＞Install kernel module＞wireguard-go\n	* Intelligent analysis of the latest version of the WGCF\n	* Suppert WARP Linux client.\n	* Output WARP status, IP region and asn\n"
+T[C16]="本项目专为 VPS 添加 wgcf 网络接口，详细说明：[https://github.com/fscarmen/warp]\n脚本特点:\n	* 支持 WARP+ 账户，附带第三方刷 WARP+ 流量和升级内核 BBR 脚本\n	* 普通用户友好的菜单，进阶者通过后缀选项快速搭建\n	* 智能判断操作系统：Ubuntu 、Debian 、CentOS 和 Alpine，请务必选择 LTS 系统；硬件结构类型：AMD 或者 ARM\n	* 结合 Linux 版本和虚拟化方式，自动优选4个 WireGuard 方案。网络性能方面：内核集成 WireGuard＞安装内核模块＞wireguard-go\n	* 智能判断 WGCF 作者 github库的最新版本 （Latest release）\n	* 支持 WARP Linux Socks5 Client\n	* 输出执行结果，提示是否使用 WARP IP ，IP 归属地和线路提供商\n"
 T[E17]="Version"
 T[C17]="脚本版本"
 T[E18]="New features"
@@ -80,8 +80,8 @@ T[E24]="Socks5 Client is on"
 T[C24]="Socks5 Client 已开启"
 T[E25]="Device name"
 T[C25]="设备名"
-T[E26]="Curren operating system is \$SYS.\\\n The system lower than \$SYSTEM \${MAJOR[i]} is not supported. Feedback: [https://github.com/fscarmen/warp/issues]"
-T[C26]="当前操作是 \$SYS\\\n 不支持 \$SYSTEM \${MAJOR[i]} 以下系统,问题反馈:[https://github.com/fscarmen/warp/issues]"
+T[E26]="Curren operating system is \$SYS.\\\n The system lower than \$SYSTEM \${MAJOR[int]} is not supported. Feedback: [https://github.com/fscarmen/warp/issues]"
+T[C26]="当前操作是 \$SYS\\\n 不支持 \$SYSTEM \${MAJOR[int]} 以下系统,问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E27]="Local Socks5:\$PROXYSOCKS5	WARP\$AC IPv4:\$PROXYIP \$PROXYCOUNTRY	\$PROXYASNORG"
 T[C27]="本地 Socks5:\$PROXYSOCKS5	WARP\$AC IPv4:\$PROXYIP \$PROXYCOUNTRY	\$PROXYASNORG"
 T[E28]="If there is a WARP+ License, please enter it, otherwise press Enter to continue:"
@@ -136,12 +136,12 @@ T[E52]="Please input WARP+ ID:"
 T[C52]="请输入 WARP+ ID:"
 T[E53]="WARP+ ID should be 36 characters, please re-enter \(\$i times remaining\):"
 T[C53]="WARP+ ID 应为36位字符，请重新输入 \(剩余\$i次\):"
-T[E54]="Getting the WARP+ quota by the following 2 authors:\n	* [ALIILAPRO]，[https://github.com/ALIILAPRO/warp-plus-cloudflare]\n	* [mixool]，[https://github.com/mixool/across/tree/master/wireguard]\n * Open the 1.1.1.1 app\n * Click on the hamburger menu button on the top-right corner\n * Navigate to: Account > Key\n Important：Refresh WARP+ quota： 三 --> Advanced --> Connection options --> Reset keys\n It is best to run script with screen."
-T[C54]="刷 WARP+ 流量用可选择以下两位作者的成熟作品，请熟知:\n	* [ALIILAPRO]，地址[https://github.com/ALIILAPRO/warp-plus-cloudflare]\n	* [mixool]，地址[https://github.com/mixool/across/tree/master/wireguard]\n 下载地址：https://1.1.1.1/，访问和苹果外区 ID 自理\n 获取 WARP+ ID 填到下面。方法：App右上角菜单 三 --> 高级 --> 诊断 --> ID\n 重要：刷脚本后流量没有增加处理：右上角菜单 三 --> 高级 --> 连接选项 --> 重置加密密钥\n 最好配合 screen 在后台运行任务"
-T[E55]="Run [ALIILAPRO] script"
-T[C55]="运行 [ALIILAPRO] 脚本"
-T[E56]="Run [mixool] script"
-T[C56]="运行 [mixool] 脚本"
+T[E54]="Getting the WARP+ quota by the following 2 authors:\n	* [ALIILAPRO]，[https://github.com/ALIILAPRO/warp-plus-cloudflare]\n	* [mixool]，[https://github.com/mixool/across/tree/master/wireguard]\n	* [SoftCreatR]，[https://github.com/SoftCreatR/warp-up]\n * Open the 1.1.1.1 app\n * Click on the hamburger menu button on the top-right corner\n * Navigate to: Account > Key\n Important：Refresh WARP+ quota： 三 --> Advanced --> Connection options --> Reset keys\n It is best to run script with screen."
+T[C54]="刷 WARP+ 流量用可选择以下两位作者的成熟作品，请熟知:\n	* [ALIILAPRO]，地址[https://github.com/ALIILAPRO/warp-plus-cloudflare]\n	* [mixool]，地址[https://github.com/mixool/across/tree/master/wireguard]\n	* [SoftCreatR]，地址[https://github.com/SoftCreatR/warp-up]\n 下载地址：https://1.1.1.1/，访问和苹果外区 ID 自理\n 获取 WARP+ ID 填到下面。方法：App右上角菜单 三 --> 高级 --> 诊断 --> ID\n 重要：刷脚本后流量没有增加处理：右上角菜单 三 --> 高级 --> 连接选项 --> 重置加密密钥\n 最好配合 screen 在后台运行任务"
+T[E55]="1.Run [ALIILAPRO] script\n 2.Run [mixool] script\n 3.Run [SoftCreatR] script"
+T[C55]="1.运行 [ALIILAPRO] 脚本\n 2.运行 [mixool] 脚本\n 3.运行 [SoftCreatR] 脚本"
+T[E56]=""
+T[C56]=""
 T[E57]="The target quota you want to get. The unit is GB, the default value is 10:"
 T[C57]="你希望获取的目标流量值，单位为 GB，输入数字即可，默认值为10:"
 T[E58]="WARP+ or Teams account is working now. No need to upgrade."
@@ -278,18 +278,18 @@ T[E123]="Change the WARP IP to support Netflix"
 T[C123]="更换支持 Netflix 的 IP"
 T[E124]="It is IPv6 priority now, press [y] to change to IPv4 priority? And other keys for unchanging:"
 T[C124]="现在是 IPv6 优先，改为IPv4 优先的话请按 [y]，其他按键保持不变:"
-T[E125]="Region: \$REGION Done. IPv\$NF: \$WAN  \$COUNTRY  \$ASNORG. Retest after 1 hour." 
-T[C125]="\$REGION 区域解锁成功，IPv\$NF: \$WAN  \$COUNTRY  \$ASNORG， 1 小时后重新测试"
-T[E126]="Try \$i. Failed. IPv\$NF: \$WAN  \$COUNTRY  \$ASNORG. Retry after \$j seconds." 
-T[C126]="尝试第\$i次，解锁失败，IPv\$NF: \$WAN  \$COUNTRY  \$ASNORG， \$j秒后重新测试"
-T[E127]="Please input Teams file URL:" 
-T[C127]="请输入 Teams 文件 URL:"
+T[E125]="\$(date +'%F %T') Region: \$REGION Done. IPv\$NF: \$WAN  \$COUNTRY  \$ASNORG. Retest after 1 hour. Brush ip runing time:\$DAY days \$HOUR hours \$MIN minutes \$SEC seconds" 
+T[C125]="\$(date +'%F %T') 区域 \$REGION 解锁成功，IPv\$NF: \$WAN  \$COUNTRY  \$ASNORG，1 小时后重新测试，刷 IP 运行时长: \$DAY 天 \$HOUR 时 \$MIN 分 \$SEC 秒"
+T[E126]="\$(date +'%F %T') Try \$i. Failed. IPv\$NF: \$WAN  \$COUNTRY  \$ASNORG. Retry after \$j seconds. Brush ip runing time:\$DAY days \$HOUR hours \$MIN minutes \$SEC seconds" 
+T[C126]="\$(date +'%F %T') 尝试第\$i次，解锁失败，IPv\$NF: \$WAN  \$COUNTRY  \$ASNORG，\$j秒后重新测试，刷 IP 运行时长: \$DAY 天 \$HOUR 时 \$MIN 分 \$SEC 秒"
+T[E127]="Please input Teams file URL (To use the one provided by the script if left blank):" 
+T[C127]="请输入 Teams 文件 URL (如果留空，则使用脚本提供的):"
 T[E128]="Successfully upgraded to a WARP Teams account"
 T[C128]="已升级为 WARP Teams 账户"
 T[E129]="The current Teams account is unavailable, automatically switch back to the free account"
 T[C129]="当前 Teams 账户不可用，自动切换回免费账户"
-T[E130]="\\\n Please confirm\\\n Private key\|:\| \$PRIVATEKEY\\\n Public key\|:\| \$PUBLICKEY\\\n Address IPv4\|:\| \$ADDRESS4/32\\\n Address IPv6\|:\| \$ADDRESS6/128\\\n"
-T[C130]="\\\n 请确认Teams 信息\\\n Private key\|:\| \$PRIVATEKEY\\\n Public key\|:\| \$PUBLICKEY\\\n Address IPv4\|:\| \$ADDRESS4/32\\\n Address IPv6\|:\| \$ADDRESS6/128\\\n"
+T[E130]="\\\n Please confirm\\\n Private key : \$PRIVATEKEY\\\n Public key : \$PUBLICKEY\\\n Address IPv4 : \$ADDRESS4/32\\\n Address IPv6 : \$ADDRESS6/128\\\n"
+T[C130]="\\\n 请确认Teams 信息\\\n Private key : \$PRIVATEKEY\\\n Public key : \$PUBLICKEY\\\n Address IPv4 : \$ADDRESS4/32\\\n Address IPv6 : \$ADDRESS6/128\\\n"
 T[E131]="comfirm please enter [y] , and other keys to use free account:"
 T[C131]="确认请按 y ，其他按键则使用免费账户:"
 T[E132]="\n Is there a WARP+ or Teams account?\n 1. WARP+\n 2. Teams\n 3. use free account (default)\n"
@@ -305,22 +305,60 @@ TODAY=$(expr "$COUNT" : '.*\s\([0-9]\{1,\}\)\s/.*') && TOTAL=$(expr "$COUNT" : '
 	
 # 选择语言，先判断 /etc/wireguard/language 里的语言选择，没有的话再让用户选择，默认英语
 case $(cat /etc/wireguard/language 2>&1) in
-E ) L=E;;	C ) L=C;;	
+E ) L=E;;	C ) L=C;;
 * ) L=E && [[ -z $OPTION || $OPTION = [chdpbvi12] ]] && yellow " ${T[${L}0]} " && reading " ${T[${L}50]} " LANGUAGE 
 [[ $LANGUAGE = 2 ]] && L=C;;
 esac
 
-# 定义三类系统通用的安装指令
-type -P yum >/dev/null 2>&1 && APTYUM="yum -y" || APTYUM="apt -y"
+# 多方式判断操作系统，试到有值为止。只支持 Debian 10/11、Ubuntu 18.04/20.04 或 CentOS 7/8 ,如非上述操作系统，退出脚本
+# 感谢猫大的技术指导优化重复的命令。https://github.com/Oreomeow
+CMD=(	"$(grep -i pretty_name /etc/os-release 2>/dev/null | cut -d \" -f2)"
+	"$(hostnamectl 2>/dev/null | grep -i system | cut -d : -f2)"
+	"$(lsb_release -sd 2>/dev/null)"
+	"$(grep -i description /etc/lsb-release 2>/dev/null | cut -d \" -f2)"
+	"$(grep . /etc/redhat-release 2>/dev/null)"
+	"$(grep . /etc/issue 2>/dev/null | cut -d \\ -f1 | sed '/^[ ]*$/d')"
+	)
+
+for i in "${CMD[@]}"; do
+	SYS="$i" && [[ -n $SYS ]] && break
+done
+
+# 自定义 Alpine 系统若干函数
+alpine_wgcf_restart(){ wg-quick down wgcf >/dev/null 2>&1; wg-quick up wgcf >/dev/null 2>&1; }
+alpine_wgcf_enable(){ echo 'nohup wg-quick up wgcf &' > /etc/local.d/wgcf.start; chmod +x /etc/local.d/wgcf.start; rc-update add local; }
+
+REGEX=("debian" "ubuntu" "centos|red hat|kernel|oracle linux|alma|rocky" "'amazon linux'" "alpine")
+RELEASE=("Debian" "Ubuntu" "CentOS" "CentOS" "Alpine")
+EXCLUDE=("bookworm")
+COMPANY=("" "" "" "amazon" "")
+MAJOR=("10" "18" "7" "7" "3")
+PACKAGE_UPDATE=("apt -y update" "apt -y update" "yum -y update" "yum -y update" "apk update -f")
+PACKAGE_INSTALL=("apt -y install" "apt -y install" "yum -y install" "yum -y install" "apk add -f")
+PACKAGE_UNINSTALL=("apt -y autoremove" "apt -y autoremove" "yum -y autoremove" "yum -y autoremove" "apk del -f")
+SYSTEMCTL_START=("systemctl start wg-quick@wgcf" "systemctl start wg-quick@wgcf" "systemctl start wg-quick@wgcf" "systemctl start wg-quick@wgcf" "wg-quick up wgcf")
+SYSTEMCTL_RESTART=("systemctl restart wg-quick@wgcf" "systemctl restart wg-quick@wgcf" "systemctl restart wg-quick@wgcf" "systemctl restart wg-quick@wgcf" "alpine_wgcf_restart")
+SYSTEMCTL_ENABLE=("systemctl enable --now wg-quick@wgcf" "systemctl enable --now wg-quick@wgcf" "systemctl enable --now wg-quick@wgcf" "systemctl enable --now wg-quick@wgcf" "alpine_wgcf_enable")
+
+for ((int=0; int<${#REGEX[@]}; int++)); do
+	[[ $(echo "$SYS" | tr '[:upper:]' '[:lower:]') =~ ${REGEX[int]} ]] && SYSTEM="${RELEASE[int]}" && COMPANY="${COMPANY[int]}" && [[ -n $SYSTEM ]] && break
+done
+[[ -z $SYSTEM ]] && red " ${T[${L}5]} " && exit 1
+
+# 先排除 EXCLUDE 里包括的特定系统，其他系统需要作大发行版本的比较
+for ex in "${EXCLUDE[@]}"; do [[ ! $(echo "$SYS" | tr '[:upper:]' '[:lower:]')  =~ $ex ]]; done &&
+[[ $(echo $SYS | sed "s/[^0-9.]//g" | cut -d. -f1) -lt "${MAJOR[int]}" ]] && red " $(eval echo "${T[${L}26]}") " && exit 1
+
+[[ $SYSTEM = Alpine ]] && ! type -P curl >/dev/null 2>&1 && ${PACKAGE_UPDATE[int]} && ${PACKAGE_INSTALL[int]} curl wget grep
 
 # 检测 IPv4 IPv6 信息，WARP Ineterface 开启，普通还是 Plus账户 和 IP 信息
 ip4_info(){
-	IP4=$(curl -s4m7 https://ip.gs/json)
+	IP4=$(curl -s4m8 https://ip.gs/json)
 	LAN4=$(ip route get 162.159.192.1 2>/dev/null | grep -oP 'src \K\S+')
 	WAN4=$(expr "$IP4" : '.*ip\":\"\([^"]*\).*')
 	COUNTRY4=$(expr "$IP4" : '.*country\":\"\([^"]*\).*')
 	ASNORG4=$(expr "$IP4" : '.*asn_org\":\"\([^"]*\).*')
-	TRACE4=$(curl -s4m6 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
+	TRACE4=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 	if [[ $TRACE4 = plus ]]; then 
 	grep -sq 'Device name' /etc/wireguard/info.log && PLUS4='+' || PLUS4=' Teams'
 	fi
@@ -328,12 +366,12 @@ ip4_info(){
 	}
 
 ip6_info(){
-	IP6=$(curl -s6m7 https://ip.gs/json)
+	IP6=$(curl -s6m8 https://ip.gs/json)
 	LAN6=$(ip route get 2606:4700:d0::a29f:c001 2>/dev/null | grep -oP 'src \K\S+')
 	WAN6=$(expr "$IP6" : '.*ip\":\"\([^"]*\).*')
 	COUNTRY6=$(expr "$IP6" : '.*country\":\"\([^"]*\).*')
 	ASNORG6=$(expr "$IP6" : '.*asn_org\":\"\([^"]*\).*')
-	TRACE6=$(curl -s6m6 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
+	TRACE6=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 	if [[ $TRACE6 = plus ]]; then 
 	grep -sq 'Device name' /etc/wireguard/info.log && PLUS6='+' || PLUS6=' Teams'
 	fi
@@ -373,7 +411,7 @@ help(){	yellow " ${T[${L}6]} "; }
 input(){
 	reading " ${T[${L}52]} " ID
 	i=5
-	until [[ ${#ID} = 36 ]]
+	until [[ $ID =~ ^[A-F0-9a-f]{8}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{12}$ ]]
 		do
 		(( i-- )) || true
 		[[ $i = 0 ]] && red " ${T[${L}29]} " && exit 1 || reading " $(eval echo "${T[${L}53]}") " ID
@@ -383,24 +421,26 @@ input(){
 plus(){
 	red "\n=============================================================="
 	yellow " ${T[${L}54]}\n "
-	green " 1.${T[${L}55]} "
-	green " 2.${T[${L}56]} "
-	[[ -n $PLAN ]] && green " 3.${T[${L}49]} " || green " 3.${T[${L}76]} "
+	green " ${T[${L}55]} "
+	[[ -n $PLAN ]] && green " 4.${T[${L}49]} " || green " 4.${T[${L}76]} "
 	red "=============================================================="
 	reading " ${T[${L}50]} " CHOOSEPLUS
 	case "$CHOOSEPLUS" in
 		1 ) input
-		    [[ $(type -P git) ]] || ${APTYUM} install git 2>/dev/null
-		    [[ $(type -P python3) ]] || ${APTYUM} install python3 2>/dev/null
+		    [[ $(type -P git) ]] || ${PACKAGE_INSTALL[int]} git 2>/dev/null
+		    [[ $(type -P python3) ]] || ${PACKAGE_INSTALL[int]} python3 2>/dev/null
 		    [[ -d ~/warp-plus-cloudflare ]] || git clone https://github.com/aliilapro/warp-plus-cloudflare.git
 		    echo "$ID" | python3 ~/warp-plus-cloudflare/wp-plus.py;;
 		2 ) input
 		    reading " ${T[${L}57]} " MISSION
-		    wget --no-check-certificate "$CDN" -N https://cdn.jsdelivr.net/gh/mixool/across/wireguard/warp_plus.sh
-		    sed -i "s/eb86bd52-fe28-4f03-a944-60428823540e/$ID/g" warp_plus.sh
-		    bash warp_plus.sh "${MISSION//[^0-9]/}";;
-		3 ) [[ -n $PLAN ]] && menu "$PLAN" || exit;;
-		* ) red " ${T[${L}51]} [1-3] "; sleep 1; plus;;
+		    MISSION=${MISSION//[^0-9]/}
+		    bash <(wget --no-check-certificate -qO- -T8 https://cdn.jsdelivr.net/gh/fscarmen/tools/warp_plus.sh) $MISSION $ID;;
+		3 ) input
+		    reading " ${T[${L}57]} " MISSION
+		    MISSION=${MISSION//[^0-9]/}
+		    bash <(wget --no-check-certificate -qO- -T8 https://cdn.jsdelivr.net/gh/SoftCreatR/warp-up/warp-up.sh) --disclaimer --id $ID --iterations $MISSION;;
+		4 ) [[ -n $PLAN ]] && menu "$PLAN" || exit;;
+		* ) red " ${T[${L}51]} [1-4] "; sleep 1; plus;;
 	esac
 	}
 
@@ -417,16 +457,17 @@ change_ip(){
 	i=0;j=3
 	while true
 	do (( i++ )) || true
+	ip_now=$(date +%s); RUNTIME=$((ip_now - ip_start)); DAY=$(( RUNTIME / 86400 )); HOUR=$(( (RUNTIME % 86400 ) / 3600 )); MIN=$(( (RUNTIME % 86400 %3600) / 60 )); SEC=$(( RUNTIME % 86400 %3600 % 60 ))
 	RESULT=$(curl --user-agent "${UA_Browser}" -$NF -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
 	[[ $RESULT = 200 ]] && 
 	REGION=$(tr '[:lower:]' '[:upper:]' <<< $(curl --user-agent "${UA_Browser}" -$NF -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-]\{1,\}\).*/\1/g'))
 	[[ $RESULT = 200 ]] && REGION=${REGION:-US}
-	ip${NF}_info; until [[ -n $(eval echo "\$ip$NF") ]]; do ip${NF}_info; done
+	ip${NF}_info; until [[ -n "ip${NF}" ]]; do ip${NF}_info; done
 	WAN=$(eval echo \$WAN$NF) && ASNORG=$(eval echo \$ASNORG$NF)
 	[[ $L = C ]] && COUNTRY=$(translate "$(eval echo \$COUNTRY$NF)") || COUNTRY=$(eval echo \$COUNTRY$NF)
 	if [[ -n $REGION ]]; then
 	green " $(eval echo "${T[${L}125]}") " && i=0 && sleep 1h
-	else red " $(eval echo "${T[${L}126]}") " && systemctl restart wg-quick@wgcf && sleep $j
+	else red " $(eval echo "${T[${L}126]}") " && ${SYSTEMCTL_RESTART[int]} && sleep $j
 	fi
 	done
 	}
@@ -452,6 +493,10 @@ change_ip(){
 	done
 	}
 
+	# 设置时区，让时间戳时间准确，显示脚本运行时长，中文为 GMT+8，英文为 UTC
+	ip_start=$(date +%s)
+	[[ $L = C ]] && timedatectl set-timezone Asia/Shanghai || timedatectl set-timezone UTC
+	
 	# 判断刷 IP 时 WGCF 和 Client 的状态，分情况处理
 	WGCFSTATUS=0; SOCKS5STATUS=0
 	yellow " ${T[${L}121]} "
@@ -491,7 +536,7 @@ green " ${T[${L}37]} "
 # 判断虚拟化，选择 Wireguard内核模块 还是 Wireguard-Go
 VIRT=$(systemd-detect-virt 2>/dev/null | tr '[:upper:]' '[:lower:]')
 [[ -n $VIRT ]] || VIRT=$(hostnamectl 2>/dev/null | tr '[:upper:]' '[:lower:]' | grep virtualization | sed "s/.*://g")
-[[ $VIRT =~ openvz|lxc ]] && LXC=1
+[[ $VIRT =~ openvz|lxc || -z $VIRT ]] && LXC=1
 
 # 安装BBR
 bbrInstall(){
@@ -515,7 +560,7 @@ uninstall(){
 	uninstall_wgcf(){
 	wg-quick down wgcf >/dev/null 2>&1
 	systemctl disable --now wg-quick@wgcf >/dev/null 2>&1
-	${APTYUM} autoremove wireguard-tools wireguard-dkms 2>/dev/null
+	${PACKAGE_UNINSTALL[int]} wireguard-tools wireguard-dkms 2>/dev/null
 	rpm -e wireguard-tools 2>/dev/null
 	rm -rf /usr/local/bin/wgcf /etc/wireguard /usr/bin/wireguard-go wgcf-account.toml wgcf-profile.conf /usr/bin/warp
 	[[ -e /etc/gai.conf ]] && sed -i '/^precedence \:\:ffff\:0\:0/d;/^label 2002\:\:\/16/d' /etc/gai.conf
@@ -526,7 +571,7 @@ uninstall(){
 	warp-cli --accept-tos disconnect >/dev/null 2>&1
 	warp-cli --accept-tos disable-always-on >/dev/null 2>&1
 	warp-cli --accept-tos delete >/dev/null 2>&1
-	${APTYUM} autoremove cloudflare-warp 2>/dev/null
+	${PACKAGE_UNINSTALL[int]} cloudflare-warp 2>/dev/null
 	systemctl disable --now warp-svc >/dev/null 2>&1
 	rm -rf /usr/local/bin/wgcf /etc/wireguard /usr/bin/wireguard-go wgcf-account.toml wgcf-profile.conf /usr/bin/warp
 	}
@@ -536,8 +581,8 @@ uninstall(){
 	[[ $(type -P warp-cli) ]] && (uninstall_proxy; green " ${T[${L}119]} ")
 
 	# 显示卸载结果
-	ip4_info && [[ $L = C ]] && COUNTRY4=$(translate "$COUNTRY4")
-	ip6_info && [[ $L = C ]] && COUNTRY6=$(translate "$COUNTRY6")
+	ip4_info; [[ $L = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
+	ip6_info; [[ $L = C && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")
 	green " ${T[${L}45]}\n IPv4：$WAN4 $COUNTRY4 $ASNORG4\n IPv6：$WAN6 $COUNTRY6 $ASNORG6 "
 	}
 	
@@ -556,15 +601,15 @@ net(){
 	[[ ! $(type -P wg-quick) || ! -e /etc/wireguard/wgcf.conf ]] && red " ${T[${L}10]} " && exit 1
 	i=1;j=5
 	yellow " $(eval echo "${T[${L}11]}")\n $(eval echo "${T[${L}12]}") "
-	[[ $(systemctl is-active wg-quick@wgcf) != 'active' ]] && wg-quick down wgcf >/dev/null 2>&1
-	systemctl start wg-quick@wgcf >/dev/null 2>&1
+	[[ $SYSTEM != Alpine ]] && [[ $(systemctl is-active wg-quick@wgcf) != 'active' ]] && wg-quick down wgcf >/dev/null 2>&1
+	${SYSTEMCTL_START[int]} >/dev/null 2>&1
 	wg-quick up wgcf >/dev/null 2>&1
 	ip4_info
 	[[ -n $IP4 ]] && ip6_info
-	until [[ -n $IP4 && -n $IP6 ]]
-		do	(( i++ )) || true
+	until [[ -n $IP4 && -n $IP6 && $TRACE4$TRACE6 =~ on|plus ]]
+		do	(( i++ )) || tr
 			yellow " $(eval echo "${T[${L}12]}") "
-			systemctl restart wg-quick@wgcf >/dev/null 2>&1
+			${SYSTEMCTL_RESTART[int]} >/dev/null 2>&1
 			ip4_info
 			[[ -n $IP4 ]] && ip6_info
 			if [[ $i = "$j" ]]; then
@@ -627,41 +672,13 @@ if [[ $IPV4$IPV6 = 00 && -n $(wg) ]]; then
 fi
 [[ $IPV4$IPV6 = 00 ]] && red " ${T[${L}4]} " && exit 1
 
-# 多方式判断操作系统，试到有值为止。只支持 Debian 10/11、Ubuntu 18.04/20.04 或 CentOS 7/8 ,如非上述操作系统，退出脚本
-# 感谢猫大的技术指导优化重复的命令。https://github.com/Oreomeow
-CMD=(	"$(grep -i pretty_name /etc/os-release 2>/dev/null | cut -d \" -f2)"
-	"$(hostnamectl 2>/dev/null | grep -i system | cut -d : -f2)"
-	"$(lsb_release -sd 2>/dev/null)"
-	"$(grep -i description /etc/lsb-release 2>/dev/null | cut -d \" -f2)"
-	"$(grep . /etc/redhat-release 2>/dev/null)"
-	"$(grep . /etc/issue 2>/dev/null | cut -d \\ -f1 | sed '/^[ ]*$/d')"
-	)
-
-for i in "${CMD[@]}"; do
-	SYS="$i" && [[ -n $SYS ]] && break
-done
-
-REGEX=("debian" "ubuntu" "centos|red hat|kernel|oracle linux|alma|rocky" "'amazon linux'")
-RELEASE=("Debian" "Ubuntu" "CentOS" "CentOS")
-COMPANY=("" "" "" "amazon")
-MAJOR=("10" "18" "7" "7")
-
-for ((i=0; i<${#REGEX[@]}; i++)); do
-	[[ $(echo "$SYS" | tr '[:upper:]' '[:lower:]') =~ ${REGEX[i]} ]] && SYSTEM="${RELEASE[i]}" && COMPANY="${COMPANY[i]}" && [[ -n $SYSTEM ]] && break
-done
-[[ -z $SYSTEM ]] && red " ${T[${L}5]} " && exit 1
-
-for ((i=0; i<${#RELEASE[@]}; i++)); do
-	[[ $SYSTEM = ${RELEASE[i]} ]] && [[ $(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*') -lt "${MAJOR[i]}" ]] && red " $(eval echo "${T[${L}26]}") " && exit 1
-done
-
 # 安装 curl
-type -P curl >/dev/null 2>&1 || (yellow " ${T[${L}7]} " && ${APTYUM} install curl) || (yellow " ${T[${L}8]} " && ${APTYUM} update && ${APTYUM} install curl)
+type -P curl >/dev/null 2>&1 || (yellow " ${T[${L}7]} " && ${PACKAGE_INSTALL[int]} curl) || (yellow " ${T[${L}8]} " && ${PACKAGE_UPDATE[int]} && ${PACKAGE_INSTALL[int]} curl)
 ! type -P curl >/dev/null 2>&1 && yellow " ${T[${L}9]} " && exit 1
 
 # 判断处理器架构
 case $(tr '[:upper:]' '[:lower:]' <<< "$(arch)") in
-aarch64 ) ARCHITECTURE=arm64;;	x86_64 ) ARCHITECTURE=amd64;;	s390x ) ARCHITECTURE=s390x;;	* ) red " $(eval echo "${T[${L}134]}") " && exit 1;;
+aarch64 ) ARCHITECTURE=arm64;;	x86_64 ) ARCHITECTURE=amd64;;	s390x ) ARCHITECTURE=s390x && S390X='-s390x';;	* ) red " $(eval echo "${T[${L}134]}") " && exit 1;;
 esac
 
 # 判断当前 IPv4 与 IPv6 ，IP归属 及 WARP, Linux Client 是否开启
@@ -720,7 +737,7 @@ input_url(){
 	PUBLICKEY=$(expr "$TEAMS" : '.*public_key&quot;:&quot;\([^&]*\).*')
 	ADDRESS4=$(expr "$TEAMS" : '.*v4&quot;:&quot;\(172[^&]*\).*')
 	ADDRESS6=$(expr "$TEAMS" : '.*v6&quot;:&quot;\([^[&]*\).*')
-	yellow " $(eval echo "${T[${L}130]}") " | column -s '|' -t && reading " ${T[${L}131]} " CONFIRM
+	yellow " $(eval echo "${T[${L}130]}") " && reading " ${T[${L}131]} " CONFIRM
 	}
 
 # 升级 WARP+ 账户（如有），限制位数为空或者26位以防输入错误，WARP interface 可以自定义设备名(不允许字符串间有空格，如遇到将会以_代替)
@@ -783,8 +800,8 @@ install(){
 	latest=${latest:-'2.2.11'}
 
 	# 安装 wgcf，尽量下载官方的最新版本，如官方 wgcf 下载不成功，将使用 jsDelivr 的 CDN，以更好的支持双栈。并添加执行权限
-	wget --no-check-certificate -T1 -t1 -N $CDN -O /usr/local/bin/wgcf https://github.com/ViRb3/wgcf/releases/download/v"$latest"/wgcf_"$latest"_linux_$ARCHITECTURE ||
-	wget --no-check-certificate -N $CDN -O /usr/local/bin/wgcf https://cdn.jsdelivr.net/gh/fscarmen/warp/wgcf_"$latest"_linux_$ARCHITECTURE
+	wget --no-check-certificate -T1 -t1 $CDN -O /usr/local/bin/wgcf https://github.com/ViRb3/wgcf/releases/download/v"$latest"/wgcf_"$latest"_linux_$ARCHITECTURE ||
+	wget --no-check-certificate $CDN -O /usr/local/bin/wgcf https://cdn.jsdelivr.net/gh/fscarmen/warp/wgcf_"$latest"_linux_$ARCHITECTURE
 	chmod +x /usr/local/bin/wgcf
 	
 	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息)
@@ -844,52 +861,55 @@ install(){
 	
 	Debian(){
 		# 更新源
-		${APTYUM} update
+		${PACKAGE_UPDATE[int]}
 
 		# 添加 backports 源,之后才能安装 wireguard-tools 
-		${APTYUM} install lsb-release
+		${PACKAGE_INSTALL[int]} lsb-release
 		echo "deb http://deb.debian.org/debian $(lsb_release -sc)-backports main" > /etc/apt/sources.list.d/backports.list
 
 		# 再次更新源
-		${APTYUM} update
+		${PACKAGE_UPDATE[int]}
 
 		# 安装一些必要的网络工具包和wireguard-tools (Wire-Guard 配置工具：wg、wg-quick)
-		${APTYUM} --no-install-recommends install net-tools iproute2 openresolv dnsutils wireguard-tools
+		${PACKAGE_INSTALL[int]} --no-install-recommends net-tools iproute2 openresolv dnsutils wireguard-tools iptables
 
 		# 如 Linux 版本低于5.6并且是 kvm，则安装 wireguard 内核模块
-		[[ $WG = 1 ]] && ${APTYUM} --no-install-recommends install linux-headers-"$(uname -r)" && ${APTYUM} --no-install-recommends install wireguard-dkms
+		[[ $WG = 1 ]] && ${PACKAGE_INSTALL[int]} --no-install-recommends linux-headers-"$(uname -r)" && ${PACKAGE_INSTALL[int]} --no-install-recommends wireguard-dkms
 		}
 		
 	Ubuntu(){
 		# 更新源
-		${APTYUM} update
+		${PACKAGE_UPDATE[int]}
 
 		# 安装一些必要的网络工具包和 wireguard-tools (Wire-Guard 配置工具：wg、wg-quick)
-		${APTYUM} --no-install-recommends install net-tools iproute2 openresolv dnsutils wireguard-tools
+		${PACKAGE_INSTALL[int]} --no-install-recommends net-tools iproute2 openresolv dnsutils wireguard-tools iptables
 		}
 		
 	CentOS(){
 		# 安装一些必要的网络工具包和wireguard-tools (Wire-Guard 配置工具：wg、wg-quick)
-		[[ $COMPANY = amazon ]] && ${APTYUM} upgrade && amazon-linux-extras install -y epel		
-		${APTYUM} install epel-release
-		${APTYUM} install wireguard-tools net-tools
+		[[ $COMPANY = amazon ]] && ${PACKAGE_UPDATE[int]} && amazon-linux-extras install -y epel		
+		${PACKAGE_INSTALL[int]} epel-release
+		${PACKAGE_INSTALL[int]} wireguard-tools net-tools iptables
 
 		# 如 Linux 版本低于5.6并且是 kvm，则安装 wireguard 内核模块
 		VERSION_ID=$(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*')
 		[[ $WG = 1 ]] && curl -Lo /etc/yum.repos.d/wireguard.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-"$VERSION_ID"/jdoss-wireguard-epel-"$VERSION_ID".repo &&
-		${APTYUM} install wireguard-dkms
+		${PACKAGE_INSTALL[int]} wireguard-dkms
 
 		# 升级所有包同时也升级软件和系统内核
-		${APTYUM} update
+		${PACKAGE_UPDATE[int]}
 		
 		# s390x wireguard-tools 安装
 		[[ $ARCHITECTURE = s390x ]] && ! type -P wg >/etc/null 2>&1 && rpm -i https://mirrors.cloud.tencent.com/epel/8/Everything/s390x/Packages/w/wireguard-tools-1.0.20210914-1.el8.s390x.rpm
 		}
 
-	$SYSTEM
+	Alpine(){
+		# 安装一些必要的网络工具包和wireguard-tools (Wire-Guard 配置工具：wg、wg-quick)
+		${PACKAGE_INSTALL[int]} net-tools iproute2 openresolv wireguard-tools openrc iptables
+		}
 
-	# 查询 iptable，没有则安装
-	! type -P iptables >/etc/null 2>&1 && ${APTYUM} install iptables
+
+	$SYSTEM
 	
 	wait
 
@@ -901,12 +921,11 @@ install(){
 	[[ $CONFIRM = [Yy] ]] && teams_change && echo "$TEAMS" > /etc/wireguard/info.log 2>&1
 
 	# 设置开机启动
-	systemctl start wg-quick@wgcf >/dev/null 2>&1
+	${SYSTEMCTL_ENABLE[int]}>/dev/null 2>&1
 
 	# 如是 LXC，安装 Wireguard-GO。部分较低内核版本的KVM，即使安装了wireguard-dkms, 仍不能正常工作，兜底使用 wireguard-go
-	[[ $ARCHITECTURE = s390x ]] && S390X='-s390x'
 	[[ $LXC = 1 ]] || ([[ $WG = 1 ]] && [[ $(systemctl is-active wg-quick@wgcf) != active || $(systemctl is-enabled wg-quick@wgcf) != enabled ]]) &&
-	wget --no-check-certificate -N $CDN -O /usr/bin/wireguard-go https://cdn.jsdelivr.net/gh/fscarmen/warp/wireguard-go$S390X && chmod +x /usr/bin/wireguard-go
+	wget --no-check-certificate $CDN -O /usr/bin/wireguard-go https://cdn.jsdelivr.net/gh/fscarmen/warp/wireguard-go$S390X && chmod +x /usr/bin/wireguard-go
 
 	# 保存好配置文件
 	mv -f wgcf-account.toml wgcf-profile.conf menu.sh /etc/wireguard >/dev/null 2>&1
@@ -964,13 +983,13 @@ proxy(){
 	if [[ $CLIENT = 0 ]]; then
 	green " ${T[${L}83]} "
 	[[ $SYSTEM = CentOS ]] && (rpm -ivh http://pkg.cloudflareclient.com/cloudflare-release-el"$(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*')".rpm
-	${APTYUM} upgrade; ${APTYUM} install cloudflare-warp)
-	[[ $SYSTEM != CentOS ]] && ${APTYUM} update && ${APTYUM} install lsb-release
-	[[ $SYSTEM = Debian && ! $(type -P gpg 2>/dev/null) ]] && ${APTYUM} install gnupg
-	[[ $SYSTEM = Debian && ! $(apt list 2>/dev/null | grep apt-transport-https ) =~ installed ]] && ${APTYUM} install apt-transport-https
+	${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp)
+	[[ $SYSTEM != CentOS ]] && ${PACKAGE_UPDATE[int]} && ${PACKAGE_INSTALL[int]} lsb-release
+	[[ $SYSTEM = Debian && ! $(type -P gpg 2>/dev/null) ]] && ${PACKAGE_INSTALL[int]} gnupg
+	[[ $SYSTEM = Debian && ! $(apt list 2>/dev/null | grep apt-transport-https ) =~ installed ]] && ${PACKAGE_INSTALL[int]} apt-transport-https
 	[[ $SYSTEM != CentOS ]] && (curl https://pkg.cloudflareclient.com/pubkey.gpg | apt-key add -
 	echo "deb http://pkg.cloudflareclient.com/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/cloudflare-client.list
-	${APTYUM} update; ${APTYUM} install cloudflare-warp)
+	${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp)
 	settings
 
 	elif [[ $CLIENT = 2 && $(warp-cli --accept-tos status 2>/dev/null) =~ 'Registration missing' ]]; then
