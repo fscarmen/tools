@@ -510,16 +510,12 @@ install(){
 menu(){
 	if [[ $1 != 3 ]]; then
 		case $IPV4$IPV6 in
-		01 ) OPTION1=${T[${L}66]} && OPTION2=${T[${L}68]} && OPTION3=${T[${L}71]};;
-		10 ) OPTION1=${T[${L}67]} && OPTION2=${T[${L}69]} && OPTION3=${T[${L}71]};;
-		11 ) OPTION1=${T[${L}70]} && OPTION2=${T[${L}34]} && OPTION3=${T[${L}71]};;	
+		01 ) OPTION1=${T[${L}66]};;
+		10 ) OPTION1=${T[${L}67]};;
+		11 ) OPTION1=${T[${L}70]};;
 	esac
 	else	OPTION1=${T[${L}77]} && OPTION2=${T[${L}78]} && OPTION3=${T[${L}123]}
 	fi
-	
-	case $CLIENT in
-	2 )	OPTION4=${T[${L}88]};; 3 ) OPTION4=${T[${L}89]};; * ) OPTION4=${T[${L}82]};;
-	esac
 	
 	grep -sq 'Device name' /etc/wireguard/info.log 2>/dev/null && TYPE='+' && PLUSINFO="${T[${L}25]}：$(grep 'Device name' /etc/wireguard/info.log 2>/dev/null | awk '{ print $NF }')" || TYPE=' Teams'
 	
@@ -536,23 +532,14 @@ menu(){
 	[[ $CLIENT = 2 ]] && green "	${T[${L}113]} "
 	[[ $CLIENT = 3 ]] && green "	WARP$AC ${T[${L}24]}	$(eval echo "${T[${L}27]}") "
  	red "\n======================================================================================================================\n"
-	green " 1. $OPTION1\n 2. $OPTION2\n 3. $OPTION3\n 4. $OPTION4\n 5. ${T[${L}72]}\n 6. ${T[${L}73]}\n 7. ${T[${L}74]}\n 8. ${T[${L}75]}\n 0. ${T[${L}76]}\n "
+	green " 1. $OPTION1\n 0. ${T[${L}76]}\n "
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
 		1 )	[[ $OPTION1 = ${T[${L}66]} || $OPTION1 = ${T[${L}67]} ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6) && install
 			[[ $OPTION1 = ${T[${L}70]} ]] && MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6) && install
 			[[ $OPTION1 = ${T[${L}77]} ]] && onoff;;
-		2 )	[[ $OPTION2 = ${T[${L}68]} || $OPTION2 = ${T[${L}69]} || $OPTION2 = ${T[${L}34]} ]] && MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6) && install
-			[[ $OPTION2 = ${T[${L}78]} ]] && update;;
-		3 )	[[ $OPTION3 = ${T[${L}71]} ]] && OPTION=o && net
-			[[ $OPTION3 = ${T[${L}123]} ]] && change_ip;;
-		4 )	[[ $CLIENT = 2 || $CLIENT = 3 ]] && proxy_onoff || proxy;;
-		5 )	uninstall;;
-		6 )	bbrInstall;;
-		7 )	plus;;
-		8 )	ver;;
 		0 )	exit;;
-		* )	red " ${T[${L}51]} [0-8] "; sleep 1; [[ $CLIENT -gt 2 ]] && menu 3 || menu $PLAN;;
+		* )	red " ${T[${L}51]} [0-1] "; sleep 1; menu "$PLAN";;
 		esac
 	}
 
