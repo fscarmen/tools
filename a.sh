@@ -316,9 +316,6 @@ alpine_wgcf_enable(){ echo 'nohup wg-quick up wgcf &' > /etc/local.d/wgcf.start;
 
 REGEX=("debian" "ubuntu" "centos|red hat|kernel|oracle linux|alma|rocky" "'amazon linux'" "alpine")
 RELEASE=("Debian" "Ubuntu" "CentOS" "CentOS" "Alpine")
-EXCLUDE=("bookworm")
-COMPANY=("" "" "" "amazon" "")
-MAJOR=("10" "18" "7" "7" "3")
 PACKAGE_UPDATE=("apt -y update" "apt -y update" "yum -y update" "yum -y update" "apk update -f")
 PACKAGE_INSTALL=("apt -y install" "apt -y install" "yum -y install" "yum -y install" "apk add -f")
 PACKAGE_UNINSTALL=("apt -y autoremove" "apt -y autoremove" "yum -y autoremove" "yum -y autoremove" "apk del -f")
@@ -327,10 +324,6 @@ for ((int=0; int<${#REGEX[@]}; int++)); do
 	[[ $(echo "$SYS" | tr '[:upper:]' '[:lower:]') =~ ${REGEX[int]} ]] && SYSTEM="${RELEASE[int]}" && COMPANY="${COMPANY[int]}" && [[ -n $SYSTEM ]] && break
 done
 [[ -z $SYSTEM ]] && red " ${T[${L}5]} " && exit 1
-
-# 先排除 EXCLUDE 里包括的特定系统，其他系统需要作大发行版本的比较
-for ex in "${EXCLUDE[@]}"; do [[ ! $(echo "$SYS" | tr '[:upper:]' '[:lower:]')  =~ $ex ]]; done &&
-[[ $(echo $SYS | sed "s/[^0-9.]//g" | cut -d. -f1) -lt "${MAJOR[int]}" ]] && red " $(eval echo "${T[${L}26]}") " && exit 1
 
 [[ $SYSTEM = Alpine ]] && ! type -P curl >/dev/null 2>&1 && ${PACKAGE_UPDATE[int]} && ${PACKAGE_INSTALL[int]} curl wget grep
 
@@ -500,20 +493,10 @@ install(){
 	# 自动刷直至成功（ warp bug，有时候获取不了ip地址），重置之前的相关变量值，记录新的 IPv4 和 IPv6 地址和归属地，IPv4 / IPv6 优先级别
 	green " ${T[${L}39]} "
 	unset IP4 IP6 WAN4 WAN6 COUNTRY4 COUNTRY6 ASNORG4 ASNORG6 TRACE4 TRACE6 PLUS4 PLUS6 WARPSTATUS4 WARPSTATUS6
-	docker exec -it wgcf wg-quick up wgcf
 
 	# 结果提示，脚本运行时间，次数统计
 	end=$(date +%s)
-	red "\n==============================================================\n"
-	green " IPv4：$WAN4 $WARPSTATUS4 $COUNTRY4  $ASNORG4 "
-	green " IPv6：$WAN6 $WARPSTATUS6 $COUNTRY6  $ASNORG6 "
-	grep -sq 'Device name' /etc/wireguard/info.log 2>/dev/null && TYPE='+' || TYPE=' Teams'
-	[[ $TRACE4 = plus || $TRACE6 = plus ]] && green " $(eval echo "${T[${L}41]}") " && grep -sq 'Device name' /etc/wireguard/info.log && green " $(eval echo "${T[${L}133]}") "
-	[[ $TRACE4 = on || $TRACE6 = on ]] && green " $(eval echo "${T[${L}42]}") "
-	green " $PRIORITY "
-	red "\n==============================================================\n"
-	yellow " ${T[${L}43]}\n " && help
-	[[ $TRACE4 = off && $TRACE6 = off ]] && red " ${T[${L}44]} "
+
 	}
 
 # 显示菜单
