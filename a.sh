@@ -296,6 +296,8 @@ E ) L=E;;	C ) L=C;;
 [[ $LANGUAGE = 2 ]] && L=C;;
 esac
 
+
+
 # 多方式判断操作系统，试到有值为止。只支持 Debian 10/11、Ubuntu 18.04/20.04 或 CentOS 7/8 ,如非上述操作系统，退出脚本
 # 感谢猫大的技术指导优化重复的命令。https://github.com/Oreomeow
 CMD=(	"$(grep -i pretty_name /etc/os-release 2>/dev/null | cut -d \" -f2)"
@@ -375,6 +377,11 @@ fi
 # 安装 curl
 type -P curl >/dev/null 2>&1 || (yellow " ${T[${L}7]} " && ${PACKAGE_INSTALL[int]} curl) || (yellow " ${T[${L}8]} " && ${PACKAGE_UPDATE[int]} && ${PACKAGE_INSTALL[int]} curl)
 ! type -P curl >/dev/null 2>&1 && yellow " ${T[${L}9]} " && exit 1
+
+# 判断处理器架构
+case $(tr '[:upper:]' '[:lower:]' <<< "$(arch)") in
+aarch64 ) ARCHITECTURE=arm64;;	x86_64 ) ARCHITECTURE=amd64;;	s390x ) ARCHITECTURE=s390x && S390X='-s390x';;	* ) red " $(eval echo "${T[${L}134]}") " && exit 1;;
+esac
 
 # 判断当前 IPv4 与 IPv6 ，IP归属 及 WARP, Linux Client 是否开启
 [[ $IPV4 = 1 ]] && ip4_info
