@@ -16,8 +16,8 @@ declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
-T[E1]="1.Important: First publication on a global scale. Support architecture s390x for IBM Linux One(Choose WARP ipv6 single stack) 2.support Alpine Linux 3.support Debian bookworm"
-T[C1]="1.重要:全网首发，支持IBM Linux One 的 s390x 架构 CPU (请选用 WARP ipv6单栈) 2.支持 Alpine Linux 系统 3.支持 Debian bookworm"
+T[E1]="wgcf on docker"
+T[C1]="docker 的 wgcf 为宿主机服务"
 T[E2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E3]="The TUN module is not loaded. You should turn it on in the control panel. Ask the supplier for more help. Feedback: [https://github.com/fscarmen/warp/issues]"
@@ -26,9 +26,8 @@ T[E4]="The WARP server cannot be connected. It may be a China Mainland VPS. You 
 T[C4]="与 WARP 的服务器不能连接,可能是大陆 VPS，可手动 ping 162.159.192.1 或 ping6 2606:4700:d0::a29f:c001，如能连通可再次运行脚本，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E5]="The script supports Debian, Ubuntu, CentOS or Alpine systems only. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C5]="本脚本只支持 Debian、Ubuntu、CentOS 或 Alpine 系统,问题反馈:[https://github.com/fscarmen/warp/issues]"
-T[E6]="warp h (help)\n warp o (Turn off WARP temporarily)\n warp u (Turn off and uninstall WARP interface and Socks5 Linux Client)\n warp b (Upgrade kernel, turn on BBR, change Linux system)\n warp d (Upgrade to WARP+ account)\n warp d N5670ljg-sS9jD334-6o6g4M9F (Upgrade to WARP+ account with the license)\n warp d http://gist.github.com/teams.xml (Upgrade to Teams account with the URL)\n warp p (Getting WARP+ quota by scripts)\n warp v (Sync the latest version)\n warp r (Connect/Disconnect WARP Linux Client)\n warp 1 (Add WARP IPv6 interface to native IPv4 VPS or WARP IPv4 interface to native IPv6 VPS)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F Goodluck (Add IPv4 or IPV6 WARP+ interface with the license and named Goodluck)\n warp 2 (Add WARP dualstack interface IPv4 + IPv6)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F Goodluck (Add WARP+ dualstack interface with the license and named Goodluck)\n warp c (Install WARP Linux Client)\n warp c N5670ljg-sS9jD334-6o6g4M9F(Install WARP+ Linux Client with the license)\n warp i (Change the WARP IP to support Netflix)"
-T[C6]="warp h (帮助菜单）\n warp o (临时warp开关)\n warp u (卸载 WARP 网络接口和 Socks5 Client)\n warp b (升级内核、开启BBR及DD)\n warp d (免费 WARP 账户升级 WARP+)\n warp d N5670ljg-sS9jD334-6o6g4M9F (指定 License 升级 WARP+)\n warp d http://gist.github.com/teams.xml (指定 URL 升级 Teams)\n warp p (刷WARP+流量)\n warp v (同步脚本至最新版本)\n warp r (WARP Linux Client 开关)\n warp 1 (Warp单栈)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F Goodluck (指定 WARP+ License Warp 单栈，设备名为 Goodluck)\n warp 2 (WARP 双栈)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F Goodluck (指定 WARP+ License 双栈，设备名为 Goodluck)\n warp c (安装 WARP Linux Client，开启 Socks5 代理模式)\n warp c N5670ljg-sS9jD334-6o6g4M9F (指定 Warp+ License 安装 WARP Linux Client，开启 Socks5 代理模式)\n warp i (更换支持 Netflix 的IP)"
-T[E7]="Installing curl..."
+T[E6]=""
+T[C6]=""
 T[C7]="安装curl中……"
 T[E8]="It is necessary to upgrade the latest package library before install curl.It will take a little time,please be patiently..."
 T[C8]="先升级软件库才能继续安装 curl，时间较长，请耐心等待……"
@@ -36,18 +35,18 @@ T[E9]="Failed to install curl. The script is aborted. Feedback: [https://github.
 T[C9]="安装 curl 失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E10]="WireGuard tools are not installed or the configuration file wgcf.conf cannot be found, please reinstall."
 T[C10]="没有安装 WireGuard tools 或者找不到配置文件 wgcf.conf，请重新安装。"
-T[E11]="Maximum \$j attempts to get WARP IP..."
-T[C11]="后台获取 WARP IP 中,最大尝试\$j次……"
-T[E12]="Try \$i"
-T[C12]="第\$i次尝试"
-T[E13]="There have been more than \$j failures. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
-T[C13]="失败已超过\$j次，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
-T[E14]="Got the WARP IP successfully."
-T[C14]="已成功获取 WARP 网络"
-T[E15]="WARP is turned off. It could be turned on again by [warp o]"
-T[C15]="已暂停 WARP，再次开启可以用 warp o"
-T[E16]="The script specifically adds WARP network interface for VPS, detailed:[https://github.com/fscarmen/warp]\n Features:\n	* Support WARP+ account. Third-party scripts are use to increase WARP+ quota or upgrade kernel.\n	* Not only menus, but commands with option.\n	* Intelligent analysis of operating system：Ubuntu 18.04、20.04，Debian 10、11，CentOS 7、8, Alpine 3. Be sure to choose the LTS system. And architecture：AMD or ARM\n	* Automatically select four WireGuard solutions. Performance: Kernel with WireGuard integration＞Install kernel module＞wireguard-go\n	* Intelligent analysis of the latest version of the WGCF\n	* Suppert WARP Linux client.\n	* Output WARP status, IP region and asn\n"
-T[C16]="本项目专为 VPS 添加 wgcf 网络接口，详细说明：[https://github.com/fscarmen/warp]\n脚本特点:\n	* 支持 WARP+ 账户，附带第三方刷 WARP+ 流量和升级内核 BBR 脚本\n	* 普通用户友好的菜单，进阶者通过后缀选项快速搭建\n	* 智能判断操作系统：Ubuntu 、Debian 、CentOS 和 Alpine，请务必选择 LTS 系统；硬件结构类型：AMD 或者 ARM\n	* 结合 Linux 版本和虚拟化方式，自动优选4个 WireGuard 方案。网络性能方面：内核集成 WireGuard＞安装内核模块＞wireguard-go\n	* 智能判断 WGCF 作者 github库的最新版本 （Latest release）\n	* 支持 WARP Linux Socks5 Client\n	* 输出执行结果，提示是否使用 WARP IP ，IP 归属地和线路提供商\n"
+T[E11]=""
+T[C11]=""
+T[E12]=""
+T[C12]=""
+T[E13]=""
+T[C13]=""
+T[E14]=""
+T[C14]=""
+T[E15]=""
+T[C15]=""
+T[E16]=""
+T[C16]=""
 T[E17]="Version"
 T[C17]="脚本版本"
 T[E18]="New features"
@@ -62,28 +61,28 @@ T[E22]="Architecture"
 T[C22]="处理器架构"
 T[E23]="Virtualization"
 T[C23]="虚拟化"
-T[E24]="Socks5 Client is on"
-T[C24]="Socks5 Client 已开启"
+T[E24]=""
+T[C24]=""
 T[E25]="Device name"
 T[C25]="设备名"
 T[E26]="Curren operating system is \$SYS.\\\n The system lower than \$SYSTEM \${MAJOR[int]} is not supported. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C26]="当前操作是 \$SYS\\\n 不支持 \$SYSTEM \${MAJOR[int]} 以下系统,问题反馈:[https://github.com/fscarmen/warp/issues]"
-T[E27]="Local Socks5:\$PROXYSOCKS5	WARP\$AC IPv4:\$PROXYIP \$PROXYCOUNTRY	\$PROXYASNORG"
-T[C27]="本地 Socks5:\$PROXYSOCKS5	WARP\$AC IPv4:\$PROXYIP \$PROXYCOUNTRY	\$PROXYASNORG"
+T[E27]=""
+T[C27]=""
 T[E28]="If there is a WARP+ License, please enter it, otherwise press Enter to continue:"
 T[C28]="如有 WARP+ License 请输入，没有可回车继续:"
 T[E29]="Input errors up to 5 times.The script is aborted."
 T[C29]="输入错误达5次，脚本退出"
 T[E30]="License should be 26 characters, please re-enter WARP+ License. Otherwise press Enter to continue. \(\$i times remaining\):"
-T[C30]="License 应为26位字符，请重新输入 Warp+ License，没有可回车继续\(剩余\$i次\):"
+T[C30]="License 应为26位字符，请重新输入 WARP+ License，没有可回车继续\(剩余\$i次\):"
 T[E31]="\n 1.Update with WARP+ license\n 2.Update with Teams (You need upload the Teams file to a private storage space before. For example: gist.github.com)\n"
 T[C31]="\n 1.使用 WARP+ license 升级\n 2.使用 Teams 升级 (你须事前把 Teams 文件上传到私密存储空间，比如：gist.github.com )\n"
-T[E32]="Step 1/3: Install dependencies..."
-T[C32]="进度 1/3：安装系统依赖……"
+T[E32]="Step 1/3: Install docker..."
+T[C32]="进度 1/3：安装 docker……"
 T[E33]="Step 2/3: WGCF is ready"
 T[C33]="进度 2/3：已安装 WGCF"
-T[E34]="This system is a native dualstack. You can only choose the WARP dualstack. Same options as 1"
-T[C34]="此系统为原生双栈，只能选择 Warp 双栈方案，选项与 1 相同"
+T[E34]=""
+T[C34]=""
 T[E35]="Update WARP+ account..."
 T[C35]="升级 WARP+ 账户中……"
 T[E36]="The upgrade failed, WARP+ account error or more than 5 devices have been activated. Free WARP account to continu."
@@ -94,42 +93,42 @@ T[E38]="Create shortcut [warp] successfully"
 T[C38]="创建快捷 warp 指令成功"
 T[E39]="Running WARP"
 T[C39]="运行 WARP"
-T[E40]="\$COMPANY vps needs to restart and run [warp n] to open WARP."
-T[C40]="\$COMPANY vps 需要重启后运行 warp n 才能打开 WARP,现执行重启"
-T[E41]="Congratulations! WARP\$TYPE is turned on. Spend time:\$(( end - start )) seconds.\\\n The script runs today: \$TODAY. Total:\$TOTAL"
-T[C41]="恭喜！WARP\$TYPE 已开启，总耗时:\$(( end - start ))秒， 脚本当天运行次数:\$TODAY，累计运行次数：\$TOTAL"
-T[E42]="Congratulations! WARP is turned on. Spend time:\$(( end - start )) seconds.\\\n The script runs on today: \$TODAY. Total:\$TOTAL"
-T[C42]="恭喜！WARP 已开启，总耗时:\$(( end - start ))秒， 脚本当天运行次数:\$TODAY，累计运行次数：\$TOTAL"
+T[E40]=""
+T[C40]=""
+T[E41]=""
+T[C41]=""
+T[E42]="Congratulations! WARP is turned on. Spend time:\$(( end - start )) seconds."
+T[C42]="恭喜！WARP 已开启，总耗时:\$(( end - start ))秒"
 T[E43]="Run again with warp [option] [lisence], such as"
 T[C43]="再次运行用 warp [option] [lisence]，如"
 T[E44]="WARP installation failed. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C44]="WARP 安装失败，问题反馈:[https://github.com/fscarmen/warp/issues]"
-T[E45]="WARP interface and Linux Client have been completely deleted!"
-T[C45]="WARP 网络接口和 Linux Client 已彻底删除!"
-T[E46]="Not cleaned up, please reboot and try again."
-T[C46]="没有清除干净，请重启(reboot)后尝试再次删除"
-T[E47]="Upgrade kernel, turn on BBR, change Linux system by other authors [ylx2016],[https://github.com/ylx2016/Linux-NetSpeed]"
-T[C47]="BBR、DD脚本用的[ylx2016]的成熟作品，地址[https://github.com/ylx2016/Linux-NetSpeed]，请熟知"
-T[E48]="Run script"
-T[C48]="安装脚本【推荐原版BBR+FQ】"
-T[E49]="Return to main menu"
-T[C49]="回退主目录"
+T[E45]="WARP docker have been completely deleted!"
+T[C45]="WARP docker 已彻底删除!"
+T[E46]=""
+T[C46]=""
+T[E47]=""
+T[C47]=""
+T[E48]=""
+T[C48]=""
+T[E49]=""
+T[C49]=""
 T[E50]="Choose:"
 T[C50]="请选择:"
 T[E51]="Please enter the correct number"
 T[C51]="请输入正确数字"
-T[E52]="Please input WARP+ ID:"
-T[C52]="请输入 WARP+ ID:"
-T[E53]="WARP+ ID should be 36 characters, please re-enter \(\$i times remaining\):"
-T[C53]="WARP+ ID 应为36位字符，请重新输入 \(剩余\$i次\):"
-T[E54]="Getting the WARP+ quota by the following 2 authors:\n	* [ALIILAPRO]，[https://github.com/ALIILAPRO/warp-plus-cloudflare]\n	* [mixool]，[https://github.com/mixool/across/tree/master/wireguard]\n	* [SoftCreatR]，[https://github.com/SoftCreatR/warp-up]\n * Open the 1.1.1.1 app\n * Click on the hamburger menu button on the top-right corner\n * Navigate to: Account > Key\n Important：Refresh WARP+ quota： 三 --> Advanced --> Connection options --> Reset keys\n It is best to run script with screen."
-T[C54]="刷 WARP+ 流量用可选择以下两位作者的成熟作品，请熟知:\n	* [ALIILAPRO]，地址[https://github.com/ALIILAPRO/warp-plus-cloudflare]\n	* [mixool]，地址[https://github.com/mixool/across/tree/master/wireguard]\n	* [SoftCreatR]，地址[https://github.com/SoftCreatR/warp-up]\n 下载地址：https://1.1.1.1/，访问和苹果外区 ID 自理\n 获取 WARP+ ID 填到下面。方法：App右上角菜单 三 --> 高级 --> 诊断 --> ID\n 重要：刷脚本后流量没有增加处理：右上角菜单 三 --> 高级 --> 连接选项 --> 重置加密密钥\n 最好配合 screen 在后台运行任务"
-T[E55]="1.Run [ALIILAPRO] script\n 2.Run [mixool] script\n 3.Run [SoftCreatR] script"
-T[C55]="1.运行 [ALIILAPRO] 脚本\n 2.运行 [mixool] 脚本\n 3.运行 [SoftCreatR] 脚本"
+T[E52]=""
+T[C52]=""
+T[E53]=""
+T[C53]=""
+T[E54]=""
+T[C54]=""
+T[E55]=""
+T[C55]=""
 T[E56]=""
 T[C56]=""
-T[E57]="The target quota you want to get. The unit is GB, the default value is 10:"
-T[C57]="你希望获取的目标流量值，单位为 GB，输入数字即可，默认值为10:"
+T[E57]=""
+T[C57]=""
 T[E58]="WARP+ or Teams account is working now. No need to upgrade."
 T[C58]="已经是 WARP+ 或者 Teams 账户，不需要升级"
 T[E59]="Cannot find the account file: /etc/wireguard/wgcf-account.toml, you can reinstall with the WARP+ License"
@@ -154,16 +153,16 @@ T[E68]="Add WARP dualstack interface to IPv6 only VPS"
 T[C68]="为 IPv6 only 添加双栈网络接口"
 T[E69]="Add WARP dualstack interface to IPv4 only VPS"
 T[C69]="为 IPv4 only 添加双栈网络接口"
-T[E70]="Add WARP dualstack interface to native dualstack"
-T[C70]="为 原生双栈 添加 WARP 双栈 网络接口"
+T[E70]="Add WARP IPv6 interface to native dualstack"
+T[C70]="为 原生双栈 添加 WARP IPv6 网络接口"
 T[E71]="Turn on WARP"
 T[C71]="打开 WARP"
-T[E72]="Turn off, uninstall WARP interface and Linux Client"
-T[C72]="永久关闭 WARP 网络接口，并删除 WARP 和 Linux Client"
-T[E73]="Upgrade kernel, turn on BBR, change Linux system"
-T[C73]="升级内核、安装BBR、DD脚本"
-T[E74]="Getting WARP+ quota by scripts"
-T[C74]="刷 WARP+ 流量"
+T[E72]="Turn off, uninstall WARP docker"
+T[C72]="永久关闭 WARP 网络接口，并删除 WARP docker"
+T[E73]=""
+T[C73]=""
+T[E74]=""
+T[C74]=""
 T[E75]="Sync the latest version"
 T[C75]="同步最新版本"
 T[E76]="Exit"
@@ -172,76 +171,76 @@ T[E77]="Turn off WARP"
 T[C77]="暂时关闭 WARP"
 T[E78]="Upgrade to WARP+ or Teams account"
 T[C78]="升级为 WARP+ 或 Teams 账户"
-T[E79]="This system is a native dualstack. You can only choose the WARP dualstack, please enter [y] to continue, and other keys to exit:"
-T[C79]="此系统为原生双栈，只能选择 Warp 双栈方案，继续请输入 y，其他按键退出:"
-T[E80]="The WARP is working. It will be closed, please run the previous command to install or enter !!"
-T[C80]="检测 WARP 已开启，自动关闭后运行上一条命令安装或者输入 !!"
+T[E79]=""
+T[C79]=""
+T[E80]=""
+T[C80]=""
 T[E81]="Step 3/3: Searching for the best MTU value is ready."
 T[C81]="进度 3/3：寻找 MTU 最优值已完成"
-T[E82]="Install WARP Client for Linux and Proxy Mode"
-T[C82]="安装 WARP 的 Linux Client 和代理模式"
-T[E83]="Step 1/2: Installing WARP Client..."
-T[C83]="进度 1/2： 安装 Client……"
-T[E84]="Step 2/2: Setting to Proxy Mode"
-T[C84]="进度 2/2： 设置代理模式"
-T[E85]="Client was installed. You can connect/disconnect by [warp r]"
-T[C85]="Linux Client 已安装，连接/断开 Client 可以用 warp r"
-T[E86]="Client is working. Socks5 proxy listening on: \$(ss -nltp | grep warp | grep -oP '127.0*\S+')"
-T[C86]="Linux Client 正常运行中。 Socks5 代理监听:\$(ss -nltp | grep warp | grep -oP '127.0*\S+')"
-T[E87]="Fail to establish Socks5 proxy. Feedback: [https://github.com/fscarmen/warp/issues]"
-T[C87]="创建 Socks5 代理失败，问题反馈:[https://github.com/fscarmen/warp/issues]"
-T[E88]="Connect the client"
-T[C88]="连接 Client"
-T[E89]="Disconnect the client"
-T[C89]="断开 Client"
-T[E90]="Client is connected"
-T[C90]="Client 已连接"
-T[E91]="Client is disconnected. It could be connect again by [warp r]"
-T[C91]="已断开 Client ，再次连接可以用 warp r"
-T[E92]="Client is installed already. It could be uninstalled by [warp u]"
-T[C92]="Client 已安装，如要卸载，可以用 warp u"
-T[E93]="Client is not installed. It could be installed by [warp c]"
-T[C93]="Client 未安装，如需安装，可以用 warp c"
-T[E94]="Congratulations! WARP\$AC Linux Client is working. Spend time:\$(( end - start )) seconds.\\\n The script runs on today: \$TODAY. Total:\$TOTAL"
-T[C94]="恭喜！WARP\$AC Linux Client 工作中, 总耗时:\$(( end - start ))秒， 脚本当天运行次数:\$TODAY，累计运行次数：\$TOTAL"
-T[E95]="Client works with non-WARP IPv4. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
-T[C95]="Client 在非 WARP IPv4 下才能工作正常，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
-T[E96]="Client connecting failure. It may be a CloudFlare IPv4."
-T[C96]="Client 连接失败，可能是 CloudFlare IPv4."
+T[E82]=""
+T[C82]=""
+T[E83]=""
+T[C83]=""
+T[E84]=""
+T[C84]=""
+T[E85]=""
+T[C85]=""
+T[E86]=""
+T[C86]=""
+T[E87]=""
+T[C87]=""
+T[E88]=""
+T[C88]=""
+T[E89]=""
+T[C89]=""
+T[E90]=""
+T[C90]=""
+T[E91]=""
+T[C91]=""
+T[E92]=""
+T[C92]=""
+T[E93]=""
+T[C93]=""
+T[E94]=""
+T[C94]=""
+T[E95]=""
+T[C95]=""
+T[E96]=""
+T[C96]=""
 T[E97]="It is a WARP+ account already. Update is aborted."
 T[C97]="已经是 WARP+ 账户，不需要升级"
-T[E98]="\n 1. WGCF WARP account\n 2. WARP Linux Client account\n"
-T[C98]="\n 1. WGCF WARP 账户\n 2. WARP Linux Client 账户\n"
-T[E99]="Local Socks5:\$PROXYSOCKS5\\\n WARP\$AC IPv4:\$PROXYIP\\\n \$PROXYCOUNTRY\\\n \$PROXYASNORG"
-T[C99]="本地 Socks5:\$PROXYSOCKS5\\\n WARP\$AC IPv4:\$PROXYIP\\\n \$PROXYCOUNTRY\\\n \$PROXYASNORG"
+T[E98]=""
+T[C98]=""
+T[E99]=""
+T[C99]=""
 T[E100]="License should be 26 characters, please re-enter WARP+ License. Otherwise press Enter to continue. \(\$i times remaining\): "
 T[C100]="License 应为26位字符,请重新输入 WARP+ License \(剩余\$i次\): "
-T[E101]="Client doesn't support architecture ARM64. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
-T[C101]="Client 不支持 ARM64，问题反馈:[https://github.com/fscarmen/warp/issues]"
+T[E101]=""
+T[C101]=""
 T[E102]="Please customize the WARP+ device name (Default is [WARP] if left blank):"
 T[C102]="请自定义 WARP+ 设备名 (如果不输入，默认为 [WARP]):"
-T[E103]="Port is in use. Please input another Port\(\$i times remaining\):"
-T[C103]="端口占用中，请使用另一端口\(剩余\$i次\):"
-T[E104]="Please customize the Client port (It must be 4-5 digits. Default to 40000 if it is blank):"
-T[C104]="请自定义 Client 端口号 (必须为4-5位自然数，如果不输入，会默认40000):"
+T[E103]=""
+T[C103]=""
+T[E104]=""
+T[C104]=""
 T[E105]="\n Please choose the priority:\n  1.IPv4 (default)\n  2.IPv6\n  3.Use initial settings\n"
 T[C105]="\n 请选择优先级别:\n  1.IPv4 (默认)\n  2.IPv6\n  3.使用 VPS 初始设置\n"
 T[E106]="IPv6 priority"
 T[C106]="IPv6 优先"
 T[E107]="IPv4 priority"
 T[C107]="IPv4 优先"
-T[E108]="\n 1. WGCF WARP IP ( Only IPv6 can be brushed when WGCF and Client exist at the same time )\n 2. WARP Linux Client IP\n"
-T[C108]="\n 1. WGCF WARP IP ( WGCF 和 Client 并存时只能刷 IPv6)\n 2. WARP Linux Client IP\n"
-T[E109]="Socks5 Proxy Client on IPv4 VPS is working now. You can only choose the WARP IPv6 interface, please enter [y] to continue, and other keys to exit:"
-T[C109]="IPv4 only VPS，并且 Socks5 代理正在运行中，只能选择单栈方案，继续请输入 y，其他按键退出:"
-T[E110]="Socks5 Proxy Client on native dualstack VPS is working now. WARP interface could not be installed. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
-T[C110]="原生双栈 VPS，并且 Socks5 代理正在运行中。WARP 网络接口不能安装，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
-T[E111]="Port must be 4-5 digits. Please re-input\(\$i times remaining\):"
-T[C111]="端口必须为4-5位自然数，请重新输入\(剩余\$i次\):"
-T[E112]="Client is not installed."
-T[C112]="Client 未安装"
-T[E113]="Client is installed and disconnected"
-T[C113]="Client 已安装，状态为断开连接"
+T[E108]=""
+T[C108]=""
+T[E109]=""
+T[C109]=""
+T[E110]=""
+T[C110]=""
+T[E111]=""
+T[C111]=""
+T[E112]=""
+T[C112]=""
+T[E113]=""
+T[C113]=""
 T[E114]="WARP\$TYPE Interface is on"
 T[C114]="WARP\$TYPE 网络接口已开启"
 T[E115]="WARP Interface is on"
@@ -252,22 +251,22 @@ T[E117]="Uninstall WARP Interface was complete."
 T[C117]="WARP 网络接口卸载成功"
 T[E118]="Uninstall WARP Interface was fail."
 T[C118]="WARP 网络接口卸载失败"
-T[E119]="Uninstall Socks5 Proxy Client was complete."
-T[C119]="Socks5 Proxy Client 卸载成功"
-T[E120]="Uninstall Socks5 Proxy Client was fail."
-T[C120]="Socks5 Proxy Client 卸载失败"
-T[E121]="Changing Netflix IP is adapted from other authors [luoxue-bot],[https://github.com/luoxue-bot/warp_auto_change_ip]"
-T[C121]="更换支持 Netflix IP 改编自 [luoxue-bot] 的成熟作品，地址[https://github.com/luoxue-bot/warp_auto_change_ip]，请熟知"
-T[E122]="WARP interface is not running.The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
-T[C122]="WARP 还没有运行，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
-T[E123]="Change the WARP IP to support Netflix"
-T[C123]="更换支持 Netflix 的 IP"
-T[E124]="It is IPv6 priority now, press [y] to change to IPv4 priority? And other keys for unchanging:"
-T[C124]="现在是 IPv6 优先，改为IPv4 优先的话请按 [y]，其他按键保持不变:"
-T[E125]="\$(date +'%F %T') Region: \$REGION Done. IPv\$NF: \$WAN  \$COUNTRY  \$ASNORG. Retest after 1 hour. Brush ip runing time:\$DAY days \$HOUR hours \$MIN minutes \$SEC seconds" 
-T[C125]="\$(date +'%F %T') 区域 \$REGION 解锁成功，IPv\$NF: \$WAN  \$COUNTRY  \$ASNORG，1 小时后重新测试，刷 IP 运行时长: \$DAY 天 \$HOUR 时 \$MIN 分 \$SEC 秒"
-T[E126]="\$(date +'%F %T') Try \$i. Failed. IPv\$NF: \$WAN  \$COUNTRY  \$ASNORG. Retry after \$j seconds. Brush ip runing time:\$DAY days \$HOUR hours \$MIN minutes \$SEC seconds" 
-T[C126]="\$(date +'%F %T') 尝试第\$i次，解锁失败，IPv\$NF: \$WAN  \$COUNTRY  \$ASNORG，\$j秒后重新测试，刷 IP 运行时长: \$DAY 天 \$HOUR 时 \$MIN 分 \$SEC 秒"
+T[E119]=""
+T[C119]=""
+T[E120]=""
+T[C120]=""
+T[E121]=""
+T[C121]=""
+T[E122]=""
+T[C122]=""
+T[E123]=""
+T[C123]=""
+T[E124]=""
+T[C124]=""
+T[E125]=""
+T[C125]=""
+T[E126]=""
+T[C126]=""
 T[E127]="Please input Teams file URL (To use the one provided by the script if left blank):" 
 T[C127]="请输入 Teams 文件 URL (如果留空，则使用脚本提供的):"
 T[E128]="Successfully upgraded to a WARP Teams account"
@@ -395,7 +394,7 @@ MODIFYS01='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860
 MODIFYD01='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
 MODIFYS10='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;/0\.\0\/0/d;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
 MODIFYD10='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
-MODIFYD11='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/" wgcf-profile.conf'
+MODIFYD11='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;/0\.\0\/0/d;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
 
 # IPv4, IPv6 优先
 stack_priority(){
@@ -407,8 +406,39 @@ stack_priority(){
 	esac
 }
 
-# WGCF 安装
+
+# WGCF docker 卸载
+uninstall(){
+	unset IP4 IP6 WAN4 WAN6 COUNTRY4 COUNTRY6 ASNORG4 ASNORG6
+	# 停止及删除容器
+	docker stop wgcf
+	docker rm wgcf
+	
+	# 删除镜像
+	docker rmi $(docker images | grep wgcf | awk '{print $3}')
+
+	# 显示卸载结果
+	ip4_info; [[ $L = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
+	ip6_info; [[ $L = C && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")
+	green " ${T[${L}45]}\n IPv4：$WAN4 $COUNTRY4 $ASNORG4\n IPv6：$WAN6 $COUNTRY6 $ASNORG6 "
+	}
+
+
+# WGCF docker 安装
 install(){
+	# 先删除之前安装，可能导致失败的文件
+	rm -rf /usr/local/bin/wgcf /usr/bin/wireguard-go wgcf-account.toml wgcf-profile.conf
+	
+	# 询问是否有 WARP+ 或 Teams 账户
+	[[ -z $LICENSETYPE ]] && yellow " ${T[${L}132]}" && reading " ${T[${L}50]} " LICENSETYPE
+	case $LICENSETYPE in
+	1 ) INPUT_LICENSE=1 && input_license;;	
+	2 ) input_url;;
+	esac
+
+	# 选择优先使用 IPv4 /IPv6 网络
+	yellow " ${T[${L}105]} " && reading " ${T[${L}50]} " PRIORITY
+	
 	# 脚本开始时间
 	start=$(date +%s)
 			
@@ -461,6 +491,11 @@ install(){
 
 	}&
 
+	# 优先使用 IPv4 /IPv6 网络
+	{ stack_priority; }&
+	
+	green " \n${T[${L}32]}\n "
+
 	# 对于 IPv4 only VPS 开启 IPv6 支持
 	# 感谢 P3terx 大神项目这块的技术指导。项目:https://github.com/P3TERX/warp.sh/blob/main/warp.sh
     	{
@@ -471,19 +506,16 @@ install(){
 	}&
 
         # 优先使用 IPv4 /IPv6 网络
-	{ stack_priority; }&
-	
-	# 根据系统选择需要安装的依赖
-	green " \n${T[${L}32]}\n "
+	{ stack_priority; }&	
 	
 	# 安装 docker
-	curl -sSL get.docker.com | sh
+	green " \n${T[${L}32]}\n " && curl -sSL get.docker.com | sh
 
 	# 拉取镜像
 	docker pull fscarmen/wgcf:1.0
 
 	# 创建容器
-	docker run --restart=always -itd  --network=host --name wgcf --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module  -v /etc/wireguard:/etc/wireguard -v /lib/modules:/lib/modules fscarmen/wgcf:1.0
+	docker run -dit --restart=always --network=host --name wgcf --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module  -v /etc/wireguard:/etc/wireguard -v /lib/modules:/lib/modules fscarmen/wgcf:1.0
 	
 	wait
 
@@ -494,15 +526,14 @@ install(){
 
 	# 保存好配置文件
 	mv -f wgcf-account.toml wgcf-profile.conf menu.sh /etc/wireguard >/dev/null 2>&1
-
 	echo "$L" >/etc/wireguard/language-docker
 	
 	# 自动刷直至成功（ warp bug，有时候获取不了ip地址），重置之前的相关变量值，记录新的 IPv4 和 IPv6 地址和归属地，IPv4 / IPv6 优先级别
-	green " ${T[${L}39]} "
 	unset IP4 IP6 WAN4 WAN6 COUNTRY4 COUNTRY6 ASNORG4 ASNORG6 TRACE4 TRACE6 PLUS4 PLUS6 WARPSTATUS4 WARPSTATUS6
 
 	# 结果提示，脚本运行时间，次数统计
 	end=$(date +%s)
+	green " $(eval echo "${T[${L}42]}") "
 
 	}
 
@@ -528,16 +559,13 @@ menu(){
 	[[ $TRACE4 = plus || $TRACE6 = plus ]] && green "	$(eval echo "${T[${L}114]}")	$PLUSINFO "
 	[[ $TRACE4 = on || $TRACE6 = on ]] && green "	${T[${L}115]} " 	
 	[[ $PLAN != 3 ]] && green "	${T[${L}116]} "
-	[[ $CLIENT = 0 ]] && green "	${T[${L}112]} "
-	[[ $CLIENT = 2 ]] && green "	${T[${L}113]} "
-	[[ $CLIENT = 3 ]] && green "	WARP$AC ${T[${L}24]}	$(eval echo "${T[${L}27]}") "
  	red "\n======================================================================================================================\n"
-	green " 1. $OPTION1\n 0. ${T[${L}76]}\n "
+	green " 1. $OPTION1\n 2. ${T[${L}72]} 0. ${T[${L}76]}\n "
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
 		1 )	[[ $OPTION1 = ${T[${L}66]} || $OPTION1 = ${T[${L}67]} ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6) && install
-			[[ $OPTION1 = ${T[${L}70]} ]] && MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6) && install
-			[[ $OPTION1 = ${T[${L}77]} ]] && onoff;;
+			[[ $OPTION1 = ${T[${L}70]} ]] && MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6) && install;;
+		2 )	uninstall;;
 		0 )	exit;;
 		* )	red " ${T[${L}51]} [0-1] "; sleep 1; menu "$PLAN";;
 		esac
