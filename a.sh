@@ -470,7 +470,7 @@ uninstall(){
 	docker rm wgcf
 	
 	# 删除镜像
-	docker rmi $(docker images | grep wgcf | awk '{print $3}')
+	docker rmi -f $(docker images | grep wgcf | awk '{print $3}')
 	
 	# 删除文件
 	rm -rf /usr/local/bin/wgcf /etc/wireguard wgcf-account.toml wgcf-profile.conf /usr/bin/warp
