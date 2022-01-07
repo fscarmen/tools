@@ -574,7 +574,7 @@ install(){
 
 	MTU=$((MTU+28-80))
 
-	[[ -e wgcf-profile.conf ]] && sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf && green " \n${T[${L}81]}\n "
+	[[ -e wgcf-profile.conf ]] && sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf && green "\n ${T[${L}81]}\n "
 	}&
 
 	# 优先使用 IPv4 /IPv6 网络
