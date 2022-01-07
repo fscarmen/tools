@@ -401,6 +401,7 @@ onoff(){
 	[[ $L = C ]] && COUNTRY4=$(translate "$COUNTRY4")
 	[[ $L = C ]] && COUNTRY6=$(translate "$COUNTRY6")
 	green " IPv4:$WAN4 $WARPSTATUS4 $COUNTRY4 $ASNORG4\n IPv6:$WAN6 $WARPSTATUS6 $COUNTRY6 $ASNORG6 "
+	fi
 	}
 
 # 设置部分后缀 1/2
