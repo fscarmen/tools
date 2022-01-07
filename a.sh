@@ -475,7 +475,6 @@ uninstall(){
 
 # 免费 WARP 账户升级 WARP+ 账户
 update(){
-	wgcf_account(){
 	[[ $TRACE4 = plus || $TRACE6 = plus ]] && red " ${T[${L}58]} " && exit 1
 	[[ ! -e /etc/wireguard/wgcf-account.toml ]] && red " ${T[${L}59]} " && exit 1
 	[[ ! -e /etc/wireguard/wgcf.conf ]] && red " ${T[${L}60]} " && exit 1
