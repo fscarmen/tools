@@ -395,7 +395,7 @@ onoff(){
 	if [[ -n $(docker exec -it wgcf wg 2>/dev/null) ]]; then
 	docker exec -it wgcf wg-quick down wgcf >/dev/null 2>&1; green " ${T[${L}15]} "
 	else 
-	docker exec -it wgcf wg-quick up wgcf >/dev/null 2>&1; green " ${T[${L}15]} "
+	docker exec -it wgcf wg-quick up wgcf >/dev/null 2>&1"
 	ip4_info; ip6_info
 	green " ${T[${L}14]} "
 	[[ $L = C ]] && COUNTRY4=$(translate "$COUNTRY4")
