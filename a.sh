@@ -44,10 +44,10 @@ T[E12]=""
 T[C12]=""
 T[E13]=""
 T[C13]=""
-T[E14]=""
-T[C14]=""
-T[E15]=""
-T[C15]=""
+T[E14]="Got the WARP IP successfully."
+T[C14]="已成功获取 WARP 网络"
+T[E15]="WARP is turned off. It could be turned on again by [warp o]"
+T[C15]="已暂停 WARP，再次开启可以用 warp o"
 T[E16]=""
 T[C16]=""
 T[E17]="Version"
@@ -369,6 +369,46 @@ VIRT=$(systemd-detect-virt 2>/dev/null | tr '[:upper:]' '[:lower:]')
 TUN=$(cat /dev/net/tun 2>&1 | tr '[:upper:]' '[:lower:]')
 [[ ! $TUN =~ 'in bad state' ]] && [[ ! $TUN =~ '处于错误状态' ]] && red " ${T[${L}3]} " && exit 1
 
+# WGCF docker 卸载
+uninstall(){
+	unset IP4 IP6 WAN4 WAN6 COUNTRY4 COUNTRY6 ASNORG4 ASNORG6
+	docker exec -it wgcf wg-quick down wgcf
+	
+	# 停止及删除容器
+	docker stop wgcf
+	docker rm wgcf
+	
+	# 删除镜像
+	docker rmi -f $(docker images | grep wgcf | awk '{print $3}')
+	
+	# 删除文件
+	rm -rf /usr/local/bin/wgcf /etc/wireguard wgcf-account.toml wgcf-profile.conf /usr/bin/warp
+
+	# 显示卸载结果
+	ip4_info; [[ $L = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
+	ip6_info; [[ $L = C && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")
+	green " ${T[${L}45]}\n IPv4：$WAN4 $COUNTRY4 $ASNORG4\n IPv6：$WAN6 $COUNTRY6 $ASNORG6 "
+	}
+
+# WARP 开关
+onoff(){
+	if docker exec -it wgcf wg >/dev/null 2>&1; then
+	docker exec -it wgcf wg-quick down wgcf >/dev/null 2>&1; green " ${T[${L}15]} "
+	else 
+	docker exec -it wgcf wg-quick up wgcf >/dev/null 2>&1; green " ${T[${L}15]} "
+	ip4_info; ip6_info
+	green " ${T[${L}14]} "
+	[[ $L = C ]] && COUNTRY4=$(translate "$COUNTRY4")
+	[[ $L = C ]] && COUNTRY6=$(translate "$COUNTRY6")
+	green " IPv4:$WAN4 $WARPSTATUS4 $COUNTRY4 $ASNORG4\n IPv6:$WAN6 $WARPSTATUS6 $COUNTRY6 $ASNORG6 "
+	}
+
+# 设置部分后缀 1/2
+case "$OPTION" in
+u ) uninstall; exit 0;;
+o ) onoff; exit 0;;
+esac
+
 # 判断是否大陆 VPS。先尝试连接 CloudFlare WARP 服务的 Endpoint IP，如遇到 WARP 断网则先关闭、杀进程后重试一次，仍然不通则 WARP 项目不可用。
 ping6 -c2 -w8 2606:4700:d0::a29f:c001 >/dev/null 2>&1 && IPV6=1 && CDN=-6 || IPV6=0
 ping -c2 -W8 162.159.192.1 >/dev/null 2>&1 && IPV4=1 && CDN=-4 || IPV4=0
@@ -459,27 +499,6 @@ stack_priority(){
 		* )	echo "precedence ::ffff:0:0/96  100" >> /etc/gai.conf;;
 	esac
 }
-
-# WGCF docker 卸载
-uninstall(){
-	unset IP4 IP6 WAN4 WAN6 COUNTRY4 COUNTRY6 ASNORG4 ASNORG6
-	docker exec -it wgcf wg-quick down wgcf
-	
-	# 停止及删除容器
-	docker stop wgcf
-	docker rm wgcf
-	
-	# 删除镜像
-	docker rmi -f $(docker images | grep wgcf | awk '{print $3}')
-	
-	# 删除文件
-	rm -rf /usr/local/bin/wgcf /etc/wireguard wgcf-account.toml wgcf-profile.conf /usr/bin/warp
-
-	# 显示卸载结果
-	ip4_info; [[ $L = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
-	ip6_info; [[ $L = C && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")
-	green " ${T[${L}45]}\n IPv4：$WAN4 $COUNTRY4 $ASNORG4\n IPv6：$WAN6 $COUNTRY6 $ASNORG6 "
-	}
 
 # 免费 WARP 账户升级 WARP+ 账户
 update(){
@@ -662,12 +681,10 @@ menu(){
 		esac
 	}
 
-# 设置部分后缀
+# 设置部分后缀 2/2
 case "$OPTION" in
 1 ) [[ $IPV4$IPV6 = 11 ]] && MODIFY=$MODIFYS10 || MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6)
     install;;
-u ) uninstall;;
 d ) update;;
-v ) ver;;
 * ) menu;;
 esac
