@@ -520,7 +520,8 @@ install(){
 	# 安装 docker, 拉取镜像+创建容器
 	{ green " \n${T[${L}32]}\n " && ! systemctl is-active docker >/dev/null 2>&1 && curl -sSL get.docker.com | sh
 
-	docker run -dit --restart=always --network=host --name wgcf --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module  -v /etc/wireguard:/etc/wireguard -v /lib/modules:/lib/modules fscarmen/wgcf:1.0 }&
+	docker run -dit --restart=always --network=host --name wgcf --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module  -v /etc/wireguard:/etc/wireguard -v /lib/modules:/lib/modules fscarmen/wgcf:1.0
+	}&
 	
 	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息)
 	# 判断 wgcf 的最新版本,如因 github 接口问题未能获取，默认 v2.2.11
@@ -571,7 +572,6 @@ install(){
 	MTU=$((MTU+28-80))
 
 	[[ -e wgcf-profile.conf ]] && sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf && green " \n${T[${L}81]}\n "
-
 	}&
 
 	# 优先使用 IPv4 /IPv6 网络
