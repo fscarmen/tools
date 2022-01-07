@@ -97,10 +97,10 @@ T[E40]=""
 T[C40]=""
 T[E41]=""
 T[C41]=""
-T[E42]="Congratulations! WARP is turned on. Spend time:\$(( end - start )) seconds."
-T[C42]="恭喜！WARP 已开启，总耗时:\$(( end - start ))秒"
-T[E43]="Run again with warp [option] [lisence], such as"
-T[C43]="再次运行用 warp [option] [lisence]，如"
+T[E42]="Congratulations! WARP docker installed complete. Spend time:\$(( end - start )) seconds."
+T[C42]="恭喜！WARP docker 安装成功，总耗时:\$(( end - start ))秒"
+T[E43]="Turn on WGCF: [docker exec -it wgcf sh] and [wg-quick up wgcf; exit]. Turn off WGCF: [docker exec -it wgcf sh] and [wg-quick down wgcf; exit]"
+T[C43]="运行 WGCF: [docker exec -it wgcf sh], 然后 [wg-quick up wgcf; exit]; 关闭 WGCF:[docker exec -it wgcf sh], 然后 [wg-quick down wgcf; exit]"
 T[E44]="WARP installation failed. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C44]="WARP 安装失败，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E45]="WARP docker have been completely deleted!"
@@ -396,6 +396,53 @@ MODIFYS10='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4
 MODIFYD10='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
 MODIFYD11='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;/0\.\0\/0/d;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
 
+# 替换为 Teams 账户信息
+teams_change(){
+	sed -i "s#PrivateKey.*#PrivateKey = $PRIVATEKEY#g;s#Address.*32#Address = ${ADDRESS4}/32#g;s#Address.*128#Address = ${ADDRESS6}/128#g;s#PublicKey.*#PublicKey = $PUBLICKEY#g" /etc/wireguard/wgcf.conf
+		case $IPV4$IPV6 in
+			01 ) sed -i "s#Endpoint.*#Endpoint = $(expr "$TEAMS" : '.*v6&quot;:&quot;\(\[[^&]*\).*')#g" /etc/wireguard/wgcf.conf;;
+			10 ) sed -i "s#Endpoint.*#Endpoint = $(expr "$TEAMS" : '.*endpoint&quot;:{&quot;v4&quot;:&quot;\([^&]*\).*')#g" /etc/wireguard/wgcf.conf;;	
+		esac
+	}
+	
+# 输入 WARP+ 账户（如有），限制位数为空或者26位以防输入错误
+input_license(){
+	[[ -z $LICENSE ]] && reading " ${T[${L}28]} " LICENSE
+	i=5
+	until [[ -z $LICENSE || $LICENSE =~ ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}$ ]]
+		do	(( i-- )) || true
+			[[ $i = 0 ]] && red " ${T[${L}29]} " && exit 1 || reading " $(eval echo "${T[${L}30]}") " LICENSE
+		done
+	if [[ $INPUT_LICENSE = 1 ]]; then
+		[[ -n $LICENSE && -z $NAME ]] && reading " ${T[${L}102]} " NAME
+		[[ -n $NAME ]] && NAME="${NAME//[[:space:]]/_}" || NAME=${NAME:-'WARP'}
+	fi
+	}
+
+# 输入 Teams 账户 URL（如有）
+input_url(){
+	[[ -z $URL ]] && reading " ${T[${L}127]} " URL
+	URL=${URL:-'https://gist.githubusercontent.com/fscarmen/56aaf02d743551737c9973b8be7a3496/raw/16cf34edf5fb28be00f53bb1c510e95a35491032/com.cloudflare.onedotonedotonedotone_preferences.xml'}
+	TEAMS=$(curl -sSL "$URL")
+	PRIVATEKEY=$(expr "$TEAMS" : '.*private_key..\([^<]*\).*')
+	PUBLICKEY=$(expr "$TEAMS" : '.*public_key&quot;:&quot;\([^&]*\).*')
+	ADDRESS4=$(expr "$TEAMS" : '.*v4&quot;:&quot;\(172[^&]*\).*')
+	ADDRESS6=$(expr "$TEAMS" : '.*v6&quot;:&quot;\([^[&]*\).*')
+	yellow " $(eval echo "${T[${L}130]}") " && reading " ${T[${L}131]} " CONFIRM
+	}
+
+# 升级 WARP+ 账户（如有），限制位数为空或者26位以防输入错误，WARP interface 可以自定义设备名(不允许字符串间有空格，如遇到将会以_代替)
+update_license(){
+	[[ -z $LICENSE ]] && reading " ${T[${L}61]} " LICENSE
+	i=5
+	until [[ $LICENSE =~ ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}$ ]]
+		do	(( i-- )) || true
+			[[ $i = 0 ]] && red " ${T[${L}29]} " && exit 1 || reading " $(eval echo "${T[${L}100]}") " LICENSE
+	       done
+	[[ $UPDATE_LICENSE = 1 && -n $LICENSE && -z $NAME ]] && reading " ${T[${L}102]} " NAME
+	[[ -n $NAME ]] && NAME="${NAME//[[:space:]]/_}" || NAME=${NAME:-'WARP'}
+}
+
 # IPv4, IPv6 优先
 stack_priority(){
 	[[ -e /etc/gai.conf ]] && sed -i '/^precedence \:\:ffff\:0\:0/d;/^label 2002\:\:\/16/d' /etc/gai.conf
@@ -405,7 +452,6 @@ stack_priority(){
 		* )	echo "precedence ::ffff:0:0/96  100" >> /etc/gai.conf;;
 	esac
 }
-
 
 # WGCF docker 卸载
 uninstall(){
@@ -423,6 +469,35 @@ uninstall(){
 	green " ${T[${L}45]}\n IPv4：$WAN4 $COUNTRY4 $ASNORG4\n IPv6：$WAN6 $COUNTRY6 $ASNORG6 "
 	}
 
+# 免费 WARP 账户升级 WARP+ 账户
+update(){
+	wgcf_account(){
+	[[ $TRACE4 = plus || $TRACE6 = plus ]] && red " ${T[${L}58]} " && exit 1
+	[[ ! -e /etc/wireguard/wgcf-account.toml ]] && red " ${T[${L}59]} " && exit 1
+	[[ ! -e /etc/wireguard/wgcf.conf ]] && red " ${T[${L}60]} " && exit 1
+	
+	[[ -z $LICENSETYPE ]] && yellow " ${T[${L}31]}" && reading " ${T[${L}50]} " LICENSETYPE
+	case $LICENSETYPE in
+	1 ) UPDATE_LICENSE=1 && update_license
+	cd /etc/wireguard || exit
+	sed -i "s#license_key.*#license_key = \"$LICENSE\"#g" wgcf-account.toml &&
+	wgcf update --name "$NAME" > /etc/wireguard/info.log 2>&1 &&
+	(wgcf generate >/dev/null 2>&1
+	sed -i "2s#.*#$(sed -ne 2p wgcf-profile.conf)#;3s#.*#$(sed -ne 3p wgcf-profile.conf)#;4s#.*#$(sed -ne 4p wgcf-profile.conf)#" wgcf.conf
+	wg-quick down wgcf >/dev/null 2>&1
+	net
+	[[ $(curl -s4 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus || $(curl -s6 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus ]] &&
+	green " ${T[${L}62]}\n ${T[${L}25]}：$(grep 'Device name' /etc/wireguard/info.log | awk '{ print $NF }')\n ${T[${L}63]}：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')" ) || red " ${T[${L}36]} ";;
+	
+	2 ) input_url
+	[[ $CONFIRM = [Yy] ]] && (echo "$TEAMS" > /etc/wireguard/info.log 2>&1
+	teams_change
+	wg-quick down wgcf >/dev/null 2>&1; net
+	[[ $(curl -s4 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus || $(curl -s6 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus ]] && green " ${T[${L}128]} ");;
+
+	* ) red " ${T[${L}51]} [1-2] "; sleep 1; update
+	esac
+	}
 
 # WGCF docker 安装
 install(){
@@ -525,12 +600,15 @@ install(){
 	mv -f wgcf-account.toml wgcf-profile.conf menu.sh /etc/wireguard >/dev/null 2>&1
 	echo "$L" >/etc/wireguard/language-docker
 	
+	[[ $CONFIRM = [Yy] ]] && teams_change && echo "$TEAMS" > /etc/wireguard/info.log 2>&1
+	
 	# 自动刷直至成功（ warp bug，有时候获取不了ip地址），重置之前的相关变量值，记录新的 IPv4 和 IPv6 地址和归属地，IPv4 / IPv6 优先级别
 	unset IP4 IP6 WAN4 WAN6 COUNTRY4 COUNTRY6 ASNORG4 ASNORG6 TRACE4 TRACE6 PLUS4 PLUS6 WARPSTATUS4 WARPSTATUS6
 
 	# 结果提示，脚本运行时间，次数统计
 	end=$(date +%s)
 	green " $(eval echo "${T[${L}42]}") "
+	green " ${T[${L}43]}\n " 
 
 	}
 
