@@ -395,7 +395,7 @@ onoff(){
 	if [[ -n $(docker exec -it wgcf wg 2>/dev/null) ]]; then
 	docker exec -it wgcf wg-quick down wgcf >/dev/null 2>&1; green " ${T[${L}15]} "
 	else 
-	docker exec -it wgcf wg-quick up wgcf >/dev/null 2>&1"
+	docker exec -it wgcf wg-quick up wgcf >/dev/null 2>&1
 	ip4_info; ip6_info
 	green " ${T[${L}14]} "
 	[[ $L = C ]] && COUNTRY4=$(translate "$COUNTRY4")
@@ -512,14 +512,18 @@ update(){
 	1 ) UPDATE_LICENSE=1 && update_license
 	cd /etc/wireguard || exit
 	sed -i "s#license_key.*#license_key = \"$LICENSE\"#g" wgcf-account.toml &&
-	wgcf update --name "$NAME" > /etc/wireguard/info.log 2>&1 &&
-	(wgcf generate >/dev/null 2>&1
-	sed -i "2s#.*#$(sed -ne 2p wgcf-profile.conf)#;3s#.*#$(sed -ne 3p wgcf-profile.conf)#;4s#.*#$(sed -ne 4p wgcf-profile.conf)#" wgcf.conf &&
-	green " ${T[${L}62]}\n ${T[${L}25]}：$(grep 'Device name' /etc/wireguard/info.log | awk '{ print $NF }')\n ${T[${L}63]}：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')" ) || red " ${T[${L}36]} ";;
-
+	if wgcf update --name "$NAME" > /etc/wireguard/info.log 2>&1; then
+	wgcf generate >/dev/null 2>&1
+	sed -i "2s#.*#$(sed -ne 2p wgcf-profile.conf)#;3s#.*#$(sed -ne 3p wgcf-profile.conf)#;4s#.*#$(sed -ne 4p wgcf-profile.conf)#" wgcf.conf
+	docker exec -it wgcf wg-quick down wgcf; docker exec -it wgcf wg-quick up wgcf
+	green " ${T[${L}62]}\n ${T[${L}25]}：$(grep 'Device name' /etc/wireguard/info.log | awk '{ print $NF }')\n ${T[${L}63]}：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')"
+	else red " ${T[${L}36]} "
+	fi;;
 	2 ) input_url
 	[[ $CONFIRM = [Yy] ]] && (echo "$TEAMS" > /etc/wireguard/info.log 2>&1
-	teams_change);;
+	teams_change
+	docker exec -it wgcf wg-quick down wgcf; docker exec -it wgcf wg-quick up wgcf
+	[[ $(curl -s4 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus || $(curl -s6 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus ]] && green " ${T[${L}128]} ");;
 	* ) red " ${T[${L}51]} [1-2] "; sleep 1; update;;
 	esac
 	}
@@ -673,8 +677,8 @@ menu(){
 	green " 1. $OPTION1\n 2. ${T[${L}78]}\n 3. ${T[${L}72]}\n 0. ${T[${L}76]}\n "
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
-		1 )	[[ $OPTION1 = ${T[${L}66]} || $OPTION1 = ${T[${L}67]} ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6) && install
-			[[ $OPTION1 = ${T[${L}70]} ]] && MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6) && install;;
+		1 )	[[ $IPV4$IPV6 = 11 ]] && MODIFY=$MODIFYS10 || MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6)
+			install;;
 		2 )	update;;
 		3 )	uninstall;;
 		0 )	exit;;
