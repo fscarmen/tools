@@ -288,7 +288,7 @@ T[E134]="Curren architecture \$(arch) is not supported. Feedback: [https://githu
 T[C134]="当前架构 \$(arch) 暂不支持,问题反馈:[https://github.com/fscarmen/warp/issues]"
 
 # 脚本当天及累计运行次数统计
-COUNT=$(curl -sm1 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Ffscarmen%2Fwarp%2Fmenu.sh&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=&edge_flat=true" 2>&1) &&
+COUNT=$(curl -sm1 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Ffscarmen%2Fwarp%2Fdocker.sh&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=&edge_flat=true" 2>&1) &&
 TODAY=$(expr "$COUNT" : '.*\s\([0-9]\{1,\}\)\s/.*') && TOTAL=$(expr "$COUNT" : '.*/\s\([0-9]\{1,\}\)\s.*')
 	
 # 选择语言，先判断 /etc/wireguard/language 里的语言选择，没有的话再让用户选择，默认英语
@@ -622,11 +622,11 @@ install(){
 	cp -f wgcf-profile.conf /etc/wireguard/wgcf.conf >/dev/null 2>&1
 
 	# 保存好配置文件
-	mv -f wgcf-account.toml wgcf-profile.conf menu.sh /etc/wireguard >/dev/null 2>&1
+	mv -f wgcf-account.toml wgcf-profile.conf docker.sh /etc/wireguard >/dev/null 2>&1
 	
 	# 创建再次执行的软链接快捷方式，再次运行可以用 warp 指令,设置默认语言
-	chmod +x /etc/wireguard/menu.sh >/dev/null 2>&1
-	ln -sf /etc/wireguard/menu.sh /usr/bin/warp && green " ${T[${L}38]} "
+	chmod +x /etc/wireguard/docker.sh >/dev/null 2>&1
+	ln -sf /etc/wireguard/docker.sh /usr/bin/warp && green " ${T[${L}38]} "
 	echo "$L" >/etc/wireguard/language-docker
 	
 	[[ $CONFIRM = [Yy] ]] && teams_change && echo "$TEAMS" > /etc/wireguard/info.log 2>&1
@@ -678,7 +678,7 @@ menu(){
 		2 )	update;;
 		3 )	uninstall;;
 		0 )	exit;;
-		* )	red " ${T[${L}51]} [0-1] "; sleep 1; menu "$PLAN";;
+		* )	red " ${T[${L}51]} [0-1] "; sleep 1; menu;;
 		esac
 	}
 
