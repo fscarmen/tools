@@ -98,10 +98,10 @@ T[E39]="Running WARP"
 T[C39]="运行 WARP"
 T[E40]=""
 T[C40]=""
-T[E41]=""
-T[C41]=""
-T[E42]="Congratulations! WARP docker installed complete. Spend time:\$(( end - start )) seconds."
-T[C42]="恭喜！WARP docker 安装成功，总耗时:\$(( end - start ))秒"
+T[E41]="Congratulations! WARP\$TYPE is turned on. Spend time:\$(( end - start )) seconds.\\\n The script runs today: \$TODAY. Total:\$TOTAL"
+T[C41]="恭喜！WARP\$TYPE 已开启，总耗时:\$(( end - start ))秒， 脚本当天运行次数:\$TODAY，累计运行次数：\$TOTAL"
+T[E42]="Congratulations! WARP is turned on. Spend time:\$(( end - start )) seconds.\\\n The script runs on today: \$TODAY. Total:\$TOTAL"
+T[C42]="恭喜！WARP 已开启，总耗时:\$(( end - start ))秒， 脚本当天运行次数:\$TODAY，累计运行次数：\$TOTAL
 T[E43]="Turn on WGCF: [docker exec -it wgcf sh] and [wg-quick up wgcf; exit]. Turn off WGCF: [docker exec -it wgcf sh] and [wg-quick down wgcf; exit]"
 T[C43]="运行 WGCF: [docker exec -it wgcf sh], 然后 [wg-quick up wgcf; exit]; 关闭 WGCF:[docker exec -it wgcf sh], 然后 [wg-quick down wgcf; exit]"
 T[E44]="WARP installation failed. Feedback: [https://github.com/fscarmen/warp/issues]"
@@ -463,6 +463,8 @@ stack_priority(){
 # WGCF docker 卸载
 uninstall(){
 	unset IP4 IP6 WAN4 WAN6 COUNTRY4 COUNTRY6 ASNORG4 ASNORG6
+	docker exec -it wgcf wg-quick down wgcf
+	
 	# 停止及删除容器
 	docker stop wgcf
 	docker rm wgcf
@@ -609,13 +611,23 @@ install(){
 	
 	[[ $CONFIRM = [Yy] ]] && teams_change && echo "$TEAMS" > /etc/wireguard/info.log 2>&1
 	
-	# 自动刷直至成功（ warp bug，有时候获取不了ip地址），重置之前的相关变量值，记录新的 IPv4 和 IPv6 地址和归属地，IPv4 / IPv6 优先级别
+	# 运行 WGCF
 	unset IP4 IP6 WAN4 WAN6 COUNTRY4 COUNTRY6 ASNORG4 ASNORG6 TRACE4 TRACE6 PLUS4 PLUS6 WARPSTATUS4 WARPSTATUS6
+	docker exec -it wgcf wg-quick up wgcf
 
 	# 结果提示，脚本运行时间，次数统计
+	[[ $(curl -sm8 https://ip.gs) = "$WAN6" ]] && PRIORITY=${T[${L}106]} || PRIORITY=${T[${L}107]}
+	ip4_info; [[ $L = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
+	ip6_info; [[ $L = C && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")
 	end=$(date +%s)
-	green " $(eval echo "${T[${L}42]}") "
-	green " ${T[${L}43]}\n " 
+	red "\n==============================================================\n"
+	green " IPv4：$WAN4 $WARPSTATUS4 $COUNTRY4  $ASNORG4 "
+	green " IPv6：$WAN6 $WARPSTATUS6 $COUNTRY6  $ASNORG6 "
+	grep -sq 'Device name' /etc/wireguard/info.log 2>/dev/null && TYPE='+' || TYPE=' Teams'
+	[[ $TRACE4 = plus || $TRACE6 = plus ]] && green " $(eval echo "${T[${L}41]}") " && grep -sq 'Device name' /etc/wireguard/info.log && green " $(eval echo "${T[${L}133]}") "
+	[[ $TRACE4 = on || $TRACE6 = on ]] && green " $(eval echo "${T[${L}42]}") "
+	green " $PRIORITY "
+	red "\n==============================================================\n
 
 	}
 
