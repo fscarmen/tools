@@ -664,7 +664,7 @@ menu(){
 
 # 设置部分后缀
 case "$OPTION" in
-1 ) [[ $IPV4$IPV6 = 11 ]] && MODIFY=$(eval echo \$MODIFYS10) || MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6)
+1 ) [[ $IPV4$IPV6 = 11 ]] && MODIFY=$MODIFYS10 || MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6)
     install;;
 u ) uninstall;;
 d ) update;;
