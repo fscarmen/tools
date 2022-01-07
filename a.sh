@@ -295,8 +295,6 @@ E ) L=E;;	C ) L=C;;
 [[ $LANGUAGE = 2 ]] && L=C;;
 esac
 
-
-
 # 多方式判断操作系统，试到有值为止。只支持 Debian 10/11、Ubuntu 18.04/20.04 或 CentOS 7/8 ,如非上述操作系统，退出脚本
 # 感谢猫大的技术指导优化重复的命令。https://github.com/Oreomeow
 CMD=(	"$(grep -i pretty_name /etc/os-release 2>/dev/null | cut -d \" -f2)"
@@ -355,8 +353,13 @@ ip6_info(){
 	[[ $TRACE6 = on || $TRACE6 = plus ]] && WARPSTATUS6="( WARP$PLUS6 IPv6 )"
 	}
 
+
 # 必须以root运行脚本
 [[ $(id -u) != 0 ]] && red " ${T[${L}2]} " && exit 1
+
+# 判断虚拟化
+VIRT=$(systemd-detect-virt 2>/dev/null | tr '[:upper:]' '[:lower:]')
+[[ -n $VIRT ]] || VIRT=$(hostnamectl 2>/dev/null | tr '[:upper:]' '[:lower:]' | grep virtualization | sed "s/.*://g")
 
 # 必须加载 TUN 模块
 TUN=$(cat /dev/net/tun 2>&1 | tr '[:upper:]' '[:lower:]')
