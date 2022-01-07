@@ -517,6 +517,11 @@ install(){
 	# 脚本开始时间
 	start=$(date +%s)
 			
+	# 安装 docker, 拉取镜像+创建容器
+	{ green " \n${T[${L}32]}\n " && ! systemctl is-active docker >/dev/null 2>&1 && curl -sSL get.docker.com | sh
+
+	docker run -dit --restart=always --network=host --name wgcf --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module  -v /etc/wireguard:/etc/wireguard -v /lib/modules:/lib/modules fscarmen/wgcf:1.0 }&
+	
 	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息)
 	# 判断 wgcf 的最新版本,如因 github 接口问题未能获取，默认 v2.2.11
 	{	
@@ -541,7 +546,7 @@ install(){
 
 	# 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
 	wgcf generate >/dev/null 2>&1
-	green " \n${T[${L}33]}\n "
+	green "\n ${T[${L}33]}\n "
 
 	# 反复测试最佳 MTU。 Wireguard Header：IPv4=60 bytes,IPv6=80 bytes，1280 ≤1 MTU ≤ 1420。 ping = 8(ICMP回显示请求和回显应答报文格式长度) + 20(IP首部) 。
 	# 详细说明：<[WireGuard] Header / MTU sizes for Wireguard>：https://lists.zx2c4.com/pipermail/wireguard/2017-December/002201.html
@@ -571,8 +576,6 @@ install(){
 
 	# 优先使用 IPv4 /IPv6 网络
 	{ stack_priority; }&
-	
-	green " \n${T[${L}32]}\n "
 
 	# 对于 IPv4 only VPS 开启 IPv6 支持
 	# 感谢 P3terx 大神项目这块的技术指导。项目:https://github.com/P3TERX/warp.sh/blob/main/warp.sh
@@ -584,13 +587,7 @@ install(){
 	}&
 
         # 优先使用 IPv4 /IPv6 网络
-	{ stack_priority; }&	
-	
-	# 安装 docker
-	green " \n${T[${L}32]}\n " && ! systemctl is-active docker >/dev/null 2>&1 && curl -sSL get.docker.com | sh
-
-	# 拉取镜像+创建容器
-	docker run -dit --restart=always --network=host --name wgcf --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module  -v /etc/wireguard:/etc/wireguard -v /lib/modules:/lib/modules fscarmen/wgcf:1.0
+	{ stack_priority; }&
 	
 	wait
 
