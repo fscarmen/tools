@@ -353,6 +353,7 @@ ip6_info(){
 	[[ $TRACE6 = on || $TRACE6 = plus ]] && WARPSTATUS6="( WARP$PLUS6 IPv6 )"
 	}
 
+green " ${T[${L}37]} "
 
 # 必须以root运行脚本
 [[ $(id -u) != 0 ]] && red " ${T[${L}2]} " && exit 1
