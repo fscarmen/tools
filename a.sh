@@ -627,8 +627,7 @@ install(){
 	[[ $TRACE4 = plus || $TRACE6 = plus ]] && green " $(eval echo "${T[${L}41]}") " && grep -sq 'Device name' /etc/wireguard/info.log && green " $(eval echo "${T[${L}133]}") "
 	[[ $TRACE4 = on || $TRACE6 = on ]] && green " $(eval echo "${T[${L}42]}") "
 	green " $PRIORITY "
-	red "\n==============================================================\n
-
+	red "\n==============================================================\n"
 	}
 
 # 显示菜单
