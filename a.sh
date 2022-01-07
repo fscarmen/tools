@@ -305,7 +305,7 @@ TODAY=$(expr "$COUNT" : '.*\s\([0-9]\{1,\}\)\s/.*') && TOTAL=$(expr "$COUNT" : '
 # 选择语言，先判断 /etc/wireguard/language 里的语言选择，没有的话再让用户选择，默认英语
 case $(cat /etc/wireguard/language-docker 2>&1) in
 E ) L=E;;	C ) L=C;;
-* ) L=E && [[ -z $OPTION || $OPTION = [chdpbvi12] ]] && yellow " ${T[${L}0]} " && reading " ${T[${L}50]} " LANGUAGE 
+* ) L=E && [[ -z $OPTION || $OPTION = [hdv1] ]] && yellow " ${T[${L}0]} " && reading " ${T[${L}50]} " LANGUAGE 
 [[ $LANGUAGE = 2 ]] && L=C;;
 esac
 
@@ -430,6 +430,7 @@ onoff(){
 case "$OPTION" in
 h ) help; exit 0;;
 u ) uninstall; exit 0;;
+v ) ver; exit 0;;
 o ) onoff; exit 0;;
 esac
 
