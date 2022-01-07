@@ -12,6 +12,9 @@ yellow(){ echo -e "\033[33m\033[01m$1\033[0m"; }
 reading(){ read -rp "$(green "$1")" "$2"; }
 translate(){ [[ -n "$1" ]] && curl -sm8 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$1" | cut -d \" -f18 2>/dev/null; }
 
+# 传参选项 OPTION：1=为 IPv4 或者 IPv6 补全另一栈WARP; u=卸载 WARP;
+[[ $1 != '[option]' ]] && OPTION=$(tr '[:upper:]' '[:lower:]' <<< "$1")
+
 declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
@@ -598,6 +601,10 @@ install(){
 
 	# 保存好配置文件
 	mv -f wgcf-account.toml wgcf-profile.conf menu.sh /etc/wireguard >/dev/null 2>&1
+	
+	# 创建再次执行的软链接快捷方式，再次运行可以用 warp 指令,设置默认语言
+	chmod +x /etc/wireguard/menu.sh >/dev/null 2>&1
+	ln -sf /etc/wireguard/menu.sh /usr/bin/warp && green " ${T[${L}38]} "
 	echo "$L" >/etc/wireguard/language-docker
 	
 	[[ $CONFIRM = [Yy] ]] && teams_change && echo "$TEAMS" > /etc/wireguard/info.log 2>&1
@@ -644,4 +651,11 @@ menu(){
 		esac
 	}
 
-menu
+# 设置部分后缀
+case "$OPTION" in
+1 ) install;;
+u ) uninstall;;
+d ) update;;
+v ) ver;;
+* ) menu;;
+esac
