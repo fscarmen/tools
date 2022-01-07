@@ -466,6 +466,9 @@ uninstall(){
 	
 	# 删除镜像
 	docker rmi $(docker images | grep wgcf | awk '{print $3}')
+	
+	# 删除文件
+	rm -rf /usr/local/bin/wgcf /etc/wireguard wgcf-account.toml wgcf-profile.conf /usr/bin/warp
 
 	# 显示卸载结果
 	ip4_info; [[ $L = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
