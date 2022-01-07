@@ -656,7 +656,7 @@ install(){
 
 # 显示菜单
 menu(){
-	if [[ $PLAN !=3 ]]; then
+	if [[ $PLAN != 3 ]]; then
 		case $IPV4$IPV6 in
 		01 ) OPTION1=${T[${L}66]} && OPTION2=${T[${L}71]};;
 		10 ) OPTION1=${T[${L}67]} && OPTION2=${T[${L}71]};;
