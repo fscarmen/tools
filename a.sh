@@ -499,7 +499,7 @@ update(){
 	wg-quick down wgcf >/dev/null 2>&1; net
 	[[ $(curl -s4 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus || $(curl -s6 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus ]] && green " ${T[${L}128]} ");;
 
-	* ) red " ${T[${L}51]} [1-2] "; sleep 1; update
+	* ) red " ${T[${L}51]} [1-2] "; sleep 1; update;;
 	esac
 	}
 
