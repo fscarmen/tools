@@ -511,10 +511,7 @@ install(){
 	# 安装 docker
 	green " \n${T[${L}32]}\n " && curl -sSL get.docker.com | sh
 
-	# 拉取镜像
-	docker pull fscarmen/wgcf:1.0
-
-	# 创建容器
+	# 拉取镜像+创建容器
 	docker run -dit --restart=always --network=host --name wgcf --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module  -v /etc/wireguard:/etc/wireguard -v /lib/modules:/lib/modules fscarmen/wgcf:1.0
 	
 	wait
@@ -539,14 +536,11 @@ install(){
 
 # 显示菜单
 menu(){
-	if [[ $1 != 3 ]]; then
-		case $IPV4$IPV6 in
-		01 ) OPTION1=${T[${L}66]};;
-		10 ) OPTION1=${T[${L}67]};;
-		11 ) OPTION1=${T[${L}70]};;
+	case $IPV4$IPV6 in
+	01 ) OPTION1=${T[${L}66]};;
+	10 ) OPTION1=${T[${L}67]};;
+	11 ) OPTION1=${T[${L}70]};;
 	esac
-	else	OPTION1=${T[${L}77]} && OPTION2=${T[${L}78]} && OPTION3=${T[${L}123]}
-	fi
 	
 	grep -sq 'Device name' /etc/wireguard/info.log 2>/dev/null && TYPE='+' && PLUSINFO="${T[${L}25]}：$(grep 'Device name' /etc/wireguard/info.log 2>/dev/null | awk '{ print $NF }')" || TYPE=' Teams'
 	
