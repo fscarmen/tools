@@ -656,12 +656,14 @@ install(){
 
 # 显示菜单
 menu(){
-	case $IPV4$IPV6 in
-	01 ) OPTION1=${T[${L}66]};;
-	10 ) OPTION1=${T[${L}67]};;
-	11 ) OPTION1=${T[${L}70]};;
-	esac
-	
+	if [[ $PLAN !=3 ]]; then
+		case $IPV4$IPV6 in
+		01 ) OPTION1=${T[${L}66]} && OPTION2=${T[${L}71]};;
+		10 ) OPTION1=${T[${L}67]} && OPTION2=${T[${L}71]};;
+		11 ) OPTION1=${T[${L}70]} && OPTION2=${T[${L}71]};;
+		esac
+	else OPTION1=${T[${L}77]} && OPTION2=${T[${L}78]}
+	fi
 	grep -sq 'Device name' /etc/wireguard/info.log 2>/dev/null && TYPE='+' && PLUSINFO="${T[${L}25]}：$(grep 'Device name' /etc/wireguard/info.log 2>/dev/null | awk '{ print $NF }')" || TYPE=' Teams'
 	
 	clear
@@ -674,15 +676,17 @@ menu(){
 	[[ $TRACE4 = on || $TRACE6 = on ]] && green "	${T[${L}115]} " 	
 	[[ $PLAN != 3 ]] && green "	${T[${L}116]} "
  	red "\n======================================================================================================================\n"
-	green " 1. $OPTION1\n 2. ${T[${L}78]}\n 3. ${T[${L}72]}\n 0. ${T[${L}76]}\n "
+	green " 1. $OPTION1\n 2. $OPTION2\n 3. ${T[${L}72]}\n 0. ${T[${L}76]}\n "
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
-		1 )	[[ $IPV4$IPV6 = 11 ]] && MODIFY=$MODIFYS10 || MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6)
-			install;;
-		2 )	update;;
+		1 )	[[ $OPTION1 = ${T[${L}66]} || $OPTION1 = ${T[${L}67]} ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6) && install
+			[[ $OPTION1 = ${T[${L}70]} ]] && MODIFY=$MODIFYS10 && install
+			[[ $OPTION1 = ${T[${L}77]} ]] && onoff;;	
+		2 )	[[ $OPTION2 = ${T[${L}71]} ]] && OPTION=o && onoff
+			[[ $OPTION2 = ${T[${L}78]} ]] && update;;
 		3 )	uninstall;;
 		0 )	exit;;
-		* )	red " ${T[${L}51]} [0-1] "; sleep 1; menu;;
+		* )	red " ${T[${L}51]} [0-3] "; sleep 1; menu;;
 		esac
 	}
 
