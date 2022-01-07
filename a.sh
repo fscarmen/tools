@@ -636,7 +636,7 @@ menu(){
 	[[ $TRACE4 = on || $TRACE6 = on ]] && green "	${T[${L}115]} " 	
 	[[ $PLAN != 3 ]] && green "	${T[${L}116]} "
  	red "\n======================================================================================================================\n"
-	green " 1. $OPTION1\n 2. ${T[${L}78]} 3. ${T[${L}72]} 0. ${T[${L}76]}\n "
+	green " 1. $OPTION1\n 2. ${T[${L}78]}\n 3. ${T[${L}72]}\n 0. ${T[${L}76]}\n "
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
 		1 )	[[ $OPTION1 = ${T[${L}66]} || $OPTION1 = ${T[${L}67]} ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6) && install
