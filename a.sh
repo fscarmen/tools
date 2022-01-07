@@ -632,15 +632,16 @@ menu(){
 	[[ $TRACE4 = on || $TRACE6 = on ]] && green "	${T[${L}115]} " 	
 	[[ $PLAN != 3 ]] && green "	${T[${L}116]} "
  	red "\n======================================================================================================================\n"
-	green " 1. $OPTION1\n 2. ${T[${L}72]} 0. ${T[${L}76]}\n "
+	green " 1. $OPTION1\n 2. ${T[${L}78]} 3. ${T[${L}72]} 0. ${T[${L}76]}\n "
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
 		1 )	[[ $OPTION1 = ${T[${L}66]} || $OPTION1 = ${T[${L}67]} ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6) && install
 			[[ $OPTION1 = ${T[${L}70]} ]] && MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6) && install;;
-		2 )	uninstall;;
+		2 )	update;;
+		3 )	uninstall;;
 		0 )	exit;;
 		* )	red " ${T[${L}51]} [0-1] "; sleep 1; menu "$PLAN";;
 		esac
 	}
 
-menu "$PLAN"
+menu
