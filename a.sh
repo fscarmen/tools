@@ -12,8 +12,19 @@ yellow(){ echo -e "\033[33m\033[01m$1\033[0m"; }
 reading(){ read -rp "$(green "$1")" "$2"; }
 translate(){ [[ -n "$1" ]] && curl -sm8 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$1" | cut -d \" -f18 2>/dev/null; }
 
-# 传参选项 OPTION：1=为 IPv4 或者 IPv6 补全另一栈WARP; u=卸载 WARP;
+# 传参选项 OPTION：1=为 IPv4 或者 IPv6 补全另一栈 WARP; u=卸载 WARP; o=WARP开关; 其他或空值=菜单界面
 [[ $1 != '[option]' ]] && OPTION=$(tr '[:upper:]' '[:lower:]' <<< "$1")
+# 参数选项 URL 或 License
+if [[ $2 != '[lisence]' ]]; then
+	if [[ $2 =~ 'http' ]]; then
+	LICENSETYPE=2 && URL=$2
+	elif [[ $2 =~ ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}$ ]]; then
+	LICENSETYPE=1 && LICENSE=$2
+	fi
+fi
+
+# 自定义 WARP+ 设备名
+NAME=$3
 
 declare -A T
 
@@ -29,8 +40,8 @@ T[E4]="The WARP server cannot be connected. It may be a China Mainland VPS. You 
 T[C4]="与 WARP 的服务器不能连接,可能是大陆 VPS，可手动 ping 162.159.192.1 或 ping6 2606:4700:d0::a29f:c001，如能连通可再次运行脚本，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E5]="The script supports Debian, Ubuntu, CentOS or Alpine systems only. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C5]="本脚本只支持 Debian、Ubuntu、CentOS 或 Alpine 系统,问题反馈:[https://github.com/fscarmen/warp/issues]"
-T[E6]=""
-T[C6]=""
+T[E6]="warp h (help)\n warp o (Turn off WARP temporarily)\n warp u (Turn off and uninstall WARP docker)\n warp d (Upgrade to WARP+ account)\n warp d N5670ljg-sS9jD334-6o6g4M9F (Upgrade to WARP+ account with the license)\n warp d http://gist.github.com/teams.xml (Upgrade to Teams account with the URL)\n warp v (Sync the latest version)\n warp 1 (Add WARP IPv6 interface to native IPv4 VPS or WARP IPv4 interface to native IPv6 VPS)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F Goodluck (Add IPv4 or IPV6 WARP+ interface with the license and named Goodluck)\n"
+T[C6]="warp h (帮助菜单）\n warp o (临时warp开关)\n warp u (卸载 WARP 网络接口和 Socks5 Client)\n warp d (免费 WARP 账户升级 WARP+)\n warp d N5670ljg-sS9jD334-6o6g4M9F (指定 License 升级 WARP+)\n warp d http://gist.github.com/teams.xml (指定 URL 升级 Teams)\n warp v (同步脚本至最新版本)\n warp 1 (Warp单栈)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F Goodluck (指定 WARP+ License Warp 单栈，设备名为 Goodluck)\n"
 T[C7]="安装curl中……"
 T[E8]="It is necessary to upgrade the latest package library before install curl.It will take a little time,please be patiently..."
 T[C8]="先升级软件库才能继续安装 curl，时间较长，请耐心等待……"
@@ -369,6 +380,8 @@ VIRT=$(systemd-detect-virt 2>/dev/null | tr '[:upper:]' '[:lower:]')
 TUN=$(cat /dev/net/tun 2>&1 | tr '[:upper:]' '[:lower:]')
 [[ ! $TUN =~ 'in bad state' ]] && [[ ! $TUN =~ '处于错误状态' ]] && red " ${T[${L}3]} " && exit 1
 
+help(){	yellow " ${T[${L}6]} "; }
+
 # WGCF docker 卸载
 uninstall(){
 	unset IP4 IP6 WAN4 WAN6 COUNTRY4 COUNTRY6 ASNORG4 ASNORG6
@@ -390,6 +403,15 @@ uninstall(){
 	green " ${T[${L}45]}\n IPv4：$WAN4 $COUNTRY4 $ASNORG4\n IPv6：$WAN6 $COUNTRY6 $ASNORG6 "
 	}
 
+# 同步脚本至最新版本
+ver(){
+	wget -N -P /etc/wireguard https://raw.githubusercontent.com/fscarmen/warp/main/docker.sh || wget -N -P /etc/wireguard https://cdn.jsdelivr.net/gh/fscarmen/warp/docker.sh
+	chmod +x /etc/wireguard/docker.sh
+	ln -sf /etc/wireguard/docker.sh /usr/bin/warp
+	green " ${T[${L}64]}:$(grep ^VERSION /etc/wireguard/docker.sh | sed "s/.*=//g")  ${T[${L}18]}：$(grep "T\[${L}1]" /etc/wireguard/docker.sh | cut -d \" -f2) " || red " ${T[${L}65]} "
+	exit
+	}
+
 # WARP 开关
 onoff(){
 	if [[ -n $(docker exec -it wgcf wg 2>/dev/null) ]]; then
@@ -406,6 +428,7 @@ onoff(){
 
 # 设置部分后缀 1/2
 case "$OPTION" in
+h ) help; exit 0;;
 u ) uninstall; exit 0;;
 o ) onoff; exit 0;;
 esac
