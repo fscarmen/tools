@@ -392,7 +392,7 @@ uninstall(){
 
 # WARP 开关
 onoff(){
-	if docker exec -it wgcf wg >/dev/null 2>&1; then
+	if [[ -n $(docker exec -it wgcf wg 2>/dev/null) ]]; then
 	docker exec -it wgcf wg-quick down wgcf >/dev/null 2>&1; green " ${T[${L}15]} "
 	else 
 	docker exec -it wgcf wg-quick up wgcf >/dev/null 2>&1; green " ${T[${L}15]} "
