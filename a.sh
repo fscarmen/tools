@@ -287,8 +287,8 @@ T[E128]="Successfully upgraded to a WARP Teams account"
 T[C128]="已升级为 WARP Teams 账户"
 T[E129]="The current Teams account is unavailable, automatically switch back to the free account"
 T[C129]="当前 Teams 账户不可用，自动切换回免费账户"
-T[E130]="\\\n Please confirm\\\n Private key : \$PRIVATEKEY\\\n Public key : \$PUBLICKEY\\\n Address IPv4 : \$ADDRESS4/32\\\n Address IPv6 : \$ADDRESS6/128\\\n"
-T[C130]="\\\n 请确认Teams 信息\\\n Private key : \$PRIVATEKEY\\\n Public key : \$PUBLICKEY\\\n Address IPv4 : \$ADDRESS4/32\\\n Address IPv6 : \$ADDRESS6/128\\\n"
+T[E130]="\\\n Please confirm\\\n Private key : \$PRIVATEKEY \$MATCH1\\\n Public key : \$PUBLICKEY \$MATCH2\\\n Address IPv4 : \$ADDRESS4/32 \$MATCH3\\\n Address IPv6 : \$ADDRESS6/128 \$MATCH4\\\n"
+T[C130]="\\\n 请确认Teams 信息\\\n Private key : \$PRIVATEKEY \$MATCH1\\\n Public key : \$PUBLICKEY \$MATCH2\\\n Address IPv4 : \$ADDRESS4/32 \$MATCH3\\\n Address IPv6 : \$ADDRESS6/128 \$MATCH4\\\n"
 T[E131]="comfirm please enter [y] , and other keys to use free account:"
 T[C131]="确认请按 y ，其他按键则使用免费账户:"
 T[E132]="\n Is there a WARP+ or Teams account?\n 1. WARP+\n 2. Teams\n 3. use free account (default)\n"
@@ -297,6 +297,10 @@ T[E133]="Device name：\$(grep -s 'Device name' /etc/wireguard/info.log | awk '{
 T[C133]="设备名:\$(grep -s 'Device name' /etc/wireguard/info.log | awk '{ print \$NF }')\\\n 剩余流量:\$(grep -s Quota /etc/wireguard/info.log | awk '{ print \$(NF-1), \$NF }')"
 T[E134]="Curren architecture \$(arch) is not supported. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C134]="当前架构 \$(arch) 暂不支持,问题反馈:[https://github.com/fscarmen/warp/issues]"
+T[E135]="( match √ )"
+T[C135]="( 符合 √ )"
+T[E136]="( mismatch X )"
+T[C136]="( 不符合 X )"
 
 # 脚本当天及累计运行次数统计
 COUNT=$(curl -sm1 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Ffscarmen%2Fwarp%2Fdocker.sh&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=&edge_flat=true" 2>&1) &&
@@ -451,7 +455,7 @@ type -P curl >/dev/null 2>&1 || (yellow " ${T[${L}7]} " && ${PACKAGE_INSTALL[int
 
 # 判断处理器架构
 case $(tr '[:upper:]' '[:lower:]' <<< "$(arch)") in
-aarch64 ) ARCHITECTURE=arm64;;	x86_64 ) ARCHITECTURE=amd64;;	s390x ) ARCHITECTURE=s390x && S390X='-s390x';;	* ) red " $(eval echo "${T[${L}134]}") " && exit 1;;
+aarch64 ) ARCHITECTURE=ARM64;;	x86_64 ) ARCHITECTURE=AMD64;;	s390x ) ARCHITECTURE=s390x;;	* ) red " $(eval echo "${T[${L}134]}") " && exit 1;;
 esac
 
 # 判断当前 IPv4 与 IPv6 ，IP归属 及 WARP, Linux Client 是否开启
@@ -500,6 +504,10 @@ input_url(){
 	PUBLICKEY=$(expr "$TEAMS" : '.*public_key&quot;:&quot;\([^&]*\).*')
 	ADDRESS4=$(expr "$TEAMS" : '.*v4&quot;:&quot;\(172[^&]*\).*')
 	ADDRESS6=$(expr "$TEAMS" : '.*v6&quot;:&quot;\([^[&]*\).*')
+	[[ $PRIVATEKEY =~ ^[A-Z0-9a-z/+]{43}=$ ]] && MATCH1=${T[${L}135]} || MATCH1=${T[${L}136]}
+	[[ $PUBLICKEY =~ ^[A-Z0-9a-z/+]{43}=$ ]] && MATCH2=${T[${L}135]} || MATCH2=${T[${L}136]}
+	[[ $ADDRESS4 =~ ^172.16.[01].[0-9]{1,3}$ ]] && MATCH3=${T[${L}135]} || MATCH3=${T[${L}136]}
+	[[ $ADDRESS6 =~ ^fd01(:[0-9a-f]{0,4}){7}$ ]] && MATCH4=${T[${L}135]} || MATCH4=${T[${L}136]}
 	yellow " $(eval echo "${T[${L}130]}") " && reading " ${T[${L}131]} " CONFIRM
 	}
 
@@ -573,7 +581,7 @@ install(){
 	# 安装 docker, 拉取镜像+创建容器
 	{ green " \n${T[${L}32]}\n " && ! systemctl is-active docker >/dev/null 2>&1 && curl -sSL get.docker.com | sh
 
-	docker run -dit --restart=always --network=host --name wgcf --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module  -v /etc/wireguard:/etc/wireguard -v /lib/modules:/lib/modules fscarmen/wgcf:1.0
+	docker run -dit --restart=always --network=host --name wgcf --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module  -v /etc/wireguard:/etc/wireguard -v /lib/modules:/lib/modules fscarmen/wgcf:"$ARCHITECTURE"
 	}&
 	
 	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息)
@@ -589,7 +597,7 @@ install(){
 	
 	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息)
 	until [[ -e wgcf-account.toml ]] >/dev/null 2>&1; do
-	   wgcf register --accept-tos >/dev/null 2>&1 && break
+		wgcf register --accept-tos >/dev/null 2>&1 && break
 	done
 
 	# 如有 WARP+ 账户，修改 license 并升级，并把设备名等信息保存到 /etc/wireguard/info.log
@@ -599,7 +607,7 @@ install(){
 	green " ${T[${L}62]}\n ${T[${L}25]}：$(grep 'Device name' /etc/wireguard/info.log | awk '{ print $NF }')\n ${T[${L}63]}：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')" || red " ${T[${L}36]} " )
 
 	# 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
-	wgcf generate >/dev/null 2>&1
+	[[ -e wgcf-account.toml ]] && wgcf generate >/dev/null 2>&1
 	green "\n ${T[${L}33]}\n "
 
 	# 反复测试最佳 MTU。 Wireguard Header：IPv4=60 bytes,IPv6=80 bytes，1280 ≤1 MTU ≤ 1420。 ping = 8(ICMP回显示请求和回显应答报文格式长度) + 20(IP首部) 。
@@ -639,9 +647,6 @@ install(){
         sysctl -w net.ipv6.conf.all.disable_ipv6=0)
 	}&
 
-        # 优先使用 IPv4 /IPv6 网络
-	{ stack_priority; }&
-	
 	wait
 
 	echo "$MODIFY" | sh
