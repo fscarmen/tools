@@ -742,7 +742,7 @@ menu(){
 
 # 设置部分后缀 2/2
 case "$OPTION" in
-1 ) [[ $IPV4$IPV6 = 11 ]] && MODIFY=$MODIFYS10 || MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6)
+1|2 ) [[ $IPV4$IPV6 != 11 ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6) || MODIFY=$MODIFYD11
     install;;
 d ) update;;
 * ) menu;;
