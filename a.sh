@@ -49,12 +49,12 @@ T[E9]="Failed to install curl. The script is aborted. Feedback: [https://github.
 T[C9]="安装 curl 失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E10]="WireGuard tools are not installed or the configuration file wgcf.conf cannot be found, please reinstall."
 T[C10]="没有安装 WireGuard tools 或者找不到配置文件 wgcf.conf，请重新安装。"
-T[E11]=""
-T[C11]=""
-T[E12]=""
-T[C12]=""
-T[E13]=""
-T[C13]=""
+T[E11]="Maximum \$j attempts to get WARP IP..."
+T[C11]="后台获取 WARP IP 中,最大尝试\$j次……"
+T[E12]="Try \$i"
+T[C12]="第\$i次尝试"
+T[E13]="There have been more than \$j failures. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
+T[C13]="失败已超过\$j次，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E14]="Got the WARP IP successfully."
 T[C14]="已成功获取 WARP 网络"
 T[E15]="WARP is turned off. It could be turned on again by [warp o]"
@@ -167,8 +167,8 @@ T[E68]="Add WARP dualstack interface to IPv6 only VPS"
 T[C68]="为 IPv6 only 添加双栈网络接口"
 T[E69]="Add WARP dualstack interface to IPv4 only VPS"
 T[C69]="为 IPv4 only 添加双栈网络接口"
-T[E70]="Add WARP IPv6 interface to native dualstack"
-T[C70]="为 原生双栈 添加 WARP IPv6 网络接口"
+T[E70]="Add WARP dualstack interface to native dualstack"
+T[C70]="为 原生双栈 添加 WARP 双栈 网络接口"
 T[E71]="Turn on WARP"
 T[C71]="打开 WARP"
 T[E72]="Turn off, uninstall WARP docker"
@@ -420,7 +420,7 @@ ver(){
 onoff(){
 	if [[ -n $(docker exec -it wgcf wg 2>/dev/null) ]]; then
 	docker exec -it wgcf wg-quick down wgcf >/dev/null 2>&1; green " ${T[${L}15]} "
-	else 
+	else
 	docker exec -it wgcf wg-quick up wgcf >/dev/null 2>&1
 	ip4_info; ip6_info
 	green " ${T[${L}14]} "
@@ -666,7 +666,29 @@ install(){
 	
 	# 运行 WGCF
 	unset IP4 IP6 WAN4 WAN6 COUNTRY4 COUNTRY6 ASNORG4 ASNORG6 TRACE4 TRACE6 PLUS4 PLUS6 WARPSTATUS4 WARPSTATUS6
+	i=1;j=10
+	yellow " $(eval echo "${T[${L}11]}")\n $(eval echo "${T[${L}12]}") "
 	docker exec -it wgcf wg-quick up wgcf
+	ip4_info
+	[[ -n $IP4 ]] && ip6_info
+	until [[ -n $IP4 && -n $IP6 && $TRACE4$TRACE6 =~ on|plus ]]
+		do	(( i++ )) || true
+			yellow " $(eval echo "${T[${L}12]}") "
+			docker exec -it wgcf wg-quick down wgcf >/dev/null 2>&1
+			docker exec -it wgcf wg-quick up wgcf >/dev/null 2>&1
+			ip4_info
+			[[ -n $IP4 ]] && ip6_info
+			if [[ $i = "$j" ]]; then
+				if [[ $LICENSETYPE = 2 ]]; then 
+				unset LICENSETYPE && i=0 && green " ${T[${L}129]} " &&
+				cp -f /etc/wireguard/wgcf-profile.conf /etc/wireguard/wgcf.conf
+				else
+				wg-quick down wgcf >/dev/null 2>&1
+				red " $(eval echo "${T[${L}13]}") " && exit 1
+				fi
+			fi
+        done
+		
 
 	# 结果提示，脚本运行时间，次数统计
 	[[ $(curl -sm8 https://ip.gs) = "$WAN6" ]] && PRIORITY=${T[${L}106]} || PRIORITY=${T[${L}107]}
@@ -709,7 +731,7 @@ menu(){
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
 		1 )	[[ $OPTION1 = ${T[${L}66]} || $OPTION1 = ${T[${L}67]} ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6) && install
-			[[ $OPTION1 = ${T[${L}70]} ]] && MODIFY=$MODIFYS10 && install
+			[[ $OPTION1 = ${T[${L}70]} ]] && MODIFY=$MODIFYD11 && install
 			[[ $OPTION1 = ${T[${L}77]} ]] && onoff;;	
 		2 )	[[ $OPTION2 = ${T[${L}71]} ]] && OPTION=o && onoff
 			[[ $OPTION2 = ${T[${L}78]} ]] && update;;
