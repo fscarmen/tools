@@ -668,7 +668,7 @@ install(){
 	unset IP4 IP6 WAN4 WAN6 COUNTRY4 COUNTRY6 ASNORG4 ASNORG6 TRACE4 TRACE6 PLUS4 PLUS6 WARPSTATUS4 WARPSTATUS6
 	i=1;j=10
 	yellow " $(eval echo "${T[${L}11]}")\n $(eval echo "${T[${L}12]}") "
-	docker exec -it wgcf wg-quick up wgcf
+	docker exec -it wgcf wg-quick up wgcf >/dev/null 2>&1
 	ip4_info
 	[[ -n $IP4 ]] && ip6_info
 	until [[ -n $IP4 && -n $IP6 && $TRACE4$TRACE6 =~ on|plus ]]
