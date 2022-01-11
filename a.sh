@@ -447,7 +447,7 @@ net(){
 	}
 
 # WARP 开关
-onoff(){ [[ -n $(docker exec -it wgcf wg 2>/dev/null) ]] && (wg-quick down wgcf >/dev/null 2>&1; green " ${T[${L}15]} ") || net; }
+onoff(){ [[ -n $(docker exec -it wgcf wg 2>/dev/null) ]] && (docker exec -it wgcf wg-quick down wgcf >/dev/null 2>&1; green " ${T[${L}15]} ") || net; }
 
 # 设置部分后缀 1/2
 case "$OPTION" in
