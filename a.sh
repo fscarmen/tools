@@ -704,8 +704,6 @@ NETFLIXS10=''
 NETFLIXD10=''
 NETFLIXD11=''
 
-docker exec -it wgcf sh -c "$(eval echo \$BRUSHD$b$c)"
-
 # 替换为 Teams 账户信息
 teams_change(){
 	sed -i "s#PrivateKey.*#PrivateKey = $PRIVATEKEY#g;s#Address.*32#Address = ${ADDRESS4}/32#g;s#Address.*128#Address = ${ADDRESS6}/128#g;s#PublicKey.*#PublicKey = $PUBLICKEY#g" /etc/wireguard/wgcf.conf
@@ -873,6 +871,7 @@ install(){
 	wait
 
 	echo "$MODIFY" | sh
+	docker exec -it wgcf sh -c "$BRUSH"
 	
 	# 把 wgcf-profile.conf 复制到/etc/wireguard/ 并命名为 wgcf.conf, 如有 Teams，改为 Teams 账户信息
 	cp -f wgcf-profile.conf /etc/wireguard/wgcf.conf >/dev/null 2>&1
@@ -1026,10 +1025,10 @@ menu(){
 	green " 1. $OPTION1\n 2. $OPTION2\n 3. $OPTION3\n 4. $OPTION4\n 5. ${T[${L}72]}\n 6. ${T[${L}73]}\n 7. ${T[${L}74]}\n 8. ${T[${L}75]}\n 0. ${T[${L}76]}\n "
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
-		1 )	[[ $OPTION1 = ${T[${L}66]} || $OPTION1 = ${T[${L}67]} ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6) && install
-			[[ $OPTION1 = ${T[${L}70]} ]] && MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6) && install
+		1 )	[[ $OPTION1 = ${T[${L}66]} || $OPTION1 = ${T[${L}67]} ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6) && BRUSH=$(eval echo \$BRUSHS$IPV4$IPV6) && install
+			[[ $OPTION1 = ${T[${L}70]} ]] && MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6) && BRUSH=$(eval echo \$BRUSHD$IPV4$IPV6) && install
 			[[ $OPTION1 = ${T[${L}77]} ]] && onoff;;
-		2 )	[[ $OPTION2 = ${T[${L}68]} || $OPTION2 = ${T[${L}69]} || $OPTION2 = ${T[${L}34]} ]] && MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6) && install
+		2 )	[[ $OPTION2 = ${T[${L}68]} || $OPTION2 = ${T[${L}69]} || $OPTION2 = ${T[${L}34]} ]] && MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6) && BRUSH=$(eval echo \$BRUSHD$IPV4$IPV6) && install
 			[[ $OPTION2 = ${T[${L}78]} ]] && update;;
 		3 )	[[ $OPTION3 = ${T[${L}71]} ]] && OPTION=o && net
 			[[ $OPTION3 = ${T[${L}123]} ]] && change_ip;;
@@ -1042,7 +1041,6 @@ menu(){
 		* )	red " ${T[${L}51]} [0-8] "; sleep 1; [[ $CLIENT -gt 2 ]] && menu 3 || menu $PLAN;;
 		esac
 	}
-
 
 # 设置部分后缀 3/3
 case "$OPTION" in
