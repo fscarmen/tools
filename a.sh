@@ -262,10 +262,10 @@ T[E115]="WARP Interface is on"
 T[C115]="WARP 网络接口已开启"
 T[E116]="WARP Interface is off"
 T[C116]="WARP 网络接口未开启"
-T[E117]="Uninstall WARP Interface was complete."
-T[C117]="WARP 网络接口卸载成功"
-T[E118]="Uninstall WARP Interface was fail."
-T[C118]="WARP 网络接口卸载失败"
+T[E117]="Uninstall WARP Interface Docker was complete."
+T[C117]="WARP 网络接口 Docker 卸载成功"
+T[E118]="Uninstall WARP Interface Docker was fail."
+T[C118]="WARP 网络接口 Docker 卸载失败"
 T[E119]="Uninstall Socks5 Proxy Client was complete."
 T[C119]="Socks5 Proxy Client 卸载成功"
 T[E120]="Uninstall Socks5 Proxy Client was fail."
@@ -570,6 +570,8 @@ bbrInstall(){
 # WGCF docker 卸载
 uninstall(){
 	unset IP4 IP6 WAN4 WAN6 COUNTRY4 COUNTRY6 ASNORG4 ASNORG6
+	# 卸载 WGCF
+	uninstall_wgcf(){	
 	docker exec -it wgcf wg-quick down wgcf
 	
 	# 停止及删除容器
@@ -581,11 +583,27 @@ uninstall(){
 	
 	# 删除文件
 	rm -rf /usr/local/bin/wgcf /etc/wireguard wgcf-account.toml wgcf-profile.conf /usr/bin/warp
+	[[ -e /etc/gai.conf ]] && sed -i '/^precedence \:\:ffff\:0\:0/d;/^label 2002\:\:\/16/d' /etc/gai.conf
+	}
+
+	# 卸载 Linux Client
+	uninstall_proxy(){
+	warp-cli --accept-tos disconnect >/dev/null 2>&1
+	warp-cli --accept-tos disable-always-on >/dev/null 2>&1
+	warp-cli --accept-tos delete >/dev/null 2>&1
+	${PACKAGE_UNINSTALL[int]} cloudflare-warp 2>/dev/null
+	systemctl disable --now warp-svc >/dev/null 2>&1
+	rm -rf /usr/local/bin/wgcf /etc/wireguard /usr/bin/wireguard-go wgcf-account.toml wgcf-profile.conf /usr/bin/warp
+	}
+
+	# 根据已安装情况执行卸载任务并显示结果
+	docker exec -it wgcf ls /usr/bin/wg-quick && (uninstall_wgcf; green " ${T[${L}117]} ")
+	type -P warp-cli && (uninstall_proxy; green " ${T[${L}119]} ")
 
 	# 显示卸载结果
 	ip4_info; [[ $L = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
 	ip6_info; [[ $L = C && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")
-	green " ${T[${L}45]}\n IPv4：$WAN4 $COUNTRY4 $ASNORG4\n IPv6：$WAN6 $COUNTRY6 $ASNORG6 "
+	green " ${T[${L}45]}\n IPv4：$WAN4 $COUNTRY4 $ASNORG4\n IPv6：$WAN6 $COUNTRY6 $ASNORG6 "	
 	}
 
 # 同步脚本至最新版本
@@ -693,11 +711,11 @@ MODIFYD01='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860
 MODIFYS10='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;/0\.\0\/0/d;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
 MODIFYD10='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
 MODIFYD11='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/" wgcf-profile.conf'
-BRUSHS01='echo -e "until [[ \$(curl -s4m8 ip.gs) =~ ^8\..* ]]\n  do wg-quick down wgcf\n  wgcf wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
-BRUSHD01='echo -e "until [[ \$(curl -s4m8 ip.gs) =~ ^8\..* ]]\n  do wg-quick down wgcf\n  wgcf wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
-BRUSHS10='echo -e "until [[ \$(curl -s6m8 ip.gs) =~ ^2a09\:.* ]]\n  do wg-quick down wgcf\n  wgcf wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
-BRUSHD10='echo -e "until [[ \$(curl -s6m8 ip.gs) =~ ^2a09\:.* ]]\n  do wg-quick down wgcf\n  wgcf wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
-BRUSHD11='echo -e "until [[ \$(curl -s4m8 ip.gs) =~ ^8\..* ]]\n  do wg-quick down wgcf\n  wgcf wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
+BRUSHS01='echo -e "until [[ \$(curl -s4m8 ip.gs) =~ ^8\..* ]]\n  do wg-quick down wgcf\n  wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
+BRUSHD01='echo -e "until [[ \$(curl -s4m8 ip.gs) =~ ^8\..* ]]\n  do wg-quick down wgcf\n  wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
+BRUSHS10='echo -e "until [[ \$(curl -s6m8 ip.gs) =~ ^2a09\:.* ]]\n  do wg-quick down wgcf\n  wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
+BRUSHD10='echo -e "until [[ \$(curl -s6m8 ip.gs) =~ ^2a09\:.* ]]\n  do wg-quick down wgcf\n  wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
+BRUSHD11='echo -e "until [[ \$(curl -s4m8 ip.gs) =~ ^8\..* ]]\n  do wg-quick down wgcf\n  wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
 NETFLIXS01=''
 NETFLIXD01=''
 NETFLIXS10=''
@@ -1061,7 +1079,7 @@ case "$OPTION" in
 		yellow " ${T[${L}80]} " && exit 1
 	elif [[ $CLIENT = 3 ]]; then
 		if [[ $IPV4$IPV6 = 10 ]]; then 
-			reading " ${T[${L}109]} " SINGLE && [[ $SINGLE = [Yy] ]] && MODIFY=$MODIFYS10 && BRUSH=$BRUSHD10 || exit 1
+			reading " ${T[${L}109]} " SINGLE && [[ $SINGLE = [Yy] ]] && MODIFY=$MODIFYS10 && BRUSH=$BRUSHS10 || exit 1
 		else [[ $IPV4$IPV6 = 11 ]] && red " ${T[${L}110]} " && exit 1
 		fi
 	elif [[ $IPV4$IPV6 = 10 ]]; then MODIFY=$MODIFYD10 && BRUSH=$BRUSHD10
