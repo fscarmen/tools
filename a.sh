@@ -693,11 +693,11 @@ MODIFYD01='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860
 MODIFYS10='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;/0\.\0\/0/d;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
 MODIFYD10='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
 MODIFYD11='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/" wgcf-profile.conf'
-BRUSHS01='echo -e "until [[ \$(curl -s4m8 ip.gs) =~ ^8\..* ]]\n  do wg-quick down wgcf\n  wgcf wg-quick up wgcf\n done\n echo Done!" >/usr/local/bin/n'
-BRUSHD01='echo -e "until [[ \$(curl -s4m8 ip.gs) =~ ^8\..* ]]\n  do wg-quick down wgcf\n  wgcf wg-quick up wgcf\n done\n echo Done!" >/usr/local/bin/n'
-BRUSHS10='echo -e "until [[ \$(curl -s6m8 ip.gs) =~ ^2a09\:.* ]]\n  do wg-quick down wgcf\n  wgcf wg-quick up wgcf\n done\n echo Done!" >/usr/local/bin/n'
-BRUSHD10='echo -e "until [[ \$(curl -s6m8 ip.gs) =~ ^2a09\:.* ]]\n  do wg-quick down wgcf\n  wgcf wg-quick up wgcf\n done\n echo Done!" >/usr/local/bin/n'
-BRUSHD11='echo -e "until [[ \$(curl -s4m8 ip.gs) =~ ^8\..* ]]\n  do wg-quick down wgcf\n  wgcf wg-quick up wgcf\n done\n echo Done!" >/usr/local/bin/n'
+BRUSHS01='echo -e "until [[ \$(curl -s4m8 ip.gs) =~ ^8\..* ]]\n  do wg-quick down wgcf\n  wgcf wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
+BRUSHD01='echo -e "until [[ \$(curl -s4m8 ip.gs) =~ ^8\..* ]]\n  do wg-quick down wgcf\n  wgcf wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
+BRUSHS10='echo -e "until [[ \$(curl -s6m8 ip.gs) =~ ^2a09\:.* ]]\n  do wg-quick down wgcf\n  wgcf wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
+BRUSHD10='echo -e "until [[ \$(curl -s6m8 ip.gs) =~ ^2a09\:.* ]]\n  do wg-quick down wgcf\n  wgcf wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
+BRUSHD11='echo -e "until [[ \$(curl -s4m8 ip.gs) =~ ^8\..* ]]\n  do wg-quick down wgcf\n  wgcf wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
 NETFLIXS01=''
 NETFLIXD01=''
 NETFLIXS10=''
@@ -871,7 +871,7 @@ install(){
 	wait
 
 	echo "$MODIFY" | sh
-	docker exec -it wgcf sh -c "$BRUSH"
+	docker exec -it wgcf sh -c "$BRUSH" && docker exec -it wgcf chmod +x /usr/bin/n
 	
 	# 把 wgcf-profile.conf 复制到/etc/wireguard/ 并命名为 wgcf.conf, 如有 Teams，改为 Teams 账户信息
 	cp -f wgcf-profile.conf /etc/wireguard/wgcf.conf >/dev/null 2>&1
