@@ -675,7 +675,7 @@ type -P curl >/dev/null 2>&1 || (yellow " ${T[${L}7]} " && ${PACKAGE_INSTALL[int
 
 # 判断处理器架构
 case $(tr '[:upper:]' '[:lower:]' <<< "$(arch)") in
-aarch64 ) ARCHITECTURE=arm64;;	x86_64 ) ARCHITECTURE=amd64;;	s390x ) ARCHITECTURE=s390x && S390X='-s390x';;	* ) red " $(eval echo "${T[${L}134]}") " && exit 1;;
+aarch64 ) ARCHITECTURE=ARM64;;	x86_64 ) ARCHITECTURE=AMD64;;	s390x ) ARCHITECTURE=s390x;;	* ) red " $(eval echo "${T[${L}134]}") " && exit 1;;
 esac
 
 # 判断当前 IPv4 与 IPv6 ，IP归属 及 WARP, Linux Client 是否开启
