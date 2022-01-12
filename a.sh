@@ -185,10 +185,10 @@ T[E77]="Turn off WARP"
 T[C77]="暂时关闭 WARP"
 T[E78]="Upgrade to WARP+ or Teams account"
 T[C78]="升级为 WARP+ 或 Teams 账户"
-T[E79]=""
-T[C79]=""
-T[E80]=""
-T[C80]=""
+T[E79]="This system is a native dualstack. You can only choose the WARP dualstack, please enter [y] to continue, and other keys to exit:"
+T[C79]="此系统为原生双栈，只能选择 Warp 双栈方案，继续请输入 y，其他按键退出:"
+T[E80]="The WARP is working."
+T[C80]="检测 WARP 已开启"
 T[E81]="Step 3/3: Searching for the best MTU value is ready."
 T[C81]="进度 3/3：寻找 MTU 最优值已完成"
 T[E82]=""
@@ -247,8 +247,8 @@ T[E108]=""
 T[C108]=""
 T[E109]=""
 T[C109]=""
-T[E110]=""
-T[C110]=""
+T[E110]="Socks5 Proxy Client on native dualstack VPS is working now. WARP interface could not be installed. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
+T[C110]="原生双栈 VPS，并且 Socks5 代理正在运行中。WARP 网络接口不能安装，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E111]=""
 T[C111]=""
 T[E112]=""
@@ -483,7 +483,7 @@ esac
 [[ $IPV6 = 1 ]] && ip6_info
 
 # 判断当前 WARP 状态，决定变量 PLAN，变量 PLAN 含义：1=单栈  2=双栈  3=WARP已开启
-[[ $TRACE4 = plus || $TRACE4 = on || $TRACE6 = plus || $TRACE6 = on ]] && PLAN=3 || PLAN=$((IPV4+IPV6))
+[[ $TRACE4 =~ plus|on || $TRACE6 =~ plus|on ]] && PLAN=3 || PLAN=$((IPV4+IPV6))
 
 # WGCF 配置修改，其中用到的 162.159.192.1 和 2606:4700:d0::a29f:c001 均是 engage.cloudflareclient.com 的IP。 Docker 内刷 WARP IP 和解锁 Netflix 脚本
 MODIFYS01='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;/\:\:\/0/d;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
@@ -758,4 +758,31 @@ case "$OPTION" in
     install;;
 d ) update;;
 * ) menu;;
+esac
+
+# 设置部分后缀 3/3
+case "$OPTION" in
+1 )	# 先判断是否运行 WARP,再按 Client 运行情况分别处理。在已运行 Linux Client 前提下，对于 IPv4 only 只能添加 IPv6 单栈，对于原生双栈不能安装，IPv6 因不能安装 Linux Client 而不用作限制
+	if [[ $PLAN = 3 ]]; then
+		yellow " ${T[${L}80]} " && exit 1
+	elif [[ $CLIENT = 3 ]]; then
+		[[ $IPV4$IPV6 = 10 ]] && MODIFY=$MODIFYS10
+		[[ $IPV4$IPV6 = 11 ]] && red " ${T[${L}110]} " && exit 1
+	else [[ $PLAN = 2 ]] && reading " ${T[${L}79]} " DUAL && [[ $DUAL != [Yy] ]] && exit 1 || MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6)
+		[[ $PLAN = 1 ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6)
+	fi
+	install;;
+2 )	# 先判断是否运行 WARP,再按 Client 运行情况分别处理。在已运行 Linux Client 前提下，对于 IPv4 only 只能添加 IPv6 单栈，对于原生双栈不能安装，IPv6 因不能安装 Linux Client 而不用作限制
+	if [[ $PLAN = 3 ]]; then
+		yellow " ${T[${L}80]} " && exit 1
+	elif [[ $CLIENT = 3 ]]; then
+		[[ $IPV4$IPV6 = 10 ]] && reading " ${T[${L}109]} " SINGLE && [[ $SINGLE != [Yy] ]] && exit 1 || MODIFY=$MODIFYS10
+		[[ $IPV4$IPV6 = 11 ]] && red " ${T[${L}110]} " && exit 1
+	else MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6)
+	fi
+	install;;
+
+c )	[[ $CLIENT = 3 ]] && red " ${T[${L}92]} " && exit 1 || proxy;;
+d )	update;;
+* )	[[ $CLIENT -gt 2 ]] && menu 3 || menu "$PLAN";;
 esac
