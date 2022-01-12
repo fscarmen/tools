@@ -1064,6 +1064,7 @@ case "$OPTION" in
 			reading " ${T[${L}109]} " SINGLE && [[ $SINGLE = [Yy] ]] && MODIFY=$MODIFYS10 && BRUSH=$BRUSHD10 || exit 1
 		else [[ $IPV4$IPV6 = 11 ]] && red " ${T[${L}110]} " && exit 1
 		fi
+	elif [[ $IPV4$IPV6 = 10 ]]; then MODIFY=$MODIFYD10 && BRUSH=$BRUSHD10
 	else MODIFY=$MODIFYD01 && BRUSH=$BRUSHD01
 	fi
 	install;;
