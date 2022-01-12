@@ -1050,19 +1050,23 @@ case "$OPTION" in
 	if [[ $PLAN = 3 ]]; then
 		yellow " ${T[${L}80]} " && exit 1
 	elif [[ $CLIENT = 3 ]]; then
-		[[ $IPV4$IPV6 = 10 ]] && MODIFY=$MODIFYS10
+		[[ $IPV4$IPV6 = 10 ]] && MODIFY=$MODIFYS10 && BRUSH=$BRUSHS10
 		[[ $IPV4$IPV6 = 11 ]] && red " ${T[${L}110]} " && exit 1
-	else [[ $PLAN = 2 ]] && reading " ${T[${L}79]} " DUAL && [[ $DUAL != [Yy] ]] && exit 1 || MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6)
-		[[ $PLAN = 1 ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6)
+	elif [[ $PLAN = 2 ]]; then
+		reading " ${T[${L}79]} " DUAL
+		[[ $DUAL = [Yy] ]] && MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6) && BRUSH=$(eval echo \$BRUSHD$IPV4$IPV6) || exit 1
+	else [[ $PLAN = 1 ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6) && BRUSH=$(eval echo \$BRUSHS$IPV4$IPV6)
 	fi
 	install;;
 2 )	# 先判断是否运行 WARP,再按 Client 运行情况分别处理。在已运行 Linux Client 前提下，对于 IPv4 only 只能添加 IPv6 单栈，对于原生双栈不能安装，IPv6 因不能安装 Linux Client 而不用作限制
 	if [[ $PLAN = 3 ]]; then
 		yellow " ${T[${L}80]} " && exit 1
 	elif [[ $CLIENT = 3 ]]; then
-		[[ $IPV4$IPV6 = 10 ]] && reading " ${T[${L}109]} " SINGLE && [[ $SINGLE != [Yy] ]] && exit 1 || MODIFY=$MODIFYS10
-		[[ $IPV4$IPV6 = 11 ]] && red " ${T[${L}110]} " && exit 1
-	else MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6)
+		if [[ $IPV4$IPV6 = 10 ]]; then 
+			reading " ${T[${L}109]} " SINGLE && [[ $SINGLE = [Yy] ]] && MODIFY=$MODIFYS10 && BRUSH=$BRUSHD10 || exit 1
+		else [[ $IPV4$IPV6 = 11 ]] && red " ${T[${L}110]} " && exit 1
+		fi
+	else MODIFY=$MODIFYD01 && BRUSH=$BRUSHD01
 	fi
 	install;;
 
