@@ -485,12 +485,24 @@ esac
 # 判断当前 WARP 状态，决定变量 PLAN，变量 PLAN 含义：1=单栈  2=双栈  3=WARP已开启
 [[ $TRACE4 = plus || $TRACE4 = on || $TRACE6 = plus || $TRACE6 = on ]] && PLAN=3 || PLAN=$((IPV4+IPV6))
 
-# WGCF 配置修改，其中用到的 162.159.192.1 和 2606:4700:d0::a29f:c001 均是 engage.cloudflareclient.com 的IP
+# WGCF 配置修改，其中用到的 162.159.192.1 和 2606:4700:d0::a29f:c001 均是 engage.cloudflareclient.com 的IP。 Docker 内刷 WARP IP 和解锁 Netflix 脚本
 MODIFYS01='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;/\:\:\/0/d;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
 MODIFYD01='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
 MODIFYS10='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;/0\.\0\/0/d;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
 MODIFYD10='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
 MODIFYD11='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/" wgcf-profile.conf'
+BRUSHS01='echo "until -e [[ $(curl -s4m8 ip.gs) =~ ^8\..* ]]\n do wgcf wg-quick down wgcf\n wgcf wg-quick up wgcf\n done" >/usr/local/bin/n'
+BRUSHD01='echo "until -e [[ $(curl -s4m8 ip.gs) =~ ^8\..* ]]\n do wgcf wg-quick down wgcf\n wgcf wg-quick up wgcf\n done" >/usr/local/bin/n'
+BRUSHS10='echo "until -e [[ $(curl -s6m8 ip.gs) =~ ^2a09\:.* ]]\n do wgcf wg-quick down wgcf\n wgcf wg-quick up wgcf\n done" >/usr/local/bin/n'
+BRUSHD10='echo "until -e [[ $(curl -s6m8 ip.gs) =~ ^2a09\:.* ]]\n do wgcf wg-quick down wgcf\n wgcf wg-quick up wgcf\n done" >/usr/local/bin/n'
+BRUSHD11='echo "until -e [[ $(curl -s4m8 ip.gs) =~ ^8\..* ]]\n do wgcf wg-quick down wgcf\n wgcf wg-quick up wgcf\n done" >/usr/local/bin/n'
+NETFLIXS01=''
+NETFLIXD01=''
+NETFLIXS10=''
+NETFLIXD10=''
+NETFLIXD11=''
+
+docker exec -it wgcf sh -c "$a"
 
 # 替换为 Teams 账户信息
 teams_change(){
