@@ -706,12 +706,11 @@ esac
 [[ $TRACE4$TRACE6 =~ on|plus ]] && PLAN=3 || PLAN=$((IPV4+IPV6))
 
 # WGCF 配置修改，其中用到的 162.159.192.1 和 2606:4700:d0::a29f:c001 均是 engage.cloudflareclient.com 的IP。 Docker 内刷 WARP IP 和解锁 Netflix 脚本
-MODIFYS01='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;/\:\:\/0/d;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
+MODIFYS01='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
 MODIFYD01='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
-MODIFYS10='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;/0\.\0\/0/d;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
+MODIFYS10='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/^.*0\.\0\/0/#&/g;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
 MODIFYD10='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
 MODIFYD11='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/" wgcf-profile.conf'
-BRUSHS01='echo -e "until [[ \$(curl -s4m8 ip.gs) =~ ^8\..* ]]\n  do wg-quick down wgcf\n  wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
 BRUSHD01='echo -e "until [[ \$(curl -s4m8 ip.gs) =~ ^8\..* ]]\n  do wg-quick down wgcf\n  wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
 BRUSHS10='echo -e "until [[ \$(curl -s6m8 ip.gs) =~ ^2a09\:.* ]]\n  do wg-quick down wgcf\n  wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
 BRUSHD10='echo -e "until [[ \$(curl -s6m8 ip.gs) =~ ^2a09\:.* ]]\n  do wg-quick down wgcf\n  wg-quick up wgcf\n done\n echo Done!" >/usr/bin/n'
@@ -888,7 +887,7 @@ install(){
 
 	wait
 
-	echo "$MODIFY" | sh
+	sh -c "$MODIFY"
 	docker exec -it wgcf sh -c "$BRUSH" && docker exec -it wgcf chmod +x /usr/bin/n
 	
 	# 把 wgcf-profile.conf 复制到/etc/wireguard/ 并命名为 wgcf.conf, 如有 Teams，改为 Teams 账户信息
