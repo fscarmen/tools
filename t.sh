@@ -827,7 +827,12 @@ OPTION3[0]=""; OPTION3[1]=""; OPTION3[2]=""; OPTION3[3]=""; OPTION3[4]=""; OPTIO
 OPTION4[0]=""; OPTION4[1]=""; OPTION4[2]=""; OPTION4[3]=""; OPTION4[4]=""; OPTION4[5]=""; OPTION4[6]=""; OPTION4[7]=""
 OPTION5[0]=""; OPTION5[1]=""; OPTION5[2]=""; OPTION5[3]=""; OPTION5[4]=""; OPTION5[5]=""; OPTION5[6]=""; OPTION5[7]=""
 OPTION6[0]=""; OPTION6[1]=""; OPTION6[2]=""; OPTION6[3]=""; OPTION6[4]=""; OPTION6[5]=""; OPTION6[6]=""; OPTION6[7]=""
-ACTION[0]=""; ACTION[1]=""; ACTION[2]=""; ACTION[3]=""; ACTION[4]=""; ACTION[5]=""; ACTION[6]=""; ACTION[7]=""
+ACTION1[0]=""; ACTION1[1]=""; ACTION1[2]=""; ACTION1[3]=""; ACTION1[4]=""; ACTION1[5]=""; ACTION1[6]=""; ACTION1[7]=""
+ACTION2[0]=""; ACTION2[1]=""; ACTION2[2]=""; ACTION2[3]=""; ACTION2[4]=""; ACTION2[5]=""; ACTION2[6]=""; ACTION2[7]=""
+ACTION3[0]=""; ACTION3[1]=""; ACTION3[2]=""; ACTION3[3]=""; ACTION3[4]=""; ACTION3[5]=""; ACTION3[6]=""; ACTION3[7]=""
+ACTION4[0]=""; ACTION4[1]=""; ACTION4[2]=""; ACTION4[3]=""; ACTION4[4]=""; ACTION4[5]=""; ACTION4[6]=""; ACTION4[7]=""
+ACTION5[0]=""; ACTION5[1]=""; ACTION5[2]=""; ACTION5[3]=""; ACTION5[4]=""; ACTION5[5]=""; ACTION5[6]=""; ACTION5[7]=""
+ACTION6[0]=""; ACTION6[1]=""; ACTION6[2]=""; ACTION6[3]=""; ACTION6[4]=""; ACTION6[5]=""; ACTION6[6]=""; ACTION6[7]=""
 fi		
 	
 for ((m=0;m<${#CASE[@]};m++)); do [[ $TRACE4@$TRACE6 = ${CASE[i]} ]] && OPTION&& yellow " $(eval echo "${ACTION[i]}")" && break; done
