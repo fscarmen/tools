@@ -1141,19 +1141,22 @@ update(){
 
 # 显示菜单
 menu(){
-	if [[ $PLAN != 3 ]]; then
-		case $TRACE4@$TRACE6 in
-		"@off" ) OPTION1=;;
-		"off@" ) ;;
-		"off@off" );;
-		"@on"|"@plus" );;
-		"off@on"|"off@plus" );;
-		"on@"|"plus@" );;
-		"on@off"|"plus@off" );;
-		"on@on"|"plus@plus" );;
-		esac		
+	if [[ $CLIENT -gt 2 ]]; then
+	
+	else		
+	CASE[0]="@off"; CASE[1]="off@"; CASE[2]="off@off"; CASE[3]="@on"|"@plus"; CASE[4]="off@on"|"off@plus"; CASE[5]="on@"|"plus@"; CASE[6]="on@off"|"plus@off"; CASE[7]="on@on"|"plus@plus"
+	OPTION1[0]=""; OPTION1[1]=""; OPTION1[2]=""; OPTION1[3]=""; OPTION1[4]=""; OPTION1[5]=""; OPTION1[6]=""; OPTION1[7]=""
+	OPTION2[0]=""; OPTION2[1]=""; OPTION2[2]=""; OPTION2[3]=""; OPTION2[4]=""; OPTION2[5]=""; OPTION2[6]=""; OPTION2[7]=""
+	OPTION3[0]=""; OPTION3[1]=""; OPTION3[2]=""; OPTION3[3]=""; OPTION3[4]=""; OPTION3[5]=""; OPTION3[6]=""; OPTION3[7]=""
+	OPTION4[0]=""; OPTION4[1]=""; OPTION4[2]=""; OPTION4[3]=""; OPTION4[4]=""; OPTION4[5]=""; OPTION4[6]=""; OPTION4[7]=""
+	OPTION5[0]=""; OPTION5[1]=""; OPTION5[2]=""; OPTION5[3]=""; OPTION5[4]=""; OPTION5[5]=""; OPTION5[6]=""; OPTION5[7]=""
+	OPTION6[0]=""; OPTION6[1]=""; OPTION6[2]=""; OPTION6[3]=""; OPTION6[4]=""; OPTION6[5]=""; OPTION6[6]=""; OPTION6[7]=""
+	ACTION[0]=""; ACTION[1]=""; ACTION[2]=""; ACTION[3]=""; ACTION[4]=""; ACTION[5]=""; ACTION[6]=""; ACTION[7]=""
+	fi		
 		
-		OPTION1=$(eval echo "${T[${L}66]}") && OPTION2=$(eval echo "${T[${L}67]}") && OPTION3=$(eval echo "${T[${L}68]}");;
+
+	for ((m=0;m<${#CASE[@]};m++)); do [[ $TRACE4@$TRACE6 = ${CASE[i]} ]] && OPTION&& yellow " $(eval echo "${ACTION[i]}")" && break; done
+
 	else	OPTION1=${T[${L}77]} && OPTION2=${T[${L}78]} && OPTION3=${T[${L}123]}
 	fi
 	
