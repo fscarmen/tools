@@ -821,7 +821,8 @@ if [[ $CLIENT -gt 2 ]]; then
 	
 else		
 CASE[0]="@off"; CASE[1]="off@"; CASE[2]="off@off"; CASE[3]="@on"|"@plus"; CASE[4]="off@on"|"off@plus"; CASE[5]="on@"|"plus@"; CASE[6]="on@off"|"plus@off"; CASE[7]="on@on"|"plus@plus"
-OPTION1[0]=""; OPTION1[1]=""; OPTION1[2]=""; OPTION1[3]=""; OPTION1[4]=""; OPTION1[5]=""; OPTION1[6]=""; OPTION1[7]=""
+NATIVE[0]="IPv6 only"; NATIVE[1]="IPv4 only"; NATIVE[2]="${T[${L}69]}"; NATIVE[3]="WARP IPv6 only"; NATIVE[4]="WARP IPv6"; NATIVE[5]="WARP IPv4 only"; NATIVE[6]="WARP IPv4"; NATIVE[7]="${T[${L}70]}"
+OPTION1[0]="$(eval echo "${T[${L}66]}")"; OPTION1[1]="$(eval echo "${T[${L}66]}")"; OPTION1[2]="$(eval echo "${T[${L}66]}")"; OPTION1[3]=""; OPTION1[4]=""; OPTION1[5]=""; OPTION1[6]=""; OPTION1[7]=""
 OPTION2[0]=""; OPTION2[1]=""; OPTION2[2]=""; OPTION2[3]=""; OPTION2[4]=""; OPTION2[5]=""; OPTION2[6]=""; OPTION2[7]=""
 OPTION3[0]=""; OPTION3[1]=""; OPTION3[2]=""; OPTION3[3]=""; OPTION3[4]=""; OPTION3[5]=""; OPTION3[6]=""; OPTION3[7]=""
 OPTION4[0]=""; OPTION4[1]=""; OPTION4[2]=""; OPTION4[3]=""; OPTION4[4]=""; OPTION4[5]=""; OPTION4[6]=""; OPTION4[7]=""
