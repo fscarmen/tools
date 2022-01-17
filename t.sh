@@ -40,8 +40,8 @@ T[E4]="The WARP server cannot be connected. It may be a China Mainland VPS. You 
 T[C4]="与 WARP 的服务器不能连接,可能是大陆 VPS，可手动 ping 162.159.192.1 或 ping6 2606:4700:d0::a29f:c001，如能连通可再次运行脚本，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E5]="The script supports Debian, Ubuntu, CentOS or Alpine systems only. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C5]="本脚本只支持 Debian、Ubuntu、CentOS 或 Alpine 系统,问题反馈:[https://github.com/fscarmen/warp/issues]"
-T[E6]="warp h (help)\n warp o (Turn off WARP temporarily)\n warp u (Turn off and uninstall WARP interface and Socks5 Linux Client)\n warp b (Upgrade kernel, turn on BBR, change Linux system)\n warp d (Upgrade to WARP+ account)\n warp d N5670ljg-sS9jD334-6o6g4M9F (Upgrade to WARP+ account with the license)\n warp d http://gist.github.com/teams.xml (Upgrade to Teams account with the URL)\n warp p (Getting WARP+ quota by scripts)\n warp v (Sync the latest version)\n warp r (Connect/Disconnect WARP Linux Client)\n warp 1 (Add WARP IPv6 interface to native IPv4 VPS or WARP IPv4 interface to native IPv6 VPS)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F Goodluck (Add IPv4 or IPV6 WARP+ interface with the license and named Goodluck)\n warp 2 (Add WARP dualstack interface IPv4 + IPv6)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F Goodluck (Add WARP+ dualstack interface with the license and named Goodluck)\n warp c (Install WARP Linux Client)\n warp c N5670ljg-sS9jD334-6o6g4M9F(Install WARP+ Linux Client with the license)\n warp i (Change the WARP IP to support Netflix)\n warp s ( WARP single and dual stacks switch echo other)\n"
-T[C6]="warp h (帮助菜单）\n warp o (临时warp开关)\n warp u (卸载 WARP 网络接口和 Socks5 Client)\n warp b (升级内核、开启BBR及DD)\n warp d (免费 WARP 账户升级 WARP+)\n warp d N5670ljg-sS9jD334-6o6g4M9F (指定 License 升级 WARP+)\n warp d http://gist.github.com/teams.xml (指定 URL 升级 Teams)\n warp p (刷WARP+流量)\n warp v (同步脚本至最新版本)\n warp r (WARP Linux Client 开关)\n warp 1 (WARP 单栈)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F Goodluck (指定 WARP+ License WARP 单栈，设备名为 Goodluck)\n warp 2 (WARP 双栈)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F Goodluck (指定 WARP+ License 双栈，设备名为 Goodluck)\n warp c (安装 WARP Linux Client，开启 Socks5 代理模式)\n warp c N5670ljg-sS9jD334-6o6g4M9F (指定 WARP+ License 安装 WARP Linux Client，开启 Socks5 代理模式)\n warp i (更换支持 Netflix 的IP)\n warp s ( WARP 单双栈相互切换)\n"
+T[E6]="warp h (help)\n warp o (Turn off WARP temporarily)\n warp u (Turn off and uninstall WARP interface and Socks5 Linux Client)\n warp b (Upgrade kernel, turn on BBR, change Linux system)\n warp d (Upgrade to WARP+ account)\n warp d N5670ljg-sS9jD334-6o6g4M9F (Upgrade to WARP+ account with the license)\n warp d http://gist.github.com/teams.xml (Upgrade to Teams account with the URL)\n warp p (Getting WARP+ quota by scripts)\n warp v (Sync the latest version)\n warp r (Connect/Disconnect WARP Linux Client)\n warp 1 (Add WARP IPv6 interface to native IPv4 VPS or WARP IPv4 interface to native IPv6 VPS)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F Goodluck (Add IPv4 or IPV6 WARP+ interface with the license and named Goodluck)\n warp 2 (Add WARP dualstack interface IPv4 + IPv6)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F Goodluck (Add WARP+ dualstack interface with the license and named Goodluck)\n warp c (Install WARP Linux Client)\n warp c N5670ljg-sS9jD334-6o6g4M9F(Install WARP+ Linux Client with the license)\n warp i (Change the WARP IP to support Netflix)\n warp s (WARP single and dual stacks switch echo other)\n"
+T[C6]="warp h (帮助菜单）\n warp o (临时warp开关)\n warp u (卸载 WARP 网络接口和 Socks5 Client)\n warp b (升级内核、开启BBR及DD)\n warp d (免费 WARP 账户升级 WARP+)\n warp d N5670ljg-sS9jD334-6o6g4M9F (指定 License 升级 WARP+)\n warp d http://gist.github.com/teams.xml (指定 URL 升级 Teams)\n warp p (刷WARP+流量)\n warp v (同步脚本至最新版本)\n warp r (WARP Linux Client 开关)\n warp 1 (WARP 单栈)\n warp 1 N5670ljg-sS9jD334-6o6g4M9F Goodluck (指定 WARP+ License WARP 单栈，设备名为 Goodluck)\n warp 2 (WARP 双栈)\n warp 2 N5670ljg-sS9jD334-6o6g4M9F Goodluck (指定 WARP+ License 双栈，设备名为 Goodluck)\n warp c (安装 WARP Linux Client，开启 Socks5 代理模式)\n warp c N5670ljg-sS9jD334-6o6g4M9F (指定 WARP+ License 安装 WARP Linux Client，开启 Socks5 代理模式)\n warp i (更换支持 Netflix 的IP)\n warp s (WARP 单双栈相互切换)\n"
 T[E7]="Installing curl..."
 T[C7]="安装curl中……"
 T[E8]="It is necessary to upgrade the latest package library before install curl.It will take a little time,please be patiently..."
@@ -168,8 +168,8 @@ T[E68]="Add WARP dualstack interface to \$NATIVE VPS"
 T[C68]="为 \$NATIVE 添加双栈网络接口"
 T[E69]="Native dualstack"
 T[C69]="原生双栈"
-T[E70]=""
-T[C70]=""
+T[E70]="WARP dualstack"
+T[C70]="WARP 双栈"
 T[E71]="Turn on WARP"
 T[C71]="打开 WARP"
 T[E72]="Turn off, uninstall WARP interface and Linux Client"
@@ -310,6 +310,10 @@ T[E139]="Dualstack switch to WARP \$STACK_AFTER only"
 T[C139]="双栈 WARP 改为单栈 WARP \$STACK_AFTER"
 T[E140]="Native dualstack could not be changed."
 T[C140]="原生双栈 WARP 不能作更改"
+T[E141]="change \$WARP_BEFORE to \$WARP_AFTER1"
+T[C141]="\$WARP_BEFORE 转为 \$WARP_AFTER1"
+T[E142]="change \$WARP_BEFORE to \$WARP_AFTER2"
+T[C142]="\$WARP_BEFORE 转为 \$WARP_AFTER2"
 
 # 脚本当天及累计运行次数统计
 COUNT=$(curl -sm1 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Ffscarmen%2Fwarp%2Fmenu.sh&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=&edge_flat=true" 2>&1) &&
@@ -1137,7 +1141,18 @@ update(){
 
 # 显示菜单
 menu(){
-	if [[ $1 != 3 ]]; then
+	if [[ $PLAN != 3 ]]; then
+		case $TRACE4@$TRACE6 in
+		"@off" ) OPTION1=;;
+		"off@" ) ;;
+		"off@off" );;
+		"@on"|"@plus" );;
+		"off@on"|"off@plus" );;
+		"on@"|"plus@" );;
+		"on@off"|"plus@off" );;
+		"on@on"|"plus@plus" );;
+		esac		
+		
 		OPTION1=$(eval echo "${T[${L}66]}") && OPTION2=$(eval echo "${T[${L}67]}") && OPTION3=$(eval echo "${T[${L}68]}");;
 	else	OPTION1=${T[${L}77]} && OPTION2=${T[${L}78]} && OPTION3=${T[${L}123]}
 	fi
@@ -1161,7 +1176,7 @@ menu(){
 	[[ $CLIENT = 2 ]] && green "	${T[${L}113]} "
 	[[ $CLIENT = 3 ]] && green "	WARP$AC ${T[${L}24]}	$(eval echo "${T[${L}27]}") "
  	red "\n======================================================================================================================\n"
-	green " 1. $OPTION1\n 2. $OPTION2\n 3. $OPTION3\n 4. $OPTION4\n 5. ${T[${L}72]}\n 6. ${T[${L}73]}\n 7. ${T[${L}74]}\n 8. ${T[${L}75]}\n 9. $OPTION9\n 0. ${T[${L}76]}\n"
+	green " 1. $OPTION1\n 2. $OPTION2\n 3. $OPTION3\n 4. $OPTION4\n 5. $OPTION5\n 6. $OPTION6\n 7. ${T[${L}72]}\n 8. ${T[${L}73]}\n 9. ${T[${L}74]} \n 10. ${T[${L}75]} \n 0. ${T[${L}76]}\n"
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
 		1 )	[[ $OPTION1 = ${T[${L}66]} || $OPTION1 = ${T[${L}67]} ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6) && install
@@ -1172,15 +1187,12 @@ menu(){
 		3 )	[[ $OPTION3 = ${T[${L}71]} ]] && OPTION=o && net
 			[[ $OPTION3 = ${T[${L}123]} ]] && change_ip;;
 		4 )	[[ $CLIENT = 2 || $CLIENT = 3 ]] && proxy_onoff || proxy;;
-		5 )	uninstall;;
-		6 )	bbrInstall;;
-		7 )	plus;;
-		8 )	ver;;
-		9 )	case $STACK4$STACK6$DUALSTACK in
-			^$) red " ${T[${L}51]} [0-8] "; sleep 1; menu;;
-			111 ) red " ${T[${L}140]} "; exit 1;;
-			*) stack_switch;;
-			esac;;
+		5 )	;;
+		6 )	$OPTION6;;
+		7 )	uninstall;;
+		8 )	bbrInstall;;
+		9 )	plus;;
+		10 )	ver;;
 		0 )	exit;;
 		* )	red " ${T[${L}51]} [0-9] "; sleep 1; [[ $CLIENT -gt 2 ]] && menu 3 || menu $PLAN;;
 		esac
@@ -1215,5 +1227,5 @@ s )	case $STACK4$STACK6$DUALSTACK in
 	111 ) red " ${T[${L}140]} ";;
 	* ) stack_switch;;
 	esac;;
-* )	[[ $CLIENT -gt 2 ]] && menu 3 || menu "$PLAN";;
+* )	menu;;
 esac
