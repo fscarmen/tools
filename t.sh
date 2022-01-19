@@ -1169,9 +1169,9 @@ case "$m" in
     OPTION1[6]="$(eval echo "${T[${L}141]}")"; OPTION2[6]="$(eval echo "${T[${L}142]}")"; OPTION3[6]="${T[${L}78]}"; OPTION4[6]="${T[${L}77]}";;
 7 ) WARP_BEFORE[7]="WARP ${T[${L}69]}"; WARP_AFTER1[7]="WARP IPv4"; WARP_AFTER1[7]="WARP IPv6"
     OPTION1[7]="$(eval echo "${T[${L}141]}")"; OPTION2[7]="$(eval echo "${T[${L}142]}")"; OPTION3[7]="${T[${L}78]}"; OPTION4[7]="${T[${L}77]}";;
-esac;;
-
+esac
 OPTION5="${T[${L}82]}";;
+
 esac
 
 OPTION6="${T[${L}123]}"; OPTION7="${T[${L}72]}"; OPTION8="${T[${L}74]}"; OPTION9="${T[${L}73]}"; OPTION10="${T[${L}75]}";  OPTION0="${T[${L}76]}"
@@ -1193,7 +1193,7 @@ menu(){
 	[[ $CLIENT = 2 ]] && green "	${T[${L}113]} "
 	[[ $CLIENT = 3 ]] && green "	WARP$AC ${T[${L}24]}	$(eval echo "${T[${L}27]}") "
  	red "\n======================================================================================================================\n"
-	green " 1.  ${OPTION1[m]}\n 2.  ${OPTION2[m]}\n 3.  ${OPTION3[m]}\n 4.  ${OPTION4[m]}\n 5.  ${OPTION5[m]}\n 6.  $OPTION6\n 7.  $OPTION7\n 8.  $OPTION8\n 9.  $OPTION9 \n 10. $OPTION10 \n 0.  $OPTION0\n"
+	green " 1.  ${OPTION1[m]}\n 2.  ${OPTION2[m]}\n 3.  ${OPTION3[m]}\n 4.  ${OPTION4[m]}\n 5.  $OPTION5\n 6.  $OPTION6\n 7.  $OPTION7\n 8.  $OPTION8\n 9.  $OPTION9 \n 10. $OPTION10 \n 0.  $OPTION0\n"
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
 		1 )	[[ $OPTION1 = ${T[${L}66]} || $OPTION1 = ${T[${L}67]} ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6) && install
