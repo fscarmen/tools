@@ -1149,20 +1149,21 @@ case $CLIENT in
 * ) 		
 CASE[0]="@off"; CASE[1]="off@"; CASE[2]="off@off"; CASE[3]="@on|@plus"; CASE[4]="off@on|off@plus"; CASE[5]="on@|plus@"; CASE[6]="on@off|plus@off"; CASE[7]="on@on|plus@plus"
 for ((m=0;m<${#CASE[@]};m++)); do [[ $TRACE4@$TRACE6 = ${CASE[m]} ]] && break; done
-
-NATIVE[0]="IPv6 only"; NATIVE[1]="IPv4 only"; NATIVE[2]="${T[${L}69]}"; NATIVE[3]="WARP IPv6 only"; NATIVE[4]="WARP IPv6"; NATIVE[5]="WARP IPv4 only"; NATIVE[6]="WARP IPv4"; NATIVE[7]="${T[${L}70]}"
-OPTION1[0]="$(eval echo "${T[${L}66]}")"; OPTION1[1]="$(eval echo "${T[${L}66]}")"; OPTION1[2]="$(eval echo "${T[${L}66]}")"; OPTION1[3]=""; OPTION1[4]=""; OPTION1[5]=""; OPTION1[6]=""; OPTION1[7]=""
-OPTION2[0]="$(eval echo "${T[${L}67]}")"; OPTION2[1]="$(eval echo "${T[${L}67]}")"; OPTION2[2]="$(eval echo "${T[${L}67]}")"; OPTION2[3]=""; OPTION2[4]=""; OPTION2[5]=""; OPTION2[6]=""; OPTION2[7]=""
-OPTION3[0]="$(eval echo "${T[${L}68]}")"; OPTION3[1]="$(eval echo "${T[${L}68]}")"; OPTION3[2]="$(eval echo "${T[${L}68]}")"; OPTION3[3]=""; OPTION3[4]=""; OPTION3[5]=""; OPTION3[6]=""; OPTION3[7]=""
-OPTION4[0]="${T[${L}71]}"; OPTION4[1]="${T[${L}71]}"; OPTION4[2]="${T[${L}71]}"; OPTION4[3]=""; OPTION4[4]=""; OPTION4[5]=""; OPTION4[6]=""; OPTION4[7]=""
-OPTION5[0]="${T[${L}82]}"; OPTION5[1]="${T[${L}82]}"; OPTION5[2]="${T[${L}82]}"; OPTION5[3]="${T[${L}82]}"; OPTION5[4]="${T[${L}82]}"; OPTION5[5]="${T[${L}82]}"; OPTION5[6]="${T[${L}82]}"; OPTION5[7]=""
-ACTION1[0]=""; ACTION1[1]=""; ACTION1[2]=""; ACTION1[3]=""; ACTION1[4]=""; ACTION1[5]=""; ACTION1[6]=""; ACTION1[7]=""
-ACTION2[0]=""; ACTION2[1]=""; ACTION2[2]=""; ACTION2[3]=""; ACTION2[4]=""; ACTION2[5]=""; ACTION2[6]=""; ACTION2[7]=""
-ACTION3[0]=""; ACTION3[1]=""; ACTION3[2]=""; ACTION3[3]=""; ACTION3[4]=""; ACTION3[5]=""; ACTION3[6]=""; ACTION3[7]=""
-ACTION4[0]=""; ACTION4[1]=""; ACTION4[2]=""; ACTION4[3]=""; ACTION4[4]=""; ACTION4[5]=""; ACTION4[6]=""; ACTION4[7]=""
-ACTION5[0]=""; ACTION5[1]=""; ACTION5[2]=""; ACTION5[3]=""; ACTION5[4]=""; ACTION5[5]=""; ACTION5[6]=""; ACTION5[7]=""
-ACTION6[0]=""; ACTION6[1]=""; ACTION6[2]=""; ACTION6[3]=""; ACTION6[4]=""; ACTION6[5]=""; ACTION6[6]=""; ACTION6[7]=""
+case m in
+0 ) NATIVE[0]="IPv6 only"; OPTION1[0]="$(eval echo "${T[${L}66]}")"; OPTION2[0]="$(eval echo "${T[${L}67]}")"; OPTION3[0]="$(eval echo "${T[${L}68]}")"; OPTION4[0]="${T[${L}71]}"; OPTION5[0]="${T[${L}82]}"
+    ACTION1[0]=""; ACTION2[0]=""; ACTION3[0]=""; ACTION4[0]=""; ACTION5[0]=""; ACTION6[0]=""
+1 ) NATIVE[1]="IPv4 only"; OPTION1[1]="$(eval echo "${T[${L}66]}")"; OPTION2[1]="$(eval echo "${T[${L}67]}")"; OPTION3[1]="$(eval echo "${T[${L}68]}")"; OPTION4[1]="${T[${L}71]}"; OPTION5[1]="${T[${L}82]}"
+    ACTION1[1]=""; ACTION2[1]=""; ACTION3[1]=""; ACTION4[1]=""; ACTION5[1]=""; ACTION6[1]=""
+2 ) NATIVE[2]="${T[${L}69]}"; OPTION1[2]="$(eval echo "${T[${L}66]}")"; OPTION2[2]="$(eval echo "${T[${L}67]}")"; OPTION3[2]="$(eval echo "${T[${L}68]}")"; OPTION4[2]="${T[${L}71]}"; OPTION5[2]="${T[${L}82]}"
+    ACTION1[2]=""; ACTION2[2]=""; ACTION3[2]=""; ACTION4[2]=""; ACTION5[2]=""; ACTION6[2]=""
+3 ) NATIVE[3]="WARP IPv6 only"; OPTION1[3]=""; OPTION2[3]=""; OPTION3[3]=""; OPTION4[3]=""; OPTION5[0]=""
+    ACTION1[3]=""; ACTION2[3]=""; ACTION3[3]=""; ACTION4[3]=""; ACTION5[3]=""; ACTION6[3]=""
+4 ) NATIVE[4]="WARP IPv6";
+5 ) NATIVE[5]="WARP IPv4 only"; 
+6 ) NATIVE[6]="WARP IPv4";
+7 ) NATIVE[7]="${T[${L}70]}"
 ;;
+esac;;
 esac
 
 OPTION6="${T[${L}123]}"; OPTION7="${T[${L}72]}"; OPTION8="${T[${L}74]}"; OPTION9="${T[${L}73]}"; OPTION10="${T[${L}75]}";  OPTION0="${T[${L}76]}"
