@@ -160,12 +160,12 @@ T[E64]="Successfully synchronized the latest version"
 T[C64]="成功！已同步最新脚本，版本号"
 T[E65]="Upgrade failed. Feedback:[https://github.com/fscarmen/warp/issues]"
 T[C65]="升级失败，问题反馈:[https://github.com/fscarmen/warp/issues]"
-T[E66]="Add WARP IPv4 interface to \$NATIVE VPS"
-T[C66]="为 \$NATIVE 添加 IPv4 网络接口"
-T[E67]="Add WARP IPv6 interface to \$NATIVE VPS"
-T[C67]="为 \$NATIVE 添加 IPv6 网络接口"
-T[E68]="Add WARP dualstack interface to \$NATIVE VPS"
-T[C68]="为 \$NATIVE 添加双栈网络接口"
+T[E66]="Add WARP IPv4 interface to \${NATIVE[m]} VPS"
+T[C66]="为 \${NATIVE[m]} 添加 IPv4 网络接口"
+T[E67]="Add WARP IPv6 interface to \${NATIVE[m]} VPS"
+T[C67]="为 \${NATIVE[m]} 添加 IPv6 网络接口"
+T[E68]="Add WARP dualstack interface to \${NATIVE[m]} VPS"
+T[C68]="为 \${NATIVE[m]} 添加双栈网络接口"
 T[E69]="Native dualstack"
 T[C69]="原生双栈"
 T[E70]="WARP dualstack"
@@ -646,7 +646,7 @@ net(){
 	wg-quick up wgcf >/dev/null 2>&1
 	grep -q "^A.*\.0\/0" /etc/wireguard/wgcf.conf && ip4_info
 	grep -q "^A.*\:\/0" /etc/wireguard/wgcf.conf && ip6_info
-	until [[ -n $IP4 && -n $IP6 && $TRACE4$TRACE6 =~ on|plus ]]
+	until [[ $TRACE4$TRACE6 =~ on|plus ]]
 		do	(( i++ )) || true
 			yellow " $(eval echo "${T[${L}12]}") "
 			${SYSTEMCTL_RESTART[int]} >/dev/null 2>&1
@@ -823,10 +823,10 @@ else
 CASE[0]="@off"; CASE[1]="off@"; CASE[2]="off@off"; CASE[3]="@on"|"@plus"; CASE[4]="off@on"|"off@plus"; CASE[5]="on@"|"plus@"; CASE[6]="on@off"|"plus@off"; CASE[7]="on@on"|"plus@plus"
 NATIVE[0]="IPv6 only"; NATIVE[1]="IPv4 only"; NATIVE[2]="${T[${L}69]}"; NATIVE[3]="WARP IPv6 only"; NATIVE[4]="WARP IPv6"; NATIVE[5]="WARP IPv4 only"; NATIVE[6]="WARP IPv4"; NATIVE[7]="${T[${L}70]}"
 OPTION1[0]="$(eval echo "${T[${L}66]}")"; OPTION1[1]="$(eval echo "${T[${L}66]}")"; OPTION1[2]="$(eval echo "${T[${L}66]}")"; OPTION1[3]=""; OPTION1[4]=""; OPTION1[5]=""; OPTION1[6]=""; OPTION1[7]=""
-OPTION2[0]=""; OPTION2[1]=""; OPTION2[2]=""; OPTION2[3]=""; OPTION2[4]=""; OPTION2[5]=""; OPTION2[6]=""; OPTION2[7]=""
-OPTION3[0]=""; OPTION3[1]=""; OPTION3[2]=""; OPTION3[3]=""; OPTION3[4]=""; OPTION3[5]=""; OPTION3[6]=""; OPTION3[7]=""
-OPTION4[0]=""; OPTION4[1]=""; OPTION4[2]=""; OPTION4[3]=""; OPTION4[4]=""; OPTION4[5]=""; OPTION4[6]=""; OPTION4[7]=""
-OPTION5[0]=""; OPTION5[1]=""; OPTION5[2]=""; OPTION5[3]=""; OPTION5[4]=""; OPTION5[5]=""; OPTION5[6]=""; OPTION5[7]=""
+OPTION2[0]="$(eval echo "${T[${L}67]}")"; OPTION2[1]="$(eval echo "${T[${L}67]}")"; OPTION2[2]="$(eval echo "${T[${L}67]}")"; OPTION2[3]=""; OPTION2[4]=""; OPTION2[5]=""; OPTION2[6]=""; OPTION2[7]=""
+OPTION3[0]="$(eval echo "${T[${L}68]}")"; OPTION3[1]="$(eval echo "${T[${L}68]}")"; OPTION3[2]="$(eval echo "${T[${L}68]}")"; OPTION3[3]=""; OPTION3[4]=""; OPTION3[5]=""; OPTION3[6]=""; OPTION3[7]=""
+OPTION4[0]="${T[${L}71]}"; OPTION4[1]="${T[${L}71]}"; OPTION4[2]="${T[${L}71]}"; OPTION4[3]=""; OPTION4[4]=""; OPTION4[5]=""; OPTION4[6]=""; OPTION4[7]=""
+OPTION5[0]="${T[${L}82]}"; OPTION5[1]="${T[${L}82]}"; OPTION5[2]="${T[${L}82]}"; OPTION5[3]="${T[${L}82]}"; OPTION5[4]="${T[${L}82]}"; OPTION5[5]="${T[${L}82]}"; OPTION5[6]="${T[${L}82]}"; OPTION5[7]=""
 OPTION6[0]=""; OPTION6[1]=""; OPTION6[2]=""; OPTION6[3]=""; OPTION6[4]=""; OPTION6[5]=""; OPTION6[6]=""; OPTION6[7]=""
 ACTION1[0]=""; ACTION1[1]=""; ACTION1[2]=""; ACTION1[3]=""; ACTION1[4]=""; ACTION1[5]=""; ACTION1[6]=""; ACTION1[7]=""
 ACTION2[0]=""; ACTION2[1]=""; ACTION2[2]=""; ACTION2[3]=""; ACTION2[4]=""; ACTION2[5]=""; ACTION2[6]=""; ACTION2[7]=""
@@ -900,7 +900,7 @@ install(){
 	wget --no-check-certificate -T1 -t1 $CDN -O /usr/local/bin/wgcf https://github.com/ViRb3/wgcf/releases/download/v"$latest"/wgcf_"$latest"_linux_$ARCHITECTURE ||
 	wget --no-check-certificate $CDN -O /usr/local/bin/wgcf https://cdn.jsdelivr.net/gh/fscarmen/warp/wgcf_"$latest"_linux_$ARCHITECTURE
 	chmod +x /usr/local/bin/wgcf
-	
+
 	# 注册 WARP 账户 ( wgcf-account.toml 使用默认值加加快速度)。如有 WARP+ 账户，修改 license 并升级，并把设备名等信息保存到 /etc/wireguard/info.log
 	mkdir -p /etc/wireguard/ >/dev/null 2>&1
 	until [[ -e wgcf-account.toml ]] >/dev/null 2>&1; do
