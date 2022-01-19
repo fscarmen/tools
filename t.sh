@@ -817,9 +817,10 @@ input_port(){
 		done
 	}
 
-if [[ $CLIENT -gt 2 ]]; then
-	
-else		
+case $CLIENT in
+2 ) OPTION4=${T[${L}88]};;
+3 ) OPTION4=${T[${L}89]};; 
+* ) 		
 CASE[0]="@off"; CASE[1]="off@"; CASE[2]="off@off"; CASE[3]="@on"|"@plus"; CASE[4]="off@on"|"off@plus"; CASE[5]="on@"|"plus@"; CASE[6]="on@off"|"plus@off"; CASE[7]="on@on"|"plus@plus"
 NATIVE[0]="IPv6 only"; NATIVE[1]="IPv4 only"; NATIVE[2]="${T[${L}69]}"; NATIVE[3]="WARP IPv6 only"; NATIVE[4]="WARP IPv6"; NATIVE[5]="WARP IPv4 only"; NATIVE[6]="WARP IPv4"; NATIVE[7]="${T[${L}70]}"
 OPTION1[0]="$(eval echo "${T[${L}66]}")"; OPTION1[1]="$(eval echo "${T[${L}66]}")"; OPTION1[2]="$(eval echo "${T[${L}66]}")"; OPTION1[3]=""; OPTION1[4]=""; OPTION1[5]=""; OPTION1[6]=""; OPTION1[7]=""
@@ -834,16 +835,11 @@ ACTION3[0]=""; ACTION3[1]=""; ACTION3[2]=""; ACTION3[3]=""; ACTION3[4]=""; ACTIO
 ACTION4[0]=""; ACTION4[1]=""; ACTION4[2]=""; ACTION4[3]=""; ACTION4[4]=""; ACTION4[5]=""; ACTION4[6]=""; ACTION4[7]=""
 ACTION5[0]=""; ACTION5[1]=""; ACTION5[2]=""; ACTION5[3]=""; ACTION5[4]=""; ACTION5[5]=""; ACTION5[6]=""; ACTION5[7]=""
 ACTION6[0]=""; ACTION6[1]=""; ACTION6[2]=""; ACTION6[3]=""; ACTION6[4]=""; ACTION6[5]=""; ACTION6[6]=""; ACTION6[7]=""
-fi		
-	
-for ((m=0;m<${#CASE[@]};m++)); do [[ $TRACE4@$TRACE6 = ${CASE[i]} ]] && OPTION&& yellow " $(eval echo "${ACTION[i]}")" && break; done
 
-else	OPTION1=${T[${L}77]} && OPTION2=${T[${L}78]} && OPTION3=${T[${L}123]}
-fi
-
-case $CLIENT in
-2 )	OPTION4=${T[${L}88]};; 3 ) OPTION4=${T[${L}89]};; * ) OPTION4=${T[${L}82]};;
+for ((m=0;m<${#CASE[@]};m++)); do [[ $TRACE4@$TRACE6 = ${CASE[i]} ]] && break; done;;
 esac
+
+OPTION7="${T[${L}72]}"; OPTION8="${T[${L}74]}"; OPTION9="${T[${L}73]}"; OPTION10="${T[${L}75]}";  OPTION0="${T[${L}76]}"
 
 # WGCF 配置修改，其中用到的 162.159.192.1 和 2606:4700:d0::a29f:c001 均是 engage.cloudflareclient.com 的IP
 MODIFY014='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
@@ -1193,7 +1189,7 @@ menu(){
 	[[ $CLIENT = 2 ]] && green "	${T[${L}113]} "
 	[[ $CLIENT = 3 ]] && green "	WARP$AC ${T[${L}24]}	$(eval echo "${T[${L}27]}") "
  	red "\n======================================================================================================================\n"
-	green " 1. $OPTION1\n 2. $OPTION2\n 3. $OPTION3\n 4. $OPTION4\n 5. $OPTION5\n 6. $OPTION6\n 7. ${T[${L}72]}\n 8. ${T[${L}73]}\n 9. ${T[${L}74]} \n 10. ${T[${L}75]} \n 0. ${T[${L}76]}\n"
+	green " 1.  $OPTION1\n 2.  $OPTION2\n 3.  $OPTION3\n 4.  $OPTION4\n 5.  $OPTION5\n 6.  $OPTION6\n 7.  $OPTION7\n 8.  $OPTION8\n 9.  $OPTION9 \n 10. $OPTION10 \n 0.  $OPTION0\n"
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
 		1 )	[[ $OPTION1 = ${T[${L}66]} || $OPTION1 = ${T[${L}67]} ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6) && install
