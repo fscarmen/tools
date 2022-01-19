@@ -644,14 +644,14 @@ net(){
 	[[ $SYSTEM != Alpine ]] && [[ $(systemctl is-active wg-quick@wgcf) != 'active' ]] && wg-quick down wgcf >/dev/null 2>&1
 	${SYSTEMCTL_START[int]} >/dev/null 2>&1
 	wg-quick up wgcf >/dev/null 2>&1
-	ip4_info
-	[[ -n $IP4 ]] && ip6_info
+	grep -q "^A.*\.0\/0" /etc/wireguard/wgcf.conf && ip4_info
+	grep -q "^A.*\:\/0" /etc/wireguard/wgcf.conf && ip6_info
 	until [[ -n $IP4 && -n $IP6 && $TRACE4$TRACE6 =~ on|plus ]]
 		do	(( i++ )) || true
 			yellow " $(eval echo "${T[${L}12]}") "
 			${SYSTEMCTL_RESTART[int]} >/dev/null 2>&1
-			ip4_info
-			[[ -n $IP4 ]] && ip6_info
+			grep -q "^A.*\.0\/0" /etc/wireguard/wgcf.conf && ip4_info
+			grep -q "^A.*\:\/0" /etc/wireguard/wgcf.conf && ip6_info
 			if [[ $i = "$j" ]]; then
 				if [[ $LICENSETYPE = 2 ]]; then 
 				unset LICENSETYPE && i=0 && green " ${T[${L}129]} " &&
