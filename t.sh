@@ -1183,7 +1183,7 @@ menu(){
 	[[ $CLIENT = 2 ]] && green "	${T[${L}113]} "
 	[[ $CLIENT = 3 ]] && green "	WARP$AC ${T[${L}24]}	$(eval echo "${T[${L}27]}") "
  	red "\n======================================================================================================================\n"
-	green " 1.  ${OPTION1}[m]\n 2.  ${OPTION2}[m]\n 3.  ${OPTION3}[m]\n 4.  ${OPTION4}[m]\n 5.  ${OPTION5}[m]\n 6.  $OPTION6\n 7.  $OPTION7\n 8.  $OPTION8\n 9.  $OPTION9 \n 10. $OPTION10 \n 0.  $OPTION0\n"
+	green " 1.  ${OPTION1[m]}\n 2.  ${OPTION2[m]}\n 3.  ${OPTION3[m]}\n 4.  ${OPTION4[m]}\n 5.  ${OPTION5[m]}\n 6.  $OPTION6\n 7.  $OPTION7\n 8.  $OPTION8\n 9.  $OPTION9 \n 10. $OPTION10 \n 0.  $OPTION0\n"
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
 		1 )	[[ $OPTION1 = ${T[${L}66]} || $OPTION1 = ${T[${L}67]} ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6) && install
