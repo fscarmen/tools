@@ -1159,7 +1159,7 @@ case "$m" in
 3 ) NATIVE[3]="WARP IPv6 only"; OPTION1[3]=""; OPTION2[3]=""; OPTION3[3]=""; OPTION4[3]=""; OPTION5[0]=""
     ACTION1[3]=""; ACTION2[3]=""; ACTION3[3]=""; ACTION4[3]=""; ACTION5[3]=""; ACTION6[3]="";;
 4 ) NATIVE[4]="WARP IPv6";;
-5 ) NATIVE[5]="WARP IPv4 only"; ;
+5 ) NATIVE[5]="WARP IPv4 only";;
 6 ) NATIVE[6]="WARP IPv4";;
 7 ) NATIVE[7]="${T[${L}70]}";;
 esac;;
