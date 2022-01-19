@@ -1148,6 +1148,8 @@ case $CLIENT in
 3 ) OPTION4=${T[${L}89]};; 
 * ) 		
 CASE[0]="@off"; CASE[1]="off@"; CASE[2]="off@off"; CASE[3]="@on|@plus"; CASE[4]="off@on|off@plus"; CASE[5]="on@|plus@"; CASE[6]="on@off|plus@off"; CASE[7]="on@on|plus@plus"
+for ((m=0;m<${#CASE[@]};m++)); do [[ $TRACE4@$TRACE6 = ${CASE[m]} ]] && break; done
+
 NATIVE[0]="IPv6 only"; NATIVE[1]="IPv4 only"; NATIVE[2]="${T[${L}69]}"; NATIVE[3]="WARP IPv6 only"; NATIVE[4]="WARP IPv6"; NATIVE[5]="WARP IPv4 only"; NATIVE[6]="WARP IPv4"; NATIVE[7]="${T[${L}70]}"
 OPTION1[0]="$(eval echo "${T[${L}66]}")"; OPTION1[1]="$(eval echo "${T[${L}66]}")"; OPTION1[2]="$(eval echo "${T[${L}66]}")"; OPTION1[3]=""; OPTION1[4]=""; OPTION1[5]=""; OPTION1[6]=""; OPTION1[7]=""
 OPTION2[0]="$(eval echo "${T[${L}67]}")"; OPTION2[1]="$(eval echo "${T[${L}67]}")"; OPTION2[2]="$(eval echo "${T[${L}67]}")"; OPTION2[3]=""; OPTION2[4]=""; OPTION2[5]=""; OPTION2[6]=""; OPTION2[7]=""
@@ -1160,8 +1162,7 @@ ACTION3[0]=""; ACTION3[1]=""; ACTION3[2]=""; ACTION3[3]=""; ACTION3[4]=""; ACTIO
 ACTION4[0]=""; ACTION4[1]=""; ACTION4[2]=""; ACTION4[3]=""; ACTION4[4]=""; ACTION4[5]=""; ACTION4[6]=""; ACTION4[7]=""
 ACTION5[0]=""; ACTION5[1]=""; ACTION5[2]=""; ACTION5[3]=""; ACTION5[4]=""; ACTION5[5]=""; ACTION5[6]=""; ACTION5[7]=""
 ACTION6[0]=""; ACTION6[1]=""; ACTION6[2]=""; ACTION6[3]=""; ACTION6[4]=""; ACTION6[5]=""; ACTION6[6]=""; ACTION6[7]=""
-
-for ((m=0;m<${#CASE[@]};m++)); do [[ $TRACE4@$TRACE6 = ${CASE[m]} ]] && break; done;;
+;;
 esac
 
 OPTION6="${T[${L}123]}"; OPTION7="${T[${L}72]}"; OPTION8="${T[${L}74]}"; OPTION9="${T[${L}73]}"; OPTION10="${T[${L}75]}";  OPTION0="${T[${L}76]}"
