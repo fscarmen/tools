@@ -969,7 +969,7 @@ install(){
 
 	wait
 
-	sh -c $(eval echo \$MODIFY$CONF)
+	sh -c "$(eval echo \$MODIFY$CONF)"
 	
 	# 特殊 VPS 的配置文件 DNS 次序
 	[[ $(hostname 2>&1) = DiG9 ]] && sed -i "s/DNS.*/DNS = 8.8.8.8,8.8.4.4,2001:4860:4860::8888,2001:4860:4860::8844/g" wgcf-profile.conf
