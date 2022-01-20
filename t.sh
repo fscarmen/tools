@@ -1144,7 +1144,7 @@ case $CLIENT in
 case "$TRACE4@$TRACE6" in
 @off ) NATIVE="IPv6 only"
     OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}";
-    ACTION1="CONF=014; install"; ACTION2="CONF=016; install"; ACTION3="CONF=01D; install"; ACTION4="OPTION=o; net";;
+    ACTION1="\$(CONF=014; install)"; ACTION2="\$(CONF=016; install)"; ACTION3="\$(CONF=01D; install)"; ACTION4="\$(OPTION=o; net)";;
 off@ ) NATIVE="IPv4 only"
     OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}";
     ACTION1=""; ACTION2=""; ACTION3=""; ACTION4=""; ACTION5=""; ACTION6="";;
@@ -1189,7 +1189,7 @@ menu(){
 	green " 1.  $OPTION1\n 2.  $OPTION2\n 3.  $OPTION3\n 4.  $OPTION4\n 5.  $OPTION5\n 6.  $OPTION6\n 7.  $OPTION7\n 8.  $OPTION8\n 9.  $OPTION9 \n 10. $OPTION10 \n 0.  $OPTION0\n"
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
-		1 ) ${ACTION1};; 2 ) ${ACTION2};; 3 ) ${ACTION3};; 4 ) ${ACTION4};; 5 ) ${ACTION5};;
+		1 ) $(eval echo "${ACTION1}");; 2 ) $(eval echo "${ACTION2}");; 3 ) $(eval echo "${ACTION3}");; 4 ) $(eval echo "${ACTION4}");; 5 ) $(eval echo "${ACTION5}");;
 		6 ) change_ip;; 7 ) uninstall;; 8 ) plus;; 9 ) bbrInstall;; 10 ) exit;;
 		* ) red " ${T[${L}51]} [0-9] "; sleep 1; menu;;
 		esac
