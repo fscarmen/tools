@@ -723,18 +723,6 @@ esac
 [[ $IPV6 = 1 ]] && ip6_info
 [[ $L = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
 [[ $L = C && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")
-if [[ $TRACE4$TRACE6 =~ on|plus ]]; then
-	grep -sq '\-4' /etc/wireguard/wgcf.conf && STACK4=1 || STACK4=0
-	grep -sq '\-6' /etc/wireguard/wgcf.conf && STACK6=1 || STACK6=0
-	grep -sq '^#' /etc/wireguard/wgcf.conf && DUALSTACK=0 || DUALSTACK=1
-	case $STACK4$STACK6$DUALSTACK in
-	010 ) STACK_NOW=IPv4 && OPTION9=$(eval echo "${T[${L}138]}");;
-	011 ) STACK_AFTER=IPv4 && OPTION9=$(eval echo "${T[${L}139]}");;
-	100 ) STACK_NOW=IPv6 && OPTION9=$(eval echo "${T[${L}138]}");;
-	101 ) STACK_AFTER=IPv6 && OPTION9=$(eval echo "${T[${L}139]}");;
-	111 ) OPTION9=${T[${L}140]};;
-	esac
-fi
 
 # 判断当前 WARP 状态，决定变量 PLAN，变量 PLAN 含义：1=单栈  2=双栈  3=WARP已开启
 [[ $TRACE4$TRACE6 =~ on|plus ]] && PLAN=3 || PLAN=$((IPV4+IPV6))
@@ -1237,10 +1225,6 @@ case "$OPTION" in
 
 c )	[[ $CLIENT = 3 ]] && red " ${T[${L}92]} " && exit 1 || proxy;;
 d )	update;;
-s )	case $STACK4$STACK6$DUALSTACK in
-	^$ ) red " ${T[${L}137]} ";;
-	111 ) red " ${T[${L}140]} ";;
-	* ) stack_switch;;
-	esac;;
+s )	;;
 * )	menu;;
 esac
