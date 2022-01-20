@@ -1159,15 +1159,15 @@ off@on|off@plus ) WARP_BEFORE="WARP IPv6"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2=
     ACTION1(){ TO=014; stack_switch; }; ACTION2(){ CONF=01D; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
 
 on@|plus@ ) WARP_BEFORE="WARP IPv4 only"; WARP_AFTER1="WARP IPv6"; WARP_AFTER2="${T[${L}70]}"
-    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
+    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}
     ACTION1(){ TO=106; stack_switch; }; ACTION2(){ CONF=10D; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
 
 on@off|plus@off ) WARP_BEFORE="WARP IPv4"; WARP_AFTER1="WARP IPv6"; WARP_AFTER2="${T[${L}70]}"
-    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
+    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}
     ACTION1(){ TO=106; stack_switch; }; ACTION2(){ CONF=10D; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
 
 on@on|plus@plus ) WARP_BEFORE="${T[${L}70]}"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="WARP IPv6"
-    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
+    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}
     ACTION1(){ TO=114; stack_switch; }; ACTION2(){ CONF=116; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
 
 esac
