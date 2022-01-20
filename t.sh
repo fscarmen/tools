@@ -314,6 +314,12 @@ T[E141]="Switch \$WARP_BEFORE to \$WARP_AFTER1"
 T[C141]="\$WARP_BEFORE 转为 \$WARP_AFTER1"
 T[E142]="Switch \$WARP_BEFORE to \$WARP_AFTER2"
 T[C142]="\$WARP_BEFORE 转为 \$WARP_AFTER2"
+T[E143]="Change Client port"
+T[C143]="更改 Client 端口"
+T[E144]="Install WARP IPv6 interface"
+T[C144]="安装 WARP IPv6 网络接口"
+T[E145]="Socks5 Proxy Client on IPv4 VPS is working now. WARP IPv6 interface could not be installed. Feedback: [https://github.com/fscarmen/warp/issues]"
+T[C145]="IPv4 only VPS，并且 Socks5 代理正在运行中，不能安装 WARP IPv6 网络接口，问题反馈:[https://github.com/fscarmen/warp/issues]"
 
 # 脚本当天及累计运行次数统计
 COUNT=$(curl -sm1 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Ffscarmen%2Fwarp%2Fmenu.sh&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=&edge_flat=true" 2>&1) &&
@@ -1132,8 +1138,8 @@ update(){
 }
 
 case $CLIENT in
-2 ) OPTION4=${T[${L}88]}; OPTION5="${T[${L}82]}";;
-3 ) OPTION4=${T[${L}89]}; OPTION5="${T[${L}82]}";; 
+2 ) OPTION1="${T[${L}88]}"; OPTION2="${T[${L}143]}"; OPTION3="${T[${L}144]}"; OPTION4="${T[${L}78]}"; OPTION5="${T[${L}77]}"; OPTION6="${T[${L}123]}"
+3 ) OPTION1="${T[${L}89]}"; OPTION2="${T[${L}143]}"; OPTION3="${T[${L}144]}"; OPTION4="${T[${L}78]}"; OPTION5="${T[${L}77]}"; OPTION6="${T[${L}123]}"
 * )
 case "$TRACE4@$TRACE6" in
 @off ) NATIVE="IPv6 only"
