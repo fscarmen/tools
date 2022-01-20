@@ -160,12 +160,12 @@ T[E64]="Successfully synchronized the latest version"
 T[C64]="成功！已同步最新脚本，版本号"
 T[E65]="Upgrade failed. Feedback:[https://github.com/fscarmen/warp/issues]"
 T[C65]="升级失败，问题反馈:[https://github.com/fscarmen/warp/issues]"
-T[E66]="Add WARP IPv4 interface to \${NATIVE[m]} VPS"
-T[C66]="为 \${NATIVE[m]} 添加 WARP IPv4 网络接口"
-T[E67]="Add WARP IPv6 interface to \${NATIVE[m]} VPS"
-T[C67]="为 \${NATIVE[m]} 添加 WARP IPv6 网络接口"
-T[E68]="Add WARP dualstack interface to \${NATIVE[m]} VPS"
-T[C68]="为 \${NATIVE[m]} 添加 WARP 双栈网络接口"
+T[E66]="Add WARP IPv4 interface to \$NATIVE VPS"
+T[C66]="为 \$NATIVE 添加 WARP IPv4 网络接口"
+T[E67]="Add WARP IPv6 interface to \$NATIVE VPS"
+T[C67]="为 \$NATIVE 添加 WARP IPv6 网络接口"
+T[E68]="Add WARP dualstack interface to \$NATIVE VPS"
+T[C68]="为 \$NATIVE 添加 WARP 双栈网络接口"
 T[E69]="Native dualstack"
 T[C69]="原生双栈"
 T[E70]="WARP dualstack"
@@ -310,10 +310,10 @@ T[E139]="Dualstack switch to WARP \$STACK_AFTER only"
 T[C139]="双栈 WARP 改为单栈 WARP \$STACK_AFTER"
 T[E140]="Native dualstack could not be changed."
 T[C140]="原生双栈 WARP 不能作更改"
-T[E141]="change \$WARP_BEFORE[m] to \$WARP_AFTER1[m]"
-T[C141]="\$WARP_BEFORE[m] 转为 \$WARP_AFTER1[m]"
-T[E142]="change \$WARP_BEFORE[m] to \$WARP_AFTER2[m]"
-T[C142]="\$WARP_BEFORE[m] 转为 \$WARP_AFTER2[m]"
+T[E141]="change \$WARP_BEFORE to \$WARP_AFTER1"
+T[C141]="\$WARP_BEFORE 转为 \$WARP_AFTER1"
+T[E142]="change \$WARP_BEFORE to \$WARP_AFTER2"
+T[C142]="\$WARP_BEFORE 转为 \$WARP_AFTER2"
 
 # 脚本当天及累计运行次数统计
 COUNT=$(curl -sm1 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Ffscarmen%2Fwarp%2Fmenu.sh&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=&edge_flat=true" 2>&1) &&
@@ -1146,29 +1146,27 @@ update(){
 case $CLIENT in
 2 ) OPTION4=${T[${L}88]}; OPTION5="${T[${L}82]}";;
 3 ) OPTION4=${T[${L}89]}; OPTION5="${T[${L}82]}";; 
-* ) 		
-CASE[0]="@off"; CASE[1]="off@"; CASE[2]="off@off"; CASE[3]="@on|@plus"; CASE[4]="off@on|off@plus"; CASE[5]="on@|plus@"; CASE[6]="on@off|plus@off"; CASE[7]="on@on|plus@plus"
-for ((m=0;m<${#CASE[@]};m++)); do [[ $TRACE4@$TRACE6 = ${CASE[m]} ]] && break; done
-case "$m" in
-0 ) NATIVE[0]="IPv6 only"
-    OPTION1[0]="$(eval echo "${T[${L}66]}")"; OPTION2[0]="$(eval echo "${T[${L}67]}")"; OPTION3[0]="$(eval echo "${T[${L}68]}")"; OPTION4[0]="${T[${L}71]}";
-    ACTION1[0]=""; ACTION2[0]=""; ACTION3[0]=""; ACTION4[0]=""; ACTION5[0]=""; ACTION6[0]="";;
-1 ) NATIVE[1]="IPv4 only"
-    OPTION1[1]="$(eval echo "${T[${L}66]}")"; OPTION2[1]="$(eval echo "${T[${L}67]}")"; OPTION3[1]="$(eval echo "${T[${L}68]}")"; OPTION4[1]="${T[${L}71]}";
-    ACTION1[1]=""; ACTION2[1]=""; ACTION3[1]=""; ACTION4[1]=""; ACTION5[1]=""; ACTION6[1]="";;
-2 ) NATIVE[2]="${T[${L}69]}"
-    OPTION1[2]="$(eval echo "${T[${L}66]}")"; OPTION2[2]="$(eval echo "${T[${L}67]}")"; OPTION3[2]="$(eval echo "${T[${L}68]}")"; OPTION4[2]="${T[${L}71]}";
-    ACTION1[2]=""; ACTION2[2]=""; ACTION3[2]=""; ACTION4[2]=""; ACTION5[2]=""; ACTION6[2]="";;
-3 ) WARP_BEFORE[3]="WARP IPv6 only"; WARP_AFTER1[3]="WARP IPv4"; WARP_AFTER1[3]="WARP ${T[${L}69]}"
-    OPTION1[3]="$(eval echo "${T[${L}141]}")"; OPTION2[3]="$(eval echo "${T[${L}142]}")"; OPTION3[3]="${T[${L}78]}"; OPTION4[3]="${T[${L}77]}";;
-4 ) WARP_BEFORE[4]="WARP IPv6"; WARP_AFTER1[4]="WARP IPv4"; WARP_AFTER1[4]="WARP ${T[${L}69]}"
-    OPTION1[4]="$(eval echo "${T[${L}141]}")"; OPTION2[4]="$(eval echo "${T[${L}142]}")"; OPTION3[4]="${T[${L}78]}"; OPTION4[4]="${T[${L}77]}";;
-5 ) WARP_BEFORE[5]="WARP IPv4 only"; WARP_AFTER1[5]="WARP IPv6"; WARP_AFTER1[5]="WARP ${T[${L}69]}"
-    OPTION1[5]="$(eval echo "${T[${L}141]}")"; OPTION2[5]="$(eval echo "${T[${L}142]}")"; OPTION3[5]="${T[${L}78]}"; OPTION4[5]="${T[${L}77]}";;
-6 ) WARP_BEFORE[6]="WARP IPv4"; WARP_AFTER1[6]="WARP IPv6"; WARP_AFTER1[6]="WARP ${T[${L}69]}"
-    OPTION1[6]="$(eval echo "${T[${L}141]}")"; OPTION2[6]="$(eval echo "${T[${L}142]}")"; OPTION3[6]="${T[${L}78]}"; OPTION4[6]="${T[${L}77]}";;
-7 ) WARP_BEFORE[7]="WARP ${T[${L}69]}"; WARP_AFTER1[7]="WARP IPv4"; WARP_AFTER1[7]="WARP IPv6"
-    OPTION1[7]="$(eval echo "${T[${L}141]}")"; OPTION2[7]="$(eval echo "${T[${L}142]}")"; OPTION3[7]="${T[${L}78]}"; OPTION4[7]="${T[${L}77]}";;
+* )
+case "$TRACE4@$TRACE6" in
+@off ) NATIVE="IPv6 only"
+    OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}";
+    ACTION1=""; ACTION2=""; ACTION3=""; ACTION4=""; ACTION5=""; ACTION6="";;
+off@ ) NATIVE="IPv4 only"
+    OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}";
+    ACTION1=""; ACTION2=""; ACTION3=""; ACTION4=""; ACTION5=""; ACTION6="";;
+off@off ) NATIVE="${T[${L}69]}"
+    OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}";
+    ACTION1=""; ACTION2=""; ACTION3=""; ACTION4=""; ACTION5=""; ACTION6="";;
+@on| @plus ) WARP_BEFORE="WARP IPv6 only"; WARP_AFTER1="WARP IPv4"; WARP_AFTER1="WARP ${T[${L}69]}"
+    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
+off@on|off@plus ) WARP_BEFORE="WARP IPv6"; WARP_AFTER1="WARP IPv4"; WARP_AFTER1="WARP ${T[${L}69]}"
+    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
+on@|plus@ ) WARP_BEFORE="WARP IPv4 only"; WARP_AFTER1="WARP IPv6"; WARP_AFTER1="WARP ${T[${L}69]}"
+    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
+on@off|plus@off ) WARP_BEFORE="WARP IPv4"; WARP_AFTER1="WARP IPv6"; WARP_AFTER1="WARP ${T[${L}69]}"
+    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
+on@on|plus@plus ) WARP_BEFORE="WARP ${T[${L}69]}"; WARP_AFTER1="WARP IPv4"; WARP_AFTER1="WARP IPv6"
+    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
 esac
 OPTION5="${T[${L}82]}";;
 
@@ -1193,7 +1191,7 @@ menu(){
 	[[ $CLIENT = 2 ]] && green "	${T[${L}113]} "
 	[[ $CLIENT = 3 ]] && green "	WARP$AC ${T[${L}24]}	$(eval echo "${T[${L}27]}") "
  	red "\n======================================================================================================================\n"
-	green " 1.  ${OPTION1[m]}\n 2.  ${OPTION2[m]}\n 3.  ${OPTION3[m]}\n 4.  ${OPTION4[m]}\n 5.  $OPTION5\n 6.  $OPTION6\n 7.  $OPTION7\n 8.  $OPTION8\n 9.  $OPTION9 \n 10. $OPTION10 \n 0.  $OPTION0\n"
+	green " 1.  $OPTION1\n 2.  $OPTION2\n 3.  $OPTION3\n 4.  $OPTION4\n 5.  $OPTION5\n 6.  $OPTION6\n 7.  $OPTION7\n 8.  $OPTION8\n 9.  $OPTION9 \n 10. $OPTION10 \n 0.  $OPTION0\n"
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
 		1 )	[[ $OPTION1 = ${T[${L}66]} || $OPTION1 = ${T[${L}67]} ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6) && install
