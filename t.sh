@@ -1134,11 +1134,16 @@ update(){
 }
 
 case $CLIENT in
-2 ) OPTION1="${T[${L}88]}"; OPTION2="${T[${L}143]}"; OPTION3="${T[${L}144]}"; OPTION4="${T[${L}78]}"; OPTION5="${T[${L}77]}"; OPTION6="${T[${L}123]}";;
-3 ) OPTION1="${T[${L}89]}"; OPTION2="${T[${L}143]}"; OPTION3="${T[${L}144]}"; OPTION4="${T[${L}78]}"; OPTION5="${T[${L}77]}"; OPTION6="${T[${L}123]}";;
-* )
-case "$TRACE4@$TRACE6" in
-@off ) NATIVE="IPv6 only"
+2 ) OPTION1="${T[${L}88]}"; OPTION2="${T[${L}143]}"; OPTION3="${T[${L}144]}"; OPTION4="${T[${L}78]}"; OPTION5="${T[${L}77]}";
+    ACTION1(){ proxy_onoff; }; ACTION2(){ input_port; warp-cli --accept-tos set-proxy-port "$PORT"; };
+    ACTION3(){ CONF=106; [[ $TRACE6 != off ]] && red " ${T[${L}145]} " && exit 1 || install; }; ACTION4(){ update; }; ACTION5(){ onff; };;
+
+3 ) OPTION1="${T[${L}89]}"; OPTION2="${T[${L}143]}"; OPTION3="${T[${L}144]}"; OPTION4="${T[${L}78]}"; OPTION5="${T[${L}77]}";
+    ACTION1(){ proxy_onoff; }; ACTION2(){ input_port; warp-cli --accept-tos set-proxy-port "$PORT"; };
+    ACTION3(){ CONF=106; [[ $TRACE6 != off ]] && red " ${T[${L}145]} " && exit 1 || install; }; ACTION4(){ update; }; ACTION5(){ onff; };;
+
+* ) case "$TRACE4@$TRACE6" in
+@off ) NATIVE="IPv6 only"6
     OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}"
     ACTION1(){ CONF=014; install; }; ACTION2(){ CONF=016; install; }; ACTION3(){ CONF=01D; install; }; ACTION4(){ OPTION=o; net; };;
 
@@ -1171,7 +1176,7 @@ on@on|plus@plus ) WARP_BEFORE="${T[${L}70]}"; WARP_AFTER1="WARP IPv4"; WARP_AFTE
     ACTION1(){ TO=114; stack_switch; }; ACTION2(){ TO=116; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
 
 esac
-OPTION5="${T[${L}82]}"; ACTION5(){ change_ip; };;
+OPTION5="${T[${L}82]}"; ACTION5(){ proxy; };;
 
 esac
 
@@ -1199,8 +1204,8 @@ menu(){
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
 		1 ) ACTION1;; 2 ) ACTION2;; 3 ) ACTION3;; 4 ) ACTION4;; 5 ) ACTION5;;
-		6 ) change_ip;; 7 ) uninstall;; 8 ) plus;; 9 ) bbrInstall;; 10 ) exit;;
-		* ) red " ${T[${L}51]} [0-9] "; sleep 1; menu;;
+		6 ) change_ip;; 7 ) uninstall;; 8 ) plus;; 9 ) bbrInstall;; 10 ) ver;;
+		0 ) exit;; * ) red " ${T[${L}51]} [0-9] "; sleep 1; menu;;
 		esac
 	}
 
