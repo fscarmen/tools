@@ -1138,8 +1138,8 @@ update(){
 }
 
 case $CLIENT in
-2 ) OPTION1="${T[${L}88]}"; OPTION2="${T[${L}143]}"; OPTION3="${T[${L}144]}"; OPTION4="${T[${L}78]}"; OPTION5="${T[${L}77]}"; OPTION6="${T[${L}123]}"
-3 ) OPTION1="${T[${L}89]}"; OPTION2="${T[${L}143]}"; OPTION3="${T[${L}144]}"; OPTION4="${T[${L}78]}"; OPTION5="${T[${L}77]}"; OPTION6="${T[${L}123]}"
+2 ) OPTION1="${T[${L}88]}"; OPTION2="${T[${L}143]}"; OPTION3="${T[${L}144]}"; OPTION4="${T[${L}78]}"; OPTION5="${T[${L}77]}"; OPTION6="${T[${L}123]}";;
+3 ) OPTION1="${T[${L}89]}"; OPTION2="${T[${L}143]}"; OPTION3="${T[${L}144]}"; OPTION4="${T[${L}78]}"; OPTION5="${T[${L}77]}"; OPTION6="${T[${L}123]}";;
 * )
 case "$TRACE4@$TRACE6" in
 @off ) NATIVE="IPv6 only"
@@ -1189,22 +1189,9 @@ menu(){
 	green " 1.  $OPTION1\n 2.  $OPTION2\n 3.  $OPTION3\n 4.  $OPTION4\n 5.  $OPTION5\n 6.  $OPTION6\n 7.  $OPTION7\n 8.  $OPTION8\n 9.  $OPTION9 \n 10. $OPTION10 \n 0.  $OPTION0\n"
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
-		1 )	[[ $OPTION1 = ${T[${L}66]} || $OPTION1 = ${T[${L}67]} ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6) && install
-			[[ $OPTION1 = ${T[${L}70]} ]] && MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6) && install
-			[[ $OPTION1 = ${T[${L}77]} ]] && onoff;;
-		2 )	[[ $OPTION2 = ${T[${L}68]} || $OPTION2 = ${T[${L}69]} || $OPTION2 = ${T[${L}34]} ]] && MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6) && install
-			[[ $OPTION2 = ${T[${L}78]} ]] && update;;
-		3 )	[[ $OPTION3 = ${T[${L}71]} ]] && OPTION=o && net
-			[[ $OPTION3 = ${T[${L}123]} ]] && change_ip;;
-		4 )	[[ $CLIENT = 2 || $CLIENT = 3 ]] && proxy_onoff || proxy;;
-		5 )	;;
-		6 )	change_ip;;
-		7 )	uninstall;;
-		8 )	plus;;
-		9 )	bbrInstall;;
-		10 )	ver;;
-		0 )	exit;;
-		* )	red " ${T[${L}51]} [0-9] "; sleep 1; menu;;
+		1 ) ${ACTION1};; 2 ) ${ACTION2};; 3 ) ${ACTION3};; 4 ) ${ACTION4};; 5 ) ${ACTION5};;
+		6 ) change_ip;; 7 ) uninstall;; 8 ) plus;; 9 ) bbrInstall;; 10 ) exit;;
+		* ) red " ${T[${L}51]} [0-9] "; sleep 1; menu;;
 		esac
 	}
 
