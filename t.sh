@@ -310,9 +310,9 @@ T[E139]="Dualstack switch to WARP \$STACK_AFTER only"
 T[C139]="双栈 WARP 改为单栈 WARP \$STACK_AFTER"
 T[E140]="Native dualstack could not be changed."
 T[C140]="原生双栈 WARP 不能作更改"
-T[E141]="change \$WARP_BEFORE to \$WARP_AFTER1"
+T[E141]="Switch \$WARP_BEFORE to \$WARP_AFTER1"
 T[C141]="\$WARP_BEFORE 转为 \$WARP_AFTER1"
-T[E142]="change \$WARP_BEFORE to \$WARP_AFTER2"
+T[E142]="Switch \$WARP_BEFORE to \$WARP_AFTER2"
 T[C142]="\$WARP_BEFORE 转为 \$WARP_AFTER2"
 
 # 脚本当天及累计运行次数统计
