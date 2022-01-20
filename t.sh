@@ -969,7 +969,7 @@ install(){
 
 	wait
 
-	sh -c "$(eval echo \$MODIFY$CONF)"
+	sh -c "$(eval echo "\$MODIFY$CONF")"
 	
 	# 特殊 VPS 的配置文件 DNS 次序
 	[[ $(hostname 2>&1) = DiG9 ]] && sed -i "s/DNS.*/DNS = 8.8.8.8,8.8.4.4,2001:4860:4860::8888,2001:4860:4860::8844/g" wgcf-profile.conf
@@ -1143,24 +1143,31 @@ case $CLIENT in
 * )
 case "$TRACE4@$TRACE6" in
 @off ) NATIVE="IPv6 only"
-    OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}";
+    OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}"
     ACTION1(){ CONF=014; install; }; ACTION2(){ CONF=016; install; }; ACTION3(){ CONF=01D; install; }; ACTION4(){ OPTION=o; net; };;
+
 off@ ) NATIVE="IPv4 only"
-    OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}";
+    OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}"
     ACTION1(){ CONF=104; install; }; ACTION2(){ CONF=106; install; }; ACTION3(){ CONF=10D; install; }; ACTION4(){ OPTION=o; net; };;
+
 off@off ) NATIVE="${T[${L}69]}"
-    OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}";
+    OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}"
     ACTION1(){ CONF=114; install; }; ACTION2(){ CONF=116; install; }; ACTION3(){ CONF=11D; install; }; ACTION4(){ OPTION=o; net; };;
+
 @on| @plus ) WARP_BEFORE="WARP IPv6 only"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="${T[${L}70]}"
-    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
+    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
     ACTION1(){ CONF=114; install; }; ACTION2(){ CONF=116; install; }; ACTION3(){ CONF=11D; install; }; ACTION4(){ OPTION=o; net; };;
 
 off@on|off@plus ) WARP_BEFORE="WARP IPv6"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="${T[${L}70]}"
-    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
+    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
+    ACTION1(){ CONF=114; install; }; ACTION2(){ CONF=116; install; }; ACTION3(){ CONF=11D; install; }; ACTION4(){ OPTION=o; net; };;
+
 on@|plus@ ) WARP_BEFORE="WARP IPv4 only"; WARP_AFTER1="WARP IPv6"; WARP_AFTER2="${T[${L}70]}"
     OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
+
 on@off|plus@off ) WARP_BEFORE="WARP IPv4"; WARP_AFTER1="WARP IPv6"; WARP_AFTER2="${T[${L}70]}"
     OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
+
 on@on|plus@plus ) WARP_BEFORE="${T[${L}70]}"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="WARP IPv6"
     OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
 esac
