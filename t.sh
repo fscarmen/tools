@@ -51,9 +51,9 @@ T[C9]="安装 curl 失败，脚本中止，问题反馈:[https://github.com/fsca
 T[E10]="WireGuard tools are not installed or the configuration file wgcf.conf cannot be found, please reinstall."
 T[C10]="没有安装 WireGuard tools 或者找不到配置文件 wgcf.conf，请重新安装。"
 T[E11]="Maximum \$j attempts to get WARP IP..."
-T[C11]="后台获取 WARP IP 中,最大尝试\$j次……"
+T[C11]="后台获取 WARP IP 中,最大尝试\${j}次……"
 T[E12]="Try \$i"
-T[C12]="第\$i次尝试"
+T[C12]="第\${i}次尝试"
 T[E13]="There have been more than \$j failures. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C13]="失败已超过\$j次，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E14]="Got the WARP IP successfully."
@@ -1144,15 +1144,17 @@ case $CLIENT in
 case "$TRACE4@$TRACE6" in
 @off ) NATIVE="IPv6 only"
     OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}";
-    ACTION1(){ CONF=014; install; }"; ACTION2(){ CONF=016; install; }"; ACTION3(){ CONF=01D; install; }"; ACTION4=(){ OPTION=o; net; }";;
+    ACTION1(){ CONF=014; install; }; ACTION2(){ CONF=016; install; }; ACTION3(){ CONF=01D; install; }; ACTION4(){ OPTION=o; net; };;
 off@ ) NATIVE="IPv4 only"
     OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}";
-    ACTION1(){ CONF=104; install; }"; ACTION2(){ CONF=106; install; }"; ACTION3(){ CONF=10D; install; }"; ACTION4=(){ OPTION=o; net; }";;
+    ACTION1(){ CONF=104; install; }; ACTION2(){ CONF=106; install; }; ACTION3(){ CONF=10D; install; }; ACTION4(){ OPTION=o; net; };;
 off@off ) NATIVE="${T[${L}69]}"
     OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}";
-    ACTION1(){ CONF=114; install; }"; ACTION2(){ CONF=116; install; }"; ACTION3(){ CONF=11D; install; }"; ACTION4=(){ OPTION=o; net; }";;
+    ACTION1(){ CONF=114; install; }; ACTION2(){ CONF=116; install; }; ACTION3(){ CONF=11D; install; }; ACTION4(){ OPTION=o; net; };;
 @on| @plus ) WARP_BEFORE="WARP IPv6 only"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="${T[${L}70]}"
     OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
+    ACTION1(){ CONF=114; install; }; ACTION2(){ CONF=116; install; }; ACTION3(){ CONF=11D; install; }; ACTION4(){ OPTION=o; net; };;
+
 off@on|off@plus ) WARP_BEFORE="WARP IPv6"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="${T[${L}70]}"
     OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
 on@|plus@ ) WARP_BEFORE="WARP IPv4 only"; WARP_AFTER1="WARP IPv6"; WARP_AFTER2="${T[${L}70]}"
