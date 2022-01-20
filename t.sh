@@ -809,13 +809,13 @@ input_port(){
 # WGCF 配置修改，其中用到的 162.159.192.1 和 2606:4700:d0::a29f:c001 均是 engage.cloudflareclient.com 的IP
 MODIFY014='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
 MODIFY016='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;s/^.*0\.\0\/0/#&/g;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
-MODIFY01d='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
+MODIFY01D='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
 MODIFY104='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
 MODIFY106='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/^.*0\.\0\/0/#&/g;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
-MODIFY10d='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
+MODIFY10D='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
 MODIFY114='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/^.*\:\:\/0/#&/g" wgcf-profile.conf'
 MODIFY116='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/^.*0\.\0\/0/#&/g" wgcf-profile.conf'
-MODIFY11d='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/" wgcf-profile.conf'
+MODIFY11D='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/" wgcf-profile.conf'
 SWITCH014='sed -i "s/^#//g" /etc/wireguard/wgcf.conf' ###############
 SWITCH016='sed -i "s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
 SWITCH01d='sed -i "s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
@@ -969,7 +969,7 @@ install(){
 
 	wait
 
-	sh -c "$MODIFY"
+	sh -c $(eval echo \$MODIFY$CONF)
 	
 	# 特殊 VPS 的配置文件 DNS 次序
 	[[ $(hostname 2>&1) = DiG9 ]] && sed -i "s/DNS.*/DNS = 8.8.8.8,8.8.4.4,2001:4860:4860::8888,2001:4860:4860::8844/g" wgcf-profile.conf
@@ -1144,7 +1144,7 @@ case $CLIENT in
 case "$TRACE4@$TRACE6" in
 @off ) NATIVE="IPv6 only"
     OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}";
-    ACTION1=""; ACTION2=""; ACTION3=""; ACTION4=""; ACTION5=""; ACTION6="";;
+    ACTION1="CONF=014; install"; ACTION2="CONF=016; install"; ACTION3="CONF=01D; install"; ACTION4="OPTION=o; net";;
 off@ ) NATIVE="IPv4 only"
     OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}";
     ACTION1=""; ACTION2=""; ACTION3=""; ACTION4=""; ACTION5=""; ACTION6="";;
@@ -1162,11 +1162,12 @@ on@off|plus@off ) WARP_BEFORE="WARP IPv4"; WARP_AFTER1="WARP IPv6"; WARP_AFTER2=
 on@on|plus@plus ) WARP_BEFORE="${T[${L}70]}"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="WARP IPv6"
     OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
 esac
-OPTION5="${T[${L}82]}";;
+OPTION5="${T[${L}82]}"; ACTION5="change_ip";;
 
 esac
 
 OPTION6="${T[${L}123]}"; OPTION7="${T[${L}72]}"; OPTION8="${T[${L}74]}"; OPTION9="${T[${L}73]}"; OPTION10="${T[${L}75]}";  OPTION0="${T[${L}76]}"
+ACTION6="change_ip"; ACTION7="uninstall"; ACTION8="plus"; ACTION9="bbrInstall"; ACTION10="ver"; ACTION0="exit"
 
 # 显示菜单
 menu(){
