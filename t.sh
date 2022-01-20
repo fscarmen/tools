@@ -51,9 +51,9 @@ T[C9]="安装 curl 失败，脚本中止，问题反馈:[https://github.com/fsca
 T[E10]="WireGuard tools are not installed or the configuration file wgcf.conf cannot be found, please reinstall."
 T[C10]="没有安装 WireGuard tools 或者找不到配置文件 wgcf.conf，请重新安装。"
 T[E11]="Maximum \$j attempts to get WARP IP..."
-T[C11]="后台获取 WARP IP 中,最大尝试\${j}次……"
+T[C11]="后台获取 WARP IP 中,最大尝试\$j次……"
 T[E12]="Try \$i"
-T[C12]="第\${i}次尝试"
+T[C12]="第\$i次尝试"
 T[E13]="There have been more than \$j failures. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C13]="失败已超过\$j次，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E14]="Got the WARP IP successfully."
@@ -650,8 +650,7 @@ net(){
 	[[ $SYSTEM != Alpine ]] && [[ $(systemctl is-active wg-quick@wgcf) != 'active' ]] && wg-quick down wgcf >/dev/null 2>&1
 	${SYSTEMCTL_START[int]} >/dev/null 2>&1
 	wg-quick up wgcf >/dev/null 2>&1
-	grep -q "^A.*\.0\/0" /etc/wireguard/wgcf.conf && ip4_info
-	grep -q "^A.*\:\/0" /etc/wireguard/wgcf.conf && ip6_info
+	ip4_info; ip6_info
 	until [[ $TRACE4$TRACE6 =~ on|plus ]]
 		do	(( i++ )) || true
 			yellow " $(eval echo "${T[${L}12]}") "
@@ -806,7 +805,7 @@ input_port(){
 	}
 
 
-# WGCF 配置修改，其中用到的 162.159.192.1 和 2606:4700:d0::a29f:c001 均是 engage.cloudflareclient.com 的IP
+# WGCF 配置修改，其中用到的 162.159.192.1 和 2606:4700:d0::a29f:c001 均是 engage.cloudflareclient.com 的IP。单双栈的转换
 MODIFY014='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
 MODIFY016='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;s/^.*0\.\0\/0/#&/g;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
 MODIFY01D='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
@@ -816,19 +815,16 @@ MODIFY10D='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4
 MODIFY114='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/^.*\:\:\/0/#&/g" wgcf-profile.conf'
 MODIFY116='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/^.*0\.\0\/0/#&/g" wgcf-profile.conf'
 MODIFY11D='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/" wgcf-profile.conf'
-SWITCH014='sed -i "s/^#//g" /etc/wireguard/wgcf.conf' ###############
-SWITCH016='sed -i "s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
-SWITCH01d='sed -i "s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
-SWITCH104='sed -i "s/^#//g" /etc/wireguard/wgcf.conf'
-SWITCH106='sed -i "s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
-SWITCH10d='sed -i "s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
-SWITCH114='sed -i "s/^#//g" /etc/wireguard/wgcf.conf'
+SWITCH014='sed -i "s/^#//g;s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
+SWITCH01D='sed -i "s/^#//g" /etc/wireguard/wgcf.conf'
+SWITCH106='sed -i "s/^#//g;s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
+SWITCH10D='sed -i "s/^#//g" /etc/wireguard/wgcf.conf'
+SWITCH114='sed -i "s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
 SWITCH116='sed -i "s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
-SWITCH11d='sed -i "s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'####################
 
 # 单双栈在线互换
 stack_switch(){
-	sh -c "$(eval echo "\$SWITCH$STACK4$STACK6$DUALSTACK")"
+	sh -c "$(eval echo "\$SWITCH$TO")"
 	${SYSTEMCTL_RESTART[int]}
 	OPTION=n && net
 	}
@@ -1156,22 +1152,26 @@ off@off ) NATIVE="${T[${L}69]}"
 
 @on| @plus ) WARP_BEFORE="WARP IPv6 only"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="${T[${L}70]}"
     OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-    ACTION1(){ CONF=114; install; }; ACTION2(){ CONF=116; install; }; ACTION3(){ CONF=11D; install; }; ACTION4(){ OPTION=o; net; };;
+    ACTION1(){ TO=014; stack_switch; }; ACTION2(){ CONF=01D; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
 
 off@on|off@plus ) WARP_BEFORE="WARP IPv6"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="${T[${L}70]}"
     OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-    ACTION1(){ CONF=114; install; }; ACTION2(){ CONF=116; install; }; ACTION3(){ CONF=11D; install; }; ACTION4(){ OPTION=o; net; };;
+    ACTION1(){ TO=014; stack_switch; }; ACTION2(){ CONF=01D; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
 
 on@|plus@ ) WARP_BEFORE="WARP IPv4 only"; WARP_AFTER1="WARP IPv6"; WARP_AFTER2="${T[${L}70]}"
     OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
+    ACTION1(){ TO=106; stack_switch; }; ACTION2(){ CONF=10D; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
 
 on@off|plus@off ) WARP_BEFORE="WARP IPv4"; WARP_AFTER1="WARP IPv6"; WARP_AFTER2="${T[${L}70]}"
     OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
+    ACTION1(){ TO=106; stack_switch; }; ACTION2(){ CONF=10D; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
 
 on@on|plus@plus ) WARP_BEFORE="${T[${L}70]}"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="WARP IPv6"
     OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}";;
+    ACTION1(){ TO=114; stack_switch; }; ACTION2(){ CONF=116; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
+
 esac
-OPTION5="${T[${L}82]}"; ACTION5="change_ip";;
+OPTION5="${T[${L}82]}"; ACTION5(){ change_ip; };;
 
 esac
 
