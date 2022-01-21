@@ -17,12 +17,10 @@ translate(){ [[ -n "$1" ]] && curl -sm8 "http://fanyi.youdao.com/translate?&doct
 
 # 参数选项 URL 或 License 或转换 WARP 单双栈
 if [[ $2 != '[lisence]' ]]; then
-	if [[ $2 =~ 'http' ]]; then
-	LICENSETYPE=2 && URL=$2
-	elif [[ $2 =~ ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}$ ]]; then
-	LICENSETYPE=1 && LICENSE=$2
-	elif [[ $2 = [46d] ]]; then
-	SWITCHCHOOSE=$2
+	if [[ $2 =~ 'http' ]]; then LICENSETYPE=2 && URL=$2
+	elif [[ $2 =~ ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}$ ]]; then LICENSETYPE=1 && LICENSE=$2
+	elif [[ $2 = [46Dd] ]]; then SWITCHCHOOSE=$2
+	elif [[ $2 =~ ^[A-Za-z]{2}$ ]]; then EXPECT=$2
 	fi
 fi
 
