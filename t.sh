@@ -187,10 +187,10 @@ T[E77]="Turn off WARP"
 T[C77]="暂时关闭 WARP"
 T[E78]="Upgrade to WARP+ or Teams account"
 T[C78]="升级为 WARP+ 或 Teams 账户"
-T[E79]="This system is a native dualstack. You can only choose the WARP dualstack, please enter [y] to continue, and other keys to exit:"
-T[C79]="此系统为原生双栈，只能选择 WARP 双栈方案，继续请输入 y，其他按键退出:"
-T[E80]="The WARP is working. It will be closed, please run the previous command to install or enter !!"
-T[C80]="检测 WARP 已开启，自动关闭后运行上一条命令安装或者输入 !!"
+T[E79]=""
+T[C79]=""
+T[E80]=""
+T[C80]=""
 T[E81]="Step 3/3: Searching for the best MTU value is ready."
 T[C81]="进度 3/3：寻找 MTU 最优值已完成"
 T[E82]="Install WARP Client for Linux and Proxy Mode"
@@ -247,10 +247,10 @@ T[E107]="IPv4 priority"
 T[C107]="IPv4 优先"
 T[E108]="\n 1. WGCF WARP IP ( Only IPv6 can be brushed when WGCF and Client exist at the same time )\n 2. WARP Linux Client IP\n"
 T[C108]="\n 1. WGCF WARP IP ( WGCF 和 Client 并存时只能刷 IPv6)\n 2. WARP Linux Client IP\n"
-T[E109]="Socks5 Proxy Client on IPv4 VPS is working now. You can only choose the WARP IPv6 interface, please enter [y] to continue, and other keys to exit:"
-T[C109]="IPv4 only VPS，并且 Socks5 代理正在运行中，只能选择单栈方案，继续请输入 y，其他按键退出:"
-T[E110]="Socks5 Proxy Client on native dualstack VPS is working now. WARP interface could not be installed. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
-T[C110]="原生双栈 VPS，并且 Socks5 代理正在运行中。WARP 网络接口不能安装，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
+T[E109]=""
+T[C109]=""
+T[E110]="Socks5 Proxy Client is working now. WARP IPv4 and dualstack interface could not be installed. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
+T[C110]="Socks5 代理正在运行中，WARP IPv4 或者双栈网络接口不能安装，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E111]="Port must be 4-5 digits. Please re-input\(\$i times remaining\):"
 T[C111]="端口必须为4-5位自然数，请重新输入\(剩余\$i次\):"
 T[E112]="Client is not installed."
@@ -1215,29 +1215,15 @@ menu(){
 
 # 设置部分后缀 3/3
 case "$OPTION" in
-4 )	# 先判断是否运行 WARP,再按 Client 运行情况分别处理。在已运行 Linux Client 前提下，对于 IPv4 only 只能添加 IPv6 单栈，对于原生双栈不能安装，IPv6 因不能安装 Linux Client 而不用作限制
-	if [[ $PLAN = 3 ]]; then
-		yellow " ${T[${L}80]} " && wg-quick down wgcf >/dev/null 2>&1 && exit 1
-	elif [[ $CLIENT = 3 ]]; then
-		[[ $IPV4$IPV6 = 10 ]] && MODIFY=$MODIFYS10
-		[[ $IPV4$IPV6 = 11 ]] && red " ${T[${L}110]} " && exit 1
-	else [[ $PLAN = 2 ]] && reading " ${T[${L}79]} " DUAL && [[ $DUAL != [Yy] ]] && exit 1 || MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6)
-		[[ $PLAN = 1 ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6)
-	fi
+# 在已运行 Linux Client 前提下，不能安装 WARP IPv4 或者双栈网络接口
+[46d] )	case "$OPTION" in
+	4 ) [[ $CLIENT = 3 ]] && red " ${T[${L}110]} " && exit 1
+	    CONF=${CONF1[m]};; 
+	6 ) CONF=${CONF2[m]};;
+	d ) [[ $CLIENT = 3 ]] && red " ${T[${L}110]} " && exit 1
+	    CONF=${CONF2[m]};;
+	esac
 	install;;
-6 )	# 先判断是否运行 WARP,再按 Client 运行情况分别处理。在已运行 Linux Client 前提下，对于 IPv4 only 只能添加 IPv6 单栈，对于原生双栈不能安装，IPv6 因不能安装 Linux Client 而不用作限制
-	if [[ $PLAN = 3 ]]; then
-		yellow " ${T[${L}80]} " && wg-quick down wgcf >/dev/null 2>&1 && exit 1
-	elif [[ $CLIENT = 3 ]]; then
-		[[ $IPV4$IPV6 = 10 ]] && reading " ${T[${L}109]} " SINGLE && [[ $SINGLE != [Yy] ]] && exit 1 || MODIFY=$MODIFYS10
-		[[ $IPV4$IPV6 = 11 ]] && red " ${T[${L}110]} " && exit 1
-	else MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6)
-	fi
-	install;;
-d )	;;
-
-[46d] ) ;;
-
 c )	[[ $CLIENT = 3 ]] && red " ${T[${L}92]} " && exit 1 || proxy;;
 a )	update;;
 s )	stack_switch;;
