@@ -833,13 +833,13 @@ SWITCH116='sed -i "s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
 stack_switch(){
 	if [[ $OPTION = s ]]; then
 	case "$SWITCHCHOOSE" in
-	4 ) [[ $TRACE4@$TRACE6 = on@ || $TRACE4@$TRACE6 = plus@ || $TRACE4@$TRACE6 = on@off || $TRACE4@$TRACE6 = plus@off ]] && red " ${T[${L}146]} " && exit 1 || TO=$TO1;;
-	6 ) [[ $TRACE4@$TRACE6 = @on || $TRACE4@$TRACE6 = @plus || $TRACE4@$TRACE6 = off@on || $TRACE4@$TRACE6 = off@plus ]] && red " ${T[${L}146]} " && exit 1
-	    [[ $TRACE4@$TRACE6 = on@on || $TRACE4@$TRACE6 = plus@plus ]] && TO=$TO2 || TO=$TO1;;
-	d ) [[ $TRACE4@$TRACE6 = on@on || $TRACE4@$TRACE6 = plus@plus ]] && red " ${T[${L}146]} " && exit 1 || TO=$TO2;;
+	4 ) [[ $T4@$T6 = on@ || $T4@$T6 = on@off ]] && red " ${T[${L}146]} " && exit 1 || TO=${TO1[m]};;
+	6 ) [[ $T4@$T6 = @on || $T4@$T6 = off@on ]] && red " ${T[${L}146]} " && exit 1
+	    [[ $T4@$T6 = on@on ]] && TO=${TO2[m]} || TO=${TO1[m]};;
+	d ) [[ $T4@$T6 = on@on ]] && red " ${T[${L}146]} " && exit 1 || TO=${TO2[m]};;
 	* ) yellow " $(eval echo "${T[${L}145]}") " && reading " ${T[${L}50]} " SWITCHTO
 		case "$SWITCHTO" in
-		1 ) TO=$TO1;;	2 ) TO=$TO2;;	0 ) exit;;
+		1 ) TO=${TO1[m]};;	2 ) TO=${TO2[m]};;	0 ) exit;;
 		* ) red " ${T[${L}51]} [0-2] "; sleep 1; stack_switch;;
 		esac;;
 	esac
@@ -1183,47 +1183,9 @@ case "$m" in
 esac;;
 esac
 
-OPTION5="${T[${L}82]}"; ACTION5(){ proxy; }
-#case "$TRACE4@$TRACE6" in
-#@off ) NATIVE="IPv6 only"; CONF1=014; CONF2=016
-#    OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}"
-#    ACTION1(){ CONF=$CONF1; install; }; ACTION2(){ CONF=$CONF2; install; }; ACTION3(){ CONF=01D; install; }; ACTION4(){ OPTION=o; net; };;
-#
-#off@ ) NATIVE="IPv4 only"; CONF1=104; CONF2=106
-#    OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}"
-#    ACTION1(){ CONF=$CONF1; install; }; ACTION2(){ CONF=$CONF2; install; }; ACTION3(){ CONF=10D; install; }; ACTION4(){ OPTION=o; net; };;
-#
-#off@off ) NATIVE="${T[${L}69]}"; CONF1=114; CONF2=116
-#    OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}"
-#    ACTION1(){ CONF=$CONF1; install; }; ACTION2(){ CONF=$CONF2; install; }; ACTION3(){ CONF=11D; install; }; ACTION4(){ OPTION=o; net; };;
-#
-#@on | @plus ) WARP_BEFORE="WARP IPv6 only"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="${T[${L}70]}"; TO1=014; TO2=01D
-#    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-#    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
-#
-#off@on | off@plus ) WARP_BEFORE="WARP IPv6"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="${T[${L}70]}"; TO1=014; TO2=01D
-#    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-#    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
-#
-#on@ | plus@ ) WARP_BEFORE="WARP IPv4 only"; WARP_AFTER1="WARP IPv6"; WARP_AFTER2="${T[${L}70]}"; TO1=106; TO2=10D
-#    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-#    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
-#
-#on@off | plus@off ) WARP_BEFORE="WARP IPv4"; WARP_AFTER1="WARP IPv6"; WARP_AFTER2="${T[${L}70]}"; TO1=106; TO2=10D
-#    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-#    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
-#
-#on@on | plus@plus ) WARP_BEFORE="${T[${L}70]}"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="WARP IPv6"; TO1=114; TO2=116
-#    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-#    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
-#
-#esac
-#OPTION5="${T[${L}82]}"; ACTION5(){ proxy; };;
-
-#esac
-
+OPTION5="${T[${L}82]}"; 
 OPTION6="${T[${L}123]}"; OPTION7="${T[${L}72]}"; OPTION8="${T[${L}74]}"; OPTION9="${T[${L}73]}"; OPTION10="${T[${L}75]}";  OPTION0="${T[${L}76]}"
-ACTION6="change_ip"; ACTION7="uninstall"; ACTION8="plus"; ACTION9="bbrInstall"; ACTION10="ver"; ACTION0="exit"
+ACTION5(){ proxy; }; ACTION6(){ change_ip; }; ACTION7(){ uninstall; }; ACTION8(){ plus; }; ACTION9(){ bbrInstall; }; ACTION10(){ ver; }; ACTION0(){ exit; }
 
 # 显示菜单
 menu(){
@@ -1246,8 +1208,8 @@ menu(){
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
 		1 ) ACTION1;; 2 ) ACTION2;; 3 ) ACTION3;; 4 ) ACTION4;; 5 ) ACTION5;;
-		6 ) change_ip;; 7 ) uninstall;; 8 ) plus;; 9 ) bbrInstall;; 10 ) ver;;
-		0 ) exit;; * ) red " ${T[${L}51]} [0-10] "; sleep 1; menu;;
+		6 ) ACTION6;; 7 ) ACTION7;; 8 ) ACTION8;; 9 ) ACTION9;; 10 ) ACTION10;;
+		0 ) ACTION0;; * ) red " ${T[${L}51]} [0-10] "; sleep 1; menu;;
 		esac
 	}
 
@@ -1273,6 +1235,9 @@ case "$OPTION" in
 	fi
 	install;;
 d )	;;
+
+[46d] )
+
 c )	[[ $CLIENT = 3 ]] && red " ${T[${L}92]} " && exit 1 || proxy;;
 a )	update;;
 s )	stack_switch;;
