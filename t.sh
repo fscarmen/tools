@@ -161,12 +161,12 @@ T[E64]="Successfully synchronized the latest version"
 T[C64]="成功！已同步最新脚本，版本号"
 T[E65]="Upgrade failed. Feedback:[https://github.com/fscarmen/warp/issues]"
 T[C65]="升级失败，问题反馈:[https://github.com/fscarmen/warp/issues]"
-T[E66]="Add WARP IPv4 interface to \$NATIVE VPS"
-T[C66]="为 \$NATIVE 添加 WARP IPv4 网络接口"
-T[E67]="Add WARP IPv6 interface to \$NATIVE VPS"
-T[C67]="为 \$NATIVE 添加 WARP IPv6 网络接口"
-T[E68]="Add WARP dualstack interface to \$NATIVE VPS"
-T[C68]="为 \$NATIVE 添加 WARP 双栈网络接口"
+T[E66]="Add WARP IPv4 interface to \$NATIVE[m] VPS"
+T[C66]="为 \$NATIVE[m] 添加 WARP IPv4 网络接口"
+T[E67]="Add WARP IPv6 interface to \$NATIVE[m] VPS"
+T[C67]="为 \$NATIVE[m] 添加 WARP IPv6 网络接口"
+T[E68]="Add WARP dualstack interface to \$NATIVE[m] VPS"
+T[C68]="为 \$NATIVE[m] 添加 WARP 双栈网络接口"
 T[E69]="Native dualstack"
 T[C69]="原生双栈"
 T[E70]="WARP dualstack"
@@ -311,10 +311,10 @@ T[E139]="Dualstack switch to WARP \$STACK_AFTER only"
 T[C139]="双栈 WARP 改为单栈 WARP \$STACK_AFTER"
 T[E140]="Native dualstack could not be changed."
 T[C140]="原生双栈 WARP 不能作更改"
-T[E141]="Switch \$WARP_BEFORE to \$WARP_AFTER1"
-T[C141]="\$WARP_BEFORE 转为 \$WARP_AFTER1"
-T[E142]="Switch \$WARP_BEFORE to \$WARP_AFTER2"
-T[C142]="\$WARP_BEFORE 转为 \$WARP_AFTER2"
+T[E141]="Switch \$WARP_BEFORE[m] to \$WARP_AFTER1[m]"
+T[C141]="\$WARP_BEFORE[m] 转为 \$WARP_AFTER1[m]"
+T[E142]="Switch \$WARP_BEFORE[m] to \$WARP_AFTER2[m]"
+T[C142]="\$WARP_BEFORE[m] 转为 \$WARP_AFTER2[m]"
 T[E143]="Change Client port"
 T[C143]="更改 Client 端口"
 T[E144]="Install WARP IPv6 interface"
@@ -387,7 +387,7 @@ ip4_info(){
 	COUNTRY4=$(expr "$IP4" : '.*country\":\"\([^"]*\).*')
 	ASNORG4=$(expr "$IP4" : '.*asn_org\":\"\([^"]*\).*')
 	TRACE4=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
-	if [[ $TRACE4 = plus ]]; then 
+	if [[ $TRACE4 = plus ]]; then
 	grep -sq 'Device name' /etc/wireguard/info.log && PLUS4='+' || PLUS4=' Teams'
 	fi
 	[[ $TRACE4 =~ on|plus ]] && WARPSTATUS4="( WARP$PLUS4 IPv4 )"
@@ -401,7 +401,7 @@ ip6_info(){
 	COUNTRY6=$(expr "$IP6" : '.*country\":\"\([^"]*\).*')
 	ASNORG6=$(expr "$IP6" : '.*asn_org\":\"\([^"]*\).*')
 	TRACE6=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
-	if [[ $TRACE6 = plus ]]; then 
+	if [[ $TRACE6 = plus ]]; then
 	grep -sq 'Device name' /etc/wireguard/info.log && PLUS6='+' || PLUS6=' Teams'
 	fi
 	[[ $TRACE6 =~ on|plus ]] && WARPSTATUS6="( WARP$PLUS6 IPv6 )"
@@ -1162,43 +1162,64 @@ case $CLIENT in
     ACTION1(){ proxy_onoff; }; ACTION2(){ input_port; warp-cli --accept-tos set-proxy-port "$PORT"; };
     ACTION3(){ CONF=106; [[ $TRACE6 != off ]] && red " ${T[${L}145]} " && exit 1 || install; }; ACTION4(){ update; }; ACTION5(){ onff; };;
 
-* ) case "$TRACE4@$TRACE6" in
-@off ) NATIVE="IPv6 only"6; CONF1=014; CONF2=016
-    OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}"
-    ACTION1(){ CONF=$CONF1; install; }; ACTION2(){ CONF=$CONF2; install; }; ACTION3(){ CONF=01D; install; }; ACTION4(){ OPTION=o; net; };;
+* ) T4="$TRACE4"; T6="$TRACE6"; [[ $T4 = plus ]] && T4='on'; [[ $T6 = plus ]] && T6='on'
+CASE=("@off" "off@" "off@off" "@on|@plus" "off@on" "on@" "on@off" "on@on")
+for ((m=0;m<${#CASE[@]};m++)); do [[ $T4@$T6 = ${CASE[m]} ]] && break; done
+case "$m" in
+[0-2] ) NATIVE=("IPv6 only" "IPv4 only" "${T[${L}69]}")
+	CONF1=("014" "104" "114")
+	CONF2=("016" "106" "116")
+	CONF3=("01D" "10D" "11D")
+	OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}"
+	ACTION1(){ CONF=${CONF1[m]}; install; }; ACTION2(){ CONF=${CONF2[m]}; install; }; ACTION3(){ CONF=${CONF3[m]}; install; }; ACTION4(){ OPTION=o; net; };;
 
-off@ ) NATIVE="IPv4 only"; CONF1=104; CONF2=106
-    OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}"
-    ACTION1(){ CONF=$CONF1; install; }; ACTION2(){ CONF=$CONF2; install; }; ACTION3(){ CONF=10D; install; }; ACTION4(){ OPTION=o; net; };;
-
-off@off ) NATIVE="${T[${L}69]}"; CONF1=114; CONF2=116
-    OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}"
-    ACTION1(){ CONF=$CONF1; install; }; ACTION2(){ CONF=$CONF2; install; }; ACTION3(){ CONF=11D; install; }; ACTION4(){ OPTION=o; net; };;
-
-@on | @plus ) WARP_BEFORE="WARP IPv6 only"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="${T[${L}70]}"; TO1=014; TO2=01D
-    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
-
-off@on | off@plus ) WARP_BEFORE="WARP IPv6"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="${T[${L}70]}"; TO1=014; TO2=01D
-    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
-
-on@ | plus@ ) WARP_BEFORE="WARP IPv4 only"; WARP_AFTER1="WARP IPv6"; WARP_AFTER2="${T[${L}70]}"; TO1=106; TO2=10D
-    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
-
-on@off | plus@off ) WARP_BEFORE="WARP IPv4"; WARP_AFTER1="WARP IPv6"; WARP_AFTER2="${T[${L}70]}"; TO1=106; TO2=10D
-    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
-
-on@on | plus@plus ) WARP_BEFORE="${T[${L}70]}"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="WARP IPv6"; TO1=114; TO2=116
-    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
-
+* )	WARP_BEFORE=("" "" "" "WARP IPv6 only" "WARP IPv6" "WARP IPv4 only" "WARP IPv4" "${T[${L}70]}")
+	WARP_AFTER1=("" "" "" "WARP IPv4" "WARP IPv4" "WARP IPv6" "WARP IPv6" "WARP IPv4")
+	WARP_AFTER2=("" "" "" "${T[${L}70]}" "${T[${L}70]}" "${T[${L}70]}" "WARP IPv4" "WARP IPv6")
+	OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
+	TO1=("" "" "" "014" "014" "106" "106" "114")
+	TO2=("" "" "" "01D" "01D" "10D" "10D" "116")
+	ACTION1(){ TO=${TO1[m]}; stack_switch; }; ACTION2(){ TO=${TO2[m]}; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
 esac
-OPTION5="${T[${L}82]}"; ACTION5(){ proxy; };;
 
-esac
+OPTION5="${T[${L}82]}"; ACTION5(){ proxy; }
+#case "$TRACE4@$TRACE6" in
+#@off ) NATIVE="IPv6 only"; CONF1=014; CONF2=016
+#    OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}"
+#    ACTION1(){ CONF=$CONF1; install; }; ACTION2(){ CONF=$CONF2; install; }; ACTION3(){ CONF=01D; install; }; ACTION4(){ OPTION=o; net; };;
+#
+#off@ ) NATIVE="IPv4 only"; CONF1=104; CONF2=106
+#    OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}"
+#    ACTION1(){ CONF=$CONF1; install; }; ACTION2(){ CONF=$CONF2; install; }; ACTION3(){ CONF=10D; install; }; ACTION4(){ OPTION=o; net; };;
+#
+#off@off ) NATIVE="${T[${L}69]}"; CONF1=114; CONF2=116
+#    OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}"
+#    ACTION1(){ CONF=$CONF1; install; }; ACTION2(){ CONF=$CONF2; install; }; ACTION3(){ CONF=11D; install; }; ACTION4(){ OPTION=o; net; };;
+#
+#@on | @plus ) WARP_BEFORE="WARP IPv6 only"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="${T[${L}70]}"; TO1=014; TO2=01D
+#    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
+#    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
+#
+#off@on | off@plus ) WARP_BEFORE="WARP IPv6"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="${T[${L}70]}"; TO1=014; TO2=01D
+#    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
+#    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
+#
+#on@ | plus@ ) WARP_BEFORE="WARP IPv4 only"; WARP_AFTER1="WARP IPv6"; WARP_AFTER2="${T[${L}70]}"; TO1=106; TO2=10D
+#    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
+#    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
+#
+#on@off | plus@off ) WARP_BEFORE="WARP IPv4"; WARP_AFTER1="WARP IPv6"; WARP_AFTER2="${T[${L}70]}"; TO1=106; TO2=10D
+#    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
+#    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
+#
+#on@on | plus@plus ) WARP_BEFORE="${T[${L}70]}"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="WARP IPv6"; TO1=114; TO2=116
+#    OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
+#    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
+#
+#esac
+#OPTION5="${T[${L}82]}"; ACTION5(){ proxy; };;
+
+#esac
 
 OPTION6="${T[${L}123]}"; OPTION7="${T[${L}72]}"; OPTION8="${T[${L}74]}"; OPTION9="${T[${L}73]}"; OPTION10="${T[${L}75]}";  OPTION0="${T[${L}76]}"
 ACTION6="change_ip"; ACTION7="uninstall"; ACTION8="plus"; ACTION9="bbrInstall"; ACTION10="ver"; ACTION0="exit"
