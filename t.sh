@@ -1223,7 +1223,7 @@ menu(){
 		case "$CHOOSE1" in
 		1 ) ACTION1;; 2 ) ACTION2;; 3 ) ACTION3;; 4 ) ACTION4;; 5 ) ACTION5;;
 		6 ) change_ip;; 7 ) uninstall;; 8 ) plus;; 9 ) bbrInstall;; 10 ) ver;;
-		0 ) exit;; * ) red " ${T[${L}51]} [0-9] "; sleep 1; menu;;
+		0 ) exit;; * ) red " ${T[${L}51]} [0-10] "; sleep 1; menu;;
 		esac
 	}
 
