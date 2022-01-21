@@ -21,6 +21,8 @@ if [[ $2 != '[lisence]' ]]; then
 	LICENSETYPE=2 && URL=$2
 	elif [[ $2 =~ ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}$ ]]; then
 	LICENSETYPE=1 && LICENSE=$2
+	elif [[ $2 = [46d] ]]; then
+	SWITCHCHOOSE=$2
 	fi
 fi
 
@@ -832,7 +834,7 @@ SWITCH116='sed -i "s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
 # 单双栈在线互换
 stack_switch(){
 	if [[ $OPTION = s ]]; then
-	case "$2" in
+	case "$SWITCHCHOOSE" in
 	4 ) [[ $TRACE4@$TRACE6 = on@ || $TRACE4@$TRACE6 = plus@ || $TRACE4@$TRACE6 = on@off || $TRACE4@$TRACE6 = plus@off ]] && red " ${T[${L}146]} " && exit 1 || TO=$TO1;;
 	6 ) [[ $TRACE4@$TRACE6 = @on || $TRACE4@$TRACE6 = @plus || $TRACE4@$TRACE6 = off@on || $TRACE4@$TRACE6 = off@plus ]] && red " ${T[${L}146]} " && exit 1
 	    [[ $TRACE4@$TRACE6 = on@on || $TRACE4@$TRACE6 = plus@plus ]] && TO=$TO2 || TO=$TO1;;
