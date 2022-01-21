@@ -1236,7 +1236,7 @@ case "$OPTION" in
 	install;;
 d )	;;
 
-[46d] )
+[46d] ) ;;
 
 c )	[[ $CLIENT = 3 ]] && red " ${T[${L}92]} " && exit 1 || proxy;;
 a )	update;;
