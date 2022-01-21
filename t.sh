@@ -14,13 +14,13 @@ translate(){ [[ -n "$1" ]] && curl -sm8 "http://fanyi.youdao.com/translate?&doct
 
 # 传参选项 OPTION：1=为 IPv4 或者 IPv6 补全另一栈WARP; 2=安装双栈 WARP; u=卸载 WARP; b=升级内核、开启BBR及DD; o=WARP开关；p=刷 WARP+ 流量; 其他或空值=菜单界面
 [[ $1 != '[option]' ]] && OPTION=$(tr '[:upper:]' '[:lower:]' <<< "$1")
-# 参数选项 URL 或 License
+
+# 参数选项 URL 或 License 或转换 WARP 单双栈
 if [[ $2 != '[lisence]' ]]; then
 	if [[ $2 =~ 'http' ]]; then
 	LICENSETYPE=2 && URL=$2
 	elif [[ $2 =~ ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}$ ]]; then
 	LICENSETYPE=1 && LICENSE=$2
-	elif [[ $2 = [46d]; then $
 	fi
 fi
 
@@ -321,8 +321,8 @@ T[E144]="Install WARP IPv6 interface"
 T[C144]="安装 WARP IPv6 网络接口"
 T[E145]="Socks5 Proxy Client on IPv4 VPS is working now. WARP IPv6 interface could not be installed. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C145]="IPv4 only VPS，并且 Socks5 代理正在运行中，不能安装 WARP IPv6 网络接口，问题反馈:[https://github.com/fscarmen/warp/issues]"
-T[E145]="\\\n WARP ineterface can be switched to the following:\\\n 1. \$OPTION1\\\n 2. \$OPTION2\\\n"
-T[C145]="\\\n WARP 网络接口可以切换为以下方式:\\\n 1. \$OPTION1\\\n 2. \$OPTION2\\\n"
+T[E145]="\\\n WARP ineterface can be switched to the following:\\\n 1. \$OPTION1\\\n 2. \$OPTION2\\\n 0. \${T[${L}76]}\\\n"
+T[C145]="\\\n WARP 网络接口可以切换为以下方式:\\\n 1. \$OPTION1\\\n 2. \$OPTION2\\\n 0. \${T[${L}76]}\\\n"
 T[E146]="Cannot switch to the same form as the current one."
 T[C146]="不能切换为当前一样的形态"
 
@@ -839,9 +839,8 @@ stack_switch(){
 	d ) [[ $TRACE4@$TRACE6 = on@on || $TRACE4@$TRACE6 = plus@plus ]] && red " ${T[${L}146]} " && exit 1 || TO=$TO2;;
 	* ) yellow " $(eval echo "${T[${L}145]}") " && reading " ${T[${L}50]} " SWITCHTO
 		case "$SWITCHTO" in
-		1 ) TO=$TO1;;
-		2 ) TO=$TO2;;
-		* ) red " ${T[${L}51]} [1-2] "; sleep 1; stack_switch;;
+		1 ) TO=$TO1;;	2 ) TO=$TO2;;	0 ) exit;;
+		* ) red " ${T[${L}51]} [0-2] "; sleep 1; stack_switch;;
 		esac;;
 	esac
 	fi
