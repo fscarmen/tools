@@ -20,6 +20,7 @@ if [[ $2 != '[lisence]' ]]; then
 	LICENSETYPE=2 && URL=$2
 	elif [[ $2 =~ ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}$ ]]; then
 	LICENSETYPE=1 && LICENSE=$2
+	elif [[ $2 = [46d]; then $
 	fi
 fi
 
@@ -320,8 +321,10 @@ T[E144]="Install WARP IPv6 interface"
 T[C144]="安装 WARP IPv6 网络接口"
 T[E145]="Socks5 Proxy Client on IPv4 VPS is working now. WARP IPv6 interface could not be installed. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C145]="IPv4 only VPS，并且 Socks5 代理正在运行中，不能安装 WARP IPv6 网络接口，问题反馈:[https://github.com/fscarmen/warp/issues]"
-T[E145]="WARP ineterface can be switched to the following:\\\n 1. \$OPTION1\\\n 2. \$OPTION2\\\n"
-T[C145]="WARP 网络接口可以切换为以下方式:\\\n 1. \$OPTION1\\\n 2. \$OPTION2\\\n"
+T[E145]="\\\n WARP ineterface can be switched to the following:\\\n 1. \$OPTION1\\\n 2. \$OPTION2\\\n"
+T[C145]="\\\n WARP 网络接口可以切换为以下方式:\\\n 1. \$OPTION1\\\n 2. \$OPTION2\\\n"
+T[E146]="Cannot switch to the same form as the current one."
+T[C146]="不能切换为当前一样的形态"
 
 # 脚本当天及累计运行次数统计
 COUNT=$(curl -sm1 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Ffscarmen%2Fwarp%2Fmenu.sh&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=&edge_flat=true" 2>&1) &&
@@ -828,7 +831,7 @@ SWITCH116='sed -i "s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
 
 # 单双栈在线互换
 stack_switch(){
-	if [[ $1 = i ]]; then
+	if [[ $OPTION = s ]]; then
 	case "$2" in
 	4 ) [[ $TRACE4@$TRACE6 = on@ || $TRACE4@$TRACE6 = plus@ || $TRACE4@$TRACE6 = on@off || $TRACE4@$TRACE6 = plus@off ]] && red " ${T[${L}146]} " && exit 1 || TO=$TO1;;
 	6 ) [[ $TRACE4@$TRACE6 = @on || $TRACE4@$TRACE6 = @plus || $TRACE4@$TRACE6 = off@on || $TRACE4@$TRACE6 = off@plus ]] && red " ${T[${L}146]} " && exit 1
