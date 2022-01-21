@@ -828,7 +828,7 @@ SWITCH116='sed -i "s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
 
 # 单双栈在线互换
 stack_switch(){
-	if [[ $1 = i ]]
+	if [[ $1 = i ]]; then
 	case "$2" in
 	4 ) [[ $TRACE4@$TRACE6 = on@ || $TRACE4@$TRACE6 = plus@ || $TRACE4@$TRACE6 = on@off || $TRACE4@$TRACE6 = plus@off ]] && red " ${T[${L}146]} " && exit 1 || TO=$TO1;;
 	6 ) [[ $TRACE4@$TRACE6 = @on || $TRACE4@$TRACE6 = @plus || $TRACE4@$TRACE6 = off@on || $TRACE4@$TRACE6 = off@plus ]] && red " ${T[${L}146]} " && exit 1
@@ -839,7 +839,7 @@ stack_switch(){
 		1 ) TO=$TO1;;
 		2 ) TO=$TO2;;
 		* ) red " ${T[${L}51]} [1-2] "; sleep 1; stack_switch;;
-		esac;
+		esac;;
 	esac
 	fi
 	sh -c "$(eval echo "\$SWITCH$TO")"
