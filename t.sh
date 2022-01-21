@@ -1231,7 +1231,7 @@ menu(){
 
 # 设置部分后缀 3/3
 case "$OPTION" in
-1 )	# 先判断是否运行 WARP,再按 Client 运行情况分别处理。在已运行 Linux Client 前提下，对于 IPv4 only 只能添加 IPv6 单栈，对于原生双栈不能安装，IPv6 因不能安装 Linux Client 而不用作限制
+4 )	# 先判断是否运行 WARP,再按 Client 运行情况分别处理。在已运行 Linux Client 前提下，对于 IPv4 only 只能添加 IPv6 单栈，对于原生双栈不能安装，IPv6 因不能安装 Linux Client 而不用作限制
 	if [[ $PLAN = 3 ]]; then
 		yellow " ${T[${L}80]} " && wg-quick down wgcf >/dev/null 2>&1 && exit 1
 	elif [[ $CLIENT = 3 ]]; then
@@ -1241,7 +1241,7 @@ case "$OPTION" in
 		[[ $PLAN = 1 ]] && MODIFY=$(eval echo \$MODIFYS$IPV4$IPV6)
 	fi
 	install;;
-2 )	# 先判断是否运行 WARP,再按 Client 运行情况分别处理。在已运行 Linux Client 前提下，对于 IPv4 only 只能添加 IPv6 单栈，对于原生双栈不能安装，IPv6 因不能安装 Linux Client 而不用作限制
+6 )	# 先判断是否运行 WARP,再按 Client 运行情况分别处理。在已运行 Linux Client 前提下，对于 IPv4 only 只能添加 IPv6 单栈，对于原生双栈不能安装，IPv6 因不能安装 Linux Client 而不用作限制
 	if [[ $PLAN = 3 ]]; then
 		yellow " ${T[${L}80]} " && wg-quick down wgcf >/dev/null 2>&1 && exit 1
 	elif [[ $CLIENT = 3 ]]; then
@@ -1250,9 +1250,9 @@ case "$OPTION" in
 	else MODIFY=$(eval echo \$MODIFYD$IPV4$IPV6)
 	fi
 	install;;
-
+d )
 c )	[[ $CLIENT = 3 ]] && red " ${T[${L}92]} " && exit 1 || proxy;;
-d )	update;;
+a )	update;;
 s )	stack_switch;;
 * )	menu;;
 esac
