@@ -320,6 +320,8 @@ T[E144]="Install WARP IPv6 interface"
 T[C144]="安装 WARP IPv6 网络接口"
 T[E145]="Socks5 Proxy Client on IPv4 VPS is working now. WARP IPv6 interface could not be installed. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C145]="IPv4 only VPS，并且 Socks5 代理正在运行中，不能安装 WARP IPv6 网络接口，问题反馈:[https://github.com/fscarmen/warp/issues]"
+T[E145]="WARP ineterface can be switched to the following:\\\n 1. \$OPTION1\\\n 2. \$OPTION2\\\n"
+T[C145]="WARP 网络接口可以切换为以下方式:\\\n 1. \$OPTION1\\\n 2. \$OPTION2\\\n"
 
 # 脚本当天及累计运行次数统计
 COUNT=$(curl -sm1 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Ffscarmen%2Fwarp%2Fmenu.sh&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=&edge_flat=true" 2>&1) &&
@@ -679,15 +681,17 @@ onoff(){ [[ -n $(wg 2>/dev/null) ]] && (wg-quick down wgcf >/dev/null 2>&1; gree
 # PROXY 开关
 proxy_onoff(){
 	PROXY=$(warp-cli --accept-tos status 2>/dev/null)
-	[[ -z $PROXY ]] && red " ${T[${L}93]} " && exit 1
-	[[ $PROXY =~ Connecting ]] && red " ${T[${L}96]} " && exit 1
-	[[ $PROXY =~ missing ]] && warp-cli --accept-tos register >/dev/null 2>&1 &&
-	[[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license)>/dev/null 2>&1
-	[[ $PROXY =~ Connected ]] && warp-cli --accept-tos disconnect >/dev/null 2>&1 && warp-cli --accept-tos disable-always-on >/dev/null 2>&1 && 
-	[[ ! $(ss -nltp) =~ 'warp-svc' ]] && green " ${T[${L}91]} "  && exit 0
-	[[ $PROXY =~ Disconnected ]] && warp-cli --accept-tos connect >/dev/null 2>&1 && warp-cli --accept-tos enable-always-on >/dev/null 2>&1 && STATUS=1 && sleep 1 && proxy_info
-	[[ $STATUS = 1 ]] && [[ $(ss -nltp) =~ 'warp-svc' ]] && green " ${T[${L}90]}\n $(eval echo "${T[${L}99]}") " && exit 0
-	[[ $STATUS = 1 ]] && [[ $(warp-cli --accept-tos status 2>/dev/null) =~ Connecting ]] && red " ${T[${L}96]} " && exit 1
+	case "$PROXY" in
+	*Connecting* ) red " ${T[${L}96]} " && exit 1;;
+	*missing* ) warp-cli --accept-tos register >/dev/null 2>&1 && [[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license)>/dev/null 2>&1;;
+	*Connected* ) warp-cli --accept-tos disconnect >/dev/null 2>&1 && warp-cli --accept-tos disable-always-on >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'warp-svc' ]] && green " ${T[${L}91]} " && exit 0;;
+	*Disconnected* ) warp-cli --accept-tos connect >/dev/null 2>&1 && warp-cli --accept-tos enable-always-on >/dev/null 2>&1 && STATUS=1 && sleep 1 && proxy_info
+		if [[ $STATUS = 1 ]]; then
+		[[ $(ss -nltp) =~ 'warp-svc' ]] && green " ${T[${L}90]}\n $(eval echo "${T[${L}99]}") " && exit 0
+		[[ $(warp-cli --accept-tos status 2>/dev/null) =~ Connecting ]] && red " ${T[${L}96]} " && exit 1
+		fi;;
+	* ) red " ${T[${L}93]} " && exit 1;;
+	esac
     }
 
 # 设置部分后缀 2/3
@@ -824,6 +828,20 @@ SWITCH116='sed -i "s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
 
 # 单双栈在线互换
 stack_switch(){
+	if [[ $1 = i ]]
+	case "$2" in
+	4 ) [[ $TRACE4@$TRACE6 = on@ || $TRACE4@$TRACE6 = plus@ || $TRACE4@$TRACE6 = on@off || $TRACE4@$TRACE6 = plus@off ]] && red " ${T[${L}146]} " && exit 1 || TO=$TO1;;
+	6 ) [[ $TRACE4@$TRACE6 = @on || $TRACE4@$TRACE6 = @plus || $TRACE4@$TRACE6 = off@on || $TRACE4@$TRACE6 = off@plus ]] && red " ${T[${L}146]} " && exit 1
+	    [[ $TRACE4@$TRACE6 = on@on || $TRACE4@$TRACE6 = plus@plus ]] && TO=$TO2 || TO=$TO1;;
+	d ) [[ $TRACE4@$TRACE6 = on@on || $TRACE4@$TRACE6 = plus@plus ]] && red " ${T[${L}146]} " && exit 1 || TO=$TO2;;
+	* ) yellow " $(eval echo "${T[${L}145]}") " && reading " ${T[${L}50]} " SWITCHTO
+		case "$SWITCHTO" in
+		1 ) TO=$TO1;;
+		2 ) TO=$TO2;;
+		* ) red " ${T[${L}51]} [1-2] "; sleep 1; stack_switch;;
+		esac;
+	esac
+	fi
 	sh -c "$(eval echo "\$SWITCH$TO")"
 	${SYSTEMCTL_RESTART[int]}
 	OPTION=n && net
@@ -1143,37 +1161,37 @@ case $CLIENT in
     ACTION3(){ CONF=106; [[ $TRACE6 != off ]] && red " ${T[${L}145]} " && exit 1 || install; }; ACTION4(){ update; }; ACTION5(){ onff; };;
 
 * ) case "$TRACE4@$TRACE6" in
-@off ) NATIVE="IPv6 only"6
+@off ) NATIVE="IPv6 only"6; CONF1=014; CONF2=016
     OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}"
-    ACTION1(){ CONF=014; install; }; ACTION2(){ CONF=016; install; }; ACTION3(){ CONF=01D; install; }; ACTION4(){ OPTION=o; net; };;
+    ACTION1(){ CONF=$CONF1; install; }; ACTION2(){ CONF=$CONF2; install; }; ACTION3(){ CONF=01D; install; }; ACTION4(){ OPTION=o; net; };;
 
-off@ ) NATIVE="IPv4 only"
+off@ ) NATIVE="IPv4 only"; CONF1=104; CONF2=106
     OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}"
-    ACTION1(){ CONF=104; install; }; ACTION2(){ CONF=106; install; }; ACTION3(){ CONF=10D; install; }; ACTION4(){ OPTION=o; net; };;
+    ACTION1(){ CONF=$CONF1; install; }; ACTION2(){ CONF=$CONF2; install; }; ACTION3(){ CONF=10D; install; }; ACTION4(){ OPTION=o; net; };;
 
-off@off ) NATIVE="${T[${L}69]}"
+off@off ) NATIVE="${T[${L}69]}"; CONF1=114; CONF2=116
     OPTION1="$(eval echo "${T[${L}66]}")"; OPTION2="$(eval echo "${T[${L}67]}")"; OPTION3="$(eval echo "${T[${L}68]}")"; OPTION4="${T[${L}71]}"
-    ACTION1(){ CONF=114; install; }; ACTION2(){ CONF=116; install; }; ACTION3(){ CONF=11D; install; }; ACTION4(){ OPTION=o; net; };;
+    ACTION1(){ CONF=$CONF1; install; }; ACTION2(){ CONF=$CONF2; install; }; ACTION3(){ CONF=11D; install; }; ACTION4(){ OPTION=o; net; };;
 
-@on| @plus ) WARP_BEFORE="WARP IPv6 only"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="${T[${L}70]}"
+@on | @plus ) WARP_BEFORE="WARP IPv6 only"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="${T[${L}70]}"; TO1=014; TO2=01D
     OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-    ACTION1(){ TO=014; stack_switch; }; ACTION2(){ TO=01D; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
+    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
 
-off@on|off@plus ) WARP_BEFORE="WARP IPv6"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="${T[${L}70]}"
+off@on | off@plus ) WARP_BEFORE="WARP IPv6"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="${T[${L}70]}"; TO1=014; TO2=01D
     OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-    ACTION1(){ TO=014; stack_switch; }; ACTION2(){ TO=01D; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
+    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
 
-on@|plus@ ) WARP_BEFORE="WARP IPv4 only"; WARP_AFTER1="WARP IPv6"; WARP_AFTER2="${T[${L}70]}"
+on@ | plus@ ) WARP_BEFORE="WARP IPv4 only"; WARP_AFTER1="WARP IPv6"; WARP_AFTER2="${T[${L}70]}"; TO1=106; TO2=10D
     OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-    ACTION1(){ TO=106; stack_switch; }; ACTION2(){ TO=10D; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
+    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
 
-on@off|plus@off ) WARP_BEFORE="WARP IPv4"; WARP_AFTER1="WARP IPv6"; WARP_AFTER2="${T[${L}70]}"
+on@off | plus@off ) WARP_BEFORE="WARP IPv4"; WARP_AFTER1="WARP IPv6"; WARP_AFTER2="${T[${L}70]}"; TO1=106; TO2=10D
     OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-    ACTION1(){ TO=106; stack_switch; }; ACTION2(){ TO=10D; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
+    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
 
-on@on|plus@plus ) WARP_BEFORE="${T[${L}70]}"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="WARP IPv6"
+on@on | plus@plus ) WARP_BEFORE="${T[${L}70]}"; WARP_AFTER1="WARP IPv4"; WARP_AFTER2="WARP IPv6"; TO1=114; TO2=116
     OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-    ACTION1(){ TO=114; stack_switch; }; ACTION2(){ TO=116; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
+    ACTION1(){ TO=$TO1; stack_switch; }; ACTION2(){ TO=$TO2; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
 
 esac
 OPTION5="${T[${L}82]}"; ACTION5(){ proxy; };;
@@ -1200,7 +1218,7 @@ menu(){
 	[[ $CLIENT = 2 ]] && green "	${T[${L}113]} "
 	[[ $CLIENT = 3 ]] && green "	WARP$AC ${T[${L}24]}	$(eval echo "${T[${L}27]}") "
  	red "\n======================================================================================================================\n"
-	green " 1.  $OPTION1\n 2.  $OPTION2\n 3.  $OPTION3\n 4.  $OPTION4\n 5.  $OPTION5\n 6.  $OPTION6\n 7.  $OPTION7\n 8.  $OPTION8\n 9.  $OPTION9 \n 10. $OPTION10 \n 0.  $OPTION0\n"
+	green " 1.  $OPTION1\n 2.  $OPTION2\n 3.  $OPTION3\n 4.  $OPTION4\n 5.  $OPTION5\n 6.  $OPTION6\n 7.  $OPTION7\n 8.  $OPTION8\n 9.  $OPTION9 \n 10. $OPTION10 \n 0.  $OPTION0\n "
 	reading " ${T[${L}50]} " CHOOSE1
 		case "$CHOOSE1" in
 		1 ) ACTION1;; 2 ) ACTION2;; 3 ) ACTION3;; 4 ) ACTION4;; 5 ) ACTION5;;
@@ -1233,6 +1251,6 @@ case "$OPTION" in
 
 c )	[[ $CLIENT = 3 ]] && red " ${T[${L}92]} " && exit 1 || proxy;;
 d )	update;;
-s )	;;
+s )	stack_switch;;
 * )	menu;;
 esac
