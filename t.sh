@@ -1221,7 +1221,7 @@ case "$OPTION" in
 	    CONF=${CONF1[m]};; 
 	6 ) CONF=${CONF2[m]};;
 	d ) [[ $CLIENT = 3 ]] && red " ${T[${L}110]} " && exit 1
-	    CONF=${CONF2[m]};;
+	    CONF=${CONF3[m]};;
 	esac
 	install;;
 c )	[[ $CLIENT = 3 ]] && red " ${T[${L}92]} " && exit 1 || proxy;;
