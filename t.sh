@@ -321,8 +321,8 @@ T[E144]="Install WARP IPv6 interface"
 T[C144]="安装 WARP IPv6 网络接口"
 T[E145]="Socks5 Proxy Client on IPv4 VPS is working now. WARP IPv6 interface could not be installed. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C145]="IPv4 only VPS，并且 Socks5 代理正在运行中，不能安装 WARP IPv6 网络接口，问题反馈:[https://github.com/fscarmen/warp/issues]"
-T[E145]="\\\n WARP ineterface can be switched to the following:\\\n 1. \$OPTION1\\\n 2. \$OPTION2\\\n 0. \${T[${L}76]}\\\n"
-T[C145]="\\\n WARP 网络接口可以切换为以下方式:\\\n 1. \$OPTION1\\\n 2. \$OPTION2\\\n 0. \${T[${L}76]}\\\n"
+T[E145]="\\\n WARP ineterface can be switched to the following:\\\n 1. \$OPTION1\\\n 2. \$OPTION2\\\n 0. \${T[\${L}76]}\\\n"
+T[C145]="\\\n WARP 网络接口可以切换为以下方式:\\\n 1. \$OPTION1\\\n 2. \$OPTION2\\\n 0. \${T[\${L}76]}\\\n"
 T[E146]="Cannot switch to the same form as the current one."
 T[C146]="不能切换为当前一样的形态"
 
@@ -459,7 +459,7 @@ plus(){
 		    reading " ${T[${L}57]} " MISSION
 		    MISSION=${MISSION//[^0-9]/}
 		    bash <(wget --no-check-certificate -qO- -T8 https://cdn.jsdelivr.net/gh/SoftCreatR/warp-up/warp-up.sh) --disclaimer --id $ID --iterations $MISSION;;
-		4 ) [[ -n $PLAN ]] && menu "$PLAN" || exit;;
+		4 ) [[ -n $PLAN ]] && menu || exit;;
 		* ) red " ${T[${L}51]} [1-4] "; sleep 1; plus;;
 	esac
 	}
@@ -599,7 +599,7 @@ bbrInstall(){
 	reading " ${T[${L}50]} " BBR
 	case "$BBR" in
 		1 ) wget --no-check-certificate -N "https://raw.githubusercontent.com/ylx2016/Linux-NetSpeed/master/tcp.sh" && chmod +x tcp.sh && ./tcp.sh;;
-		2 ) [[ -n $PLAN ]] && menu "$PLAN" || exit;;
+		2 ) [[ -n $PLAN ]] && menu || exit;;
 		* ) red " ${T[${L}51]} [1-2]"; sleep 1; bbrInstall;;
 	esac
 	}
