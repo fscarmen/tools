@@ -1180,6 +1180,7 @@ case "$m" in
 	TO1=("" "" "" "014" "014" "106" "106" "114")
 	TO2=("" "" "" "01D" "01D" "10D" "10D" "116")
 	ACTION1(){ TO=${TO1[m]}; stack_switch; }; ACTION2(){ TO=${TO2[m]}; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
+esac;;
 esac
 
 OPTION5="${T[${L}82]}"; ACTION5(){ proxy; }
