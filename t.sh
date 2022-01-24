@@ -575,12 +575,12 @@ MODIFY10D='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4
 MODIFY114='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/^.*\:\:\/0/#&/g" wgcf-profile.conf'
 MODIFY116='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/^.*0\.\0\/0/#&/g" wgcf-profile.conf'
 MODIFY11D='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/" wgcf-profile.conf'
-SWITCH014='sed -i "s/\#//g;s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
-SWITCH01D='sed -i "s/\#//g" /etc/wireguard/wgcf.conf'
-SWITCH106='sed -i "s/\#//g;s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
-SWITCH10D='sed -i "s/\#//g" /etc/wireguard/wgcf.conf'
-SWITCH114='sed -i "s/\#//g;s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
-SWITCH116='sed -i "s/\#//g;s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
+SWITCH014='sed -i "s/#//g;s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
+SWITCH01D='sed -i "s/#//g" /etc/wireguard/wgcf.conf'
+SWITCH106='sed -i "s/#//g;s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
+SWITCH10D='sed -i "s/#//g" /etc/wireguard/wgcf.conf'
+SWITCH114='sed -i "s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
+SWITCH116='sed -i "s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
 
 # 设置部分后缀 1/3
 case "$OPTION" in
@@ -710,8 +710,8 @@ proxy_onoff(){
 # 检查系统 WARP 单双栈情况。为了速度，先检查 WGCF 配置文件里的情况，再判断 trace
 check_stack(){
 	if [[ -e /etc/wireguard/wgcf.conf ]]; then
-		grep -q '0/0' /etc/wireguard/wgcf.conf | grep -q '#' && T4='0' || T4='1'
-		grep -q ':/0' /etc/wireguard/wgcf.conf | grep -q '#' && T6='0' || T6='1'
+		grep '0/0' /etc/wireguard/wgcf.conf | grep -q '#' && T4='0' || T4='1'
+		grep ':/0' /etc/wireguard/wgcf.conf | grep -q '#' && T6='0' || T6='1'
 		else 
 		case "$TRACE4" in off ) T4='0';; 'on'|'plus' ) T4='1';; esac
 		case "$TRACE6" in off ) T6='0';; 'on'|'plus' ) T6='1';; esac
@@ -726,7 +726,7 @@ check_stack(){
 stack_switch(){
 	[[ $CLIENT = 3 && $SWITCHCHOOSE = [4D] ]] && red " ${T[${L}109]} " && exit 1
 	check_stack
-	TO="$T4$T6$SWITCHCHOOSE"
+	[[ "${CASE[m]}@$SWITCHCHOOSE" =~ '1@@4'|'@1@6'|'1@1@d' ]] && red " ${T[${L}146]} " && exit 1 || TO="$T4$T6$SWITCHCHOOSE"
 	sh -c "$(eval echo "\$SWITCH$TO")"
 	${SYSTEMCTL_RESTART[int]}
 	OPTION=n && net
