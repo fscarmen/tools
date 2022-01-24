@@ -19,7 +19,7 @@ translate(){ [[ -n "$1" ]] && curl -sm8 "http://fanyi.youdao.com/translate?&doct
 if [[ $2 != '[lisence]' ]]; then
 	if [[ $2 =~ 'http' ]]; then LICENSETYPE=2 && URL=$2
 	elif [[ $2 =~ ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}$ ]]; then LICENSETYPE=1 && LICENSE=$2
-	elif [[ $2 = [46Dd] ]]; then SWITCHCHOOSE=$(tr '[:upper:]' '[:lower:]' <<< "$2")
+	elif [[ $2 = [46Dd] ]]; then SWITCHCHOOSE=$(tr '[:lower:]' '[:upper:]' <<< "$2")
 	elif [[ $2 =~ ^[A-Za-z]{2}$ ]]; then EXPECT=$2
 	fi
 fi
@@ -724,9 +724,9 @@ check_stack(){
 
 # 单双栈在线互换
 stack_switch(){
-	[[ $CLIENT = 3 && $SWITCHCHOOSE = [4d] ]] && red " ${T[${L}109]} " && exit 1
+	[[ $CLIENT = 3 && $SWITCHCHOOSE = [4D] ]] && red " ${T[${L}109]} " && exit 1
 	check_stack
-	[[ "${CASE[m]}@$SWITCHCHOOSE" =~ ^1@@4$|^@1@6$|^1@1@d$ ]] && red " ${T[${L}146]} " && exit 1 || TO="$T4$T6$SWITCHCHOOSE"
+	[[ "${CASE[m]}@$SWITCHCHOOSE" =~ ^1@.@4$|^.@1@6$|^1@1@d$ ]] && red " ${T[${L}146]} " && exit 1 || TO="$T4$T6$SWITCHCHOOSE"
 	sh -c "$(eval echo "\$SWITCH$TO")"
 	${SYSTEMCTL_RESTART[int]}
 	OPTION=n && net
