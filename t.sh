@@ -1181,7 +1181,7 @@ case "$m" in
 	ACTION1(){ CONF=${CONF1[m]}; install; }; ACTION2(){ CONF=${CONF2[m]}; install; }; ACTION3(){ CONF=${CONF3[m]}; install; }; ACTION4(){ OPTION=o; net; };;
 
 * )	OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-	ACTION1(){ TO=${TO1[m]}; stack_switch; }; ACTION2(){ TO=${TO2[m]}; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
+	ACTION1(){ stack_switch; }; ACTION2(){ stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
 esac;;
 esac
 
