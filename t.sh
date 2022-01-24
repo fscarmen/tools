@@ -247,8 +247,8 @@ T[E107]="IPv4 priority"
 T[C107]="IPv4 优先"
 T[E108]="\n 1. WGCF WARP IP ( Only IPv6 can be brushed when WGCF and Client exist at the same time )\n 2. WARP Linux Client IP\n"
 T[C108]="\n 1. WGCF WARP IP ( WGCF 和 Client 并存时只能刷 IPv6)\n 2. WARP Linux Client IP\n"
-T[E109]=""
-T[C109]=""
+T[E109]="Socks5 Proxy Client is working now. WARP IPv4 and dualstack interface could not be switch to. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
+T[C109]="Socks5 代理正在运行中，不能转为 WARP IPv4 或者双栈网络接口，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E110]="Socks5 Proxy Client is working now. WARP IPv4 and dualstack interface could not be installed. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C110]="Socks5 代理正在运行中，WARP IPv4 或者双栈网络接口不能安装，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E111]="Port must be 4-5 digits. Please re-input\(\$i times remaining\):"
@@ -484,7 +484,6 @@ input_region(){
 		reading " $(eval echo "${T[${L}56]}") " EXPECT
 	done
 	[[ -z $EXPECT || $EXPECT = Y ]] && EXPECT="$REGION"
-	EXPECT=$(tr '[:lower:]' '[:upper:]' <<< "$EXPECT")
 	}
 
 # 更换支持 Netflix WARP IP 改编自 [luoxue-bot] 的成熟作品，地址[https://github.com/luoxue-bot/warp_auto_change_ip]
@@ -502,17 +501,14 @@ change_ip(){
 	while true
 	do (( i++ )) || true
 	ip_now=$(date +%s); RUNTIME=$((ip_now - ip_start)); DAY=$(( RUNTIME / 86400 )); HOUR=$(( (RUNTIME % 86400 ) / 3600 )); MIN=$(( (RUNTIME % 86400 % 3600) / 60 )); SEC=$(( RUNTIME % 86400 % 3600 % 60 ))
-	ip${NF}_info; until [[ -n $(eval echo \$IP$NF) ]]; do ip${NF}_info; done
+	ip${NF}_info
 	WAN=$(eval echo \$WAN$NF) && ASNORG=$(eval echo \$ASNORG$NF)
 	[[ $L = C ]] && COUNTRY=$(translate "$(eval echo \$COUNTRY$NF)") || COUNTRY=$(eval echo \$COUNTRY$NF)
 	RESULT=$(curl --user-agent "${UA_Browser}" -$NF -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
 	if [[ $RESULT = 200 ]]; then
 	REGION=$(tr '[:lower:]' '[:upper:]' <<< $(curl --user-agent "${UA_Browser}" -"$NF" -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
 	REGION=${REGION:-'US'}
-		if [[ $REGION = "$EXPECT" ]]; then
-		green " $(eval echo "${T[${L}125]}") " && i=0 && sleep 1h
-		else wgcf_restart
-		fi
+	echo "$REGION" | grep -qi "$EXPECT" && green " $(eval echo "${T[${L}125]}") " && i=0 && sleep 1h || wgcf_restart
 	else wgcf_restart
 	fi
 	done
@@ -528,16 +524,13 @@ change_ip(){
 	while true
 	do (( i++ )) || true
 	ip_now=$(date +%s); RUNTIME=$((ip_now - ip_start)); DAY=$(( RUNTIME / 86400 )); HOUR=$(( (RUNTIME % 86400 ) / 3600 )); MIN=$(( (RUNTIME % 86400 % 3600) / 60 )); SEC=$(( RUNTIME % 86400 % 3600 % 60 ))
-	proxy_info; until [[ -n "$PROXYJASON" ]]; do proxy_info; done
+	proxy_info
 	WAN=$PROXYIP && ASNORG=$PROXYASNORG && NF=4 && COUNTRY=$PROXYCOUNTRY
 	RESULT=$(curl --user-agent "${UA_Browser}" --socks5 "$PROXYSOCKS5" -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
 	if [[ $RESULT = 200 ]]; then
 	REGION=$(tr '[:lower:]' '[:upper:]' <<< $(curl --user-agent "${UA_Browser}" --socks5 "$PROXYSOCKS5" -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
 	REGION=${REGION:-'US'}
-		if [[ $REGION = "$EXPECT" ]]; then
-		green " $(eval echo "${T[${L}125]}") " && i=0 && sleep 1h
-		else socks5_restart
-		fi
+	echo "$REGION" | grep -qi "$EXPECT" && green " $(eval echo "${T[${L}125]}") " && i=0 && sleep 1h || socks5_restart
 	else socks5_restart
 	fi
 	done
@@ -832,6 +825,7 @@ SWITCH116='sed -i "s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
 # 单双栈在线互换
 stack_switch(){
 	if [[ $OPTION = s ]]; then
+	[[ $CLIENT = 3 && $SWITCHCHOOSE = [4d] ]] && red " ${T[${L}109]} " && exit 1
 	case "$SWITCHCHOOSE" in
 	4 ) [[ $T4@$T6 = on@ || $T4@$T6 = on@off ]] && red " ${T[${L}146]} " && exit 1 || TO=${TO1[m]};;
 	6 ) [[ $T4@$T6 = @on || $T4@$T6 = off@on ]] && red " ${T[${L}146]} " && exit 1
@@ -1154,6 +1148,12 @@ update(){
 }
 
 # 判断当前 WARP 网络接口及 Client 的运行状态，并对应的给菜单和动作赋值
+T4="$TRACE4"; T6="$TRACE6"; [[ $T4 = plus ]] && T4='on'; [[ $T6 = plus ]] && T6='on'
+CASE=("@off" "off@" "off@off" "@on" "off@on" "on@" "on@off" "on@on")
+for ((m=0;m<${#CASE[@]};m++)); do [[ $T4@$T6 = ${CASE[m]} ]] && break; done
+TO1=("" "" "" "014" "014" "106" "106" "114")
+TO2=("" "" "" "01D" "01D" "10D" "10D" "116")
+
 case $CLIENT in
 2 ) OPTION1="${T[${L}88]}"; OPTION2="${T[${L}143]}"; OPTION3="${T[${L}144]}"; OPTION4="${T[${L}78]}"; OPTION5="${T[${L}77]}";
     ACTION1(){ proxy_onoff; }; ACTION2(){ input_port; warp-cli --accept-tos set-proxy-port "$PORT"; };
@@ -1163,10 +1163,7 @@ case $CLIENT in
     ACTION1(){ proxy_onoff; }; ACTION2(){ input_port; warp-cli --accept-tos set-proxy-port "$PORT"; };
     ACTION3(){ CONF=106; [[ $TRACE6 != off ]] && red " ${T[${L}145]} " && exit 1 || install; }; ACTION4(){ update; }; ACTION5(){ onff; };;
 
-* ) T4="$TRACE4"; T6="$TRACE6"; [[ $T4 = plus ]] && T4='on'; [[ $T6 = plus ]] && T6='on'
-CASE=("@off" "off@" "off@off" "@on|@plus" "off@on" "on@" "on@off" "on@on")
-for ((m=0;m<${#CASE[@]};m++)); do [[ $T4@$T6 = ${CASE[m]} ]] && break; done
-case "$m" in
+* ) case "$m" in
 [0-2] ) NATIVE=("IPv6 only" "IPv4 only" "${T[${L}69]}")
 	CONF1=("014" "104" "114")
 	CONF2=("016" "106" "116")
@@ -1178,8 +1175,6 @@ case "$m" in
 	WARP_AFTER1=("" "" "" "WARP IPv4" "WARP IPv4" "WARP IPv6" "WARP IPv6" "WARP IPv4")
 	WARP_AFTER2=("" "" "" "${T[${L}70]}" "${T[${L}70]}" "${T[${L}70]}" "WARP IPv4" "WARP IPv6")
 	OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
-	TO1=("" "" "" "014" "014" "106" "106" "114")
-	TO2=("" "" "" "01D" "01D" "10D" "10D" "116")
 	ACTION1(){ TO=${TO1[m]}; stack_switch; }; ACTION2(){ TO=${TO2[m]}; stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
 esac;;
 esac
