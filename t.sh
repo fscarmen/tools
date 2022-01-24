@@ -579,8 +579,8 @@ SWITCH014='sed -i "s/^#//g;s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
 SWITCH01D='sed -i "s/^#//g" /etc/wireguard/wgcf.conf'
 SWITCH106='sed -i "s/^#//g;s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
 SWITCH10D='sed -i "s/^#//g" /etc/wireguard/wgcf.conf'
-SWITCH114='sed -i "s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
-SWITCH116='sed -i "s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
+SWITCH114='sed -i "s/^#//g;s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
+SWITCH116='sed -i "s/^#//g;s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
 
 # 设置部分后缀 1/3
 case "$OPTION" in
