@@ -582,35 +582,11 @@ SWITCH10D='sed -i "s/^#//g" /etc/wireguard/wgcf.conf'
 SWITCH114='sed -i "s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
 SWITCH116='sed -i "s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
 
-# 检查系统 WARP 单双栈情况。为了速度，先检查 WGCF 配置文件里的情况，再判断 trace
-check_stack(){
-	if [[ -e /etc/wireguard/wgcf.conf ]]; then
-		grep '0/0' /etc/wireguard/wgcf.conf | grep '#' || T4='on'
-		grep ':/0' /etc/wireguard/wgcf.conf | grep '#' || T6='on'
-		else T4="$TRACE4"; T6="$TRACE6"; [[ $T4 = plus ]] && T4='on'; [[ $T6 = plus ]] && T6='on'
-	fi
-	CASE=("@off" "off@" "off@off" "@on" "off@on" "on@" "on@off" "on@on")
-	for ((m=0;m<${#CASE[@]};m++)); do [[ $T4@$T6 = ${CASE[m]} ]] && break; done
-	TO1=("" "" "" "014" "014" "106" "106" "114")
-	TO2=("" "" "" "01D" "01D" "10D" "10D" "116")
-	}
-
-# 单双栈在线互换
-stack_switch(){
-	[[ $CLIENT = 3 && $SWITCHCHOOSE = [4d] ]] && red " ${T[${L}109]} " && exit 1
-	check_stack
-	[[ "${CASE[m]}@$SWITCHCHOOSE" =~ ^on@@4$|^@on@6$|^on@on@d$ ]] red " ${T[${L}146]} " && exit 1 || TO="${CASE[m]}@$SWITCHCHOOSE"
-	sh -c "$(eval echo "\$SWITCH$TO")"
-	${SYSTEMCTL_RESTART[int]}
-	OPTION=n && net
-	}
-
 # 设置部分后缀 1/3
 case "$OPTION" in
 h ) help; exit 0;;
 p ) plus; exit 0;;
 i ) change_ip; exit 0;;
-s ) stack_switch;;
 esac
 
 green " ${T[${L}37]} "
@@ -731,6 +707,29 @@ proxy_onoff(){
 	esac
     }
 
+# 检查系统 WARP 单双栈情况。为了速度，先检查 WGCF 配置文件里的情况，再判断 trace
+check_stack(){
+	if [[ -e /etc/wireguard/wgcf.conf ]]; then
+		grep '0/0' /etc/wireguard/wgcf.conf | grep '#' || T4='on'
+		grep ':/0' /etc/wireguard/wgcf.conf | grep '#' || T6='on'
+		else T4="$TRACE4"; T6="$TRACE6"; [[ $T4 = plus ]] && T4='on'; [[ $T6 = plus ]] && T6='on'
+	fi
+	CASE=("@off" "off@" "off@off" "@on" "off@on" "on@" "on@off" "on@on")
+	for ((m=0;m<${#CASE[@]};m++)); do [[ $T4@$T6 = ${CASE[m]} ]] && break; done
+	TO1=("" "" "" "014" "014" "106" "106" "114")
+	TO2=("" "" "" "01D" "01D" "10D" "10D" "116")
+	}
+
+# 单双栈在线互换
+stack_switch(){
+	[[ $CLIENT = 3 && $SWITCHCHOOSE = [4d] ]] && red " ${T[${L}109]} " && exit 1
+	check_stack
+	[[ "${CASE[m]}@$SWITCHCHOOSE" =~ ^on@@4$|^@on@6$|^on@on@d$ ]] && red " ${T[${L}146]} " && exit 1 || TO="${CASE[m]}@$SWITCHCHOOSE"
+	sh -c "$(eval echo "\$SWITCH$TO")"
+	${SYSTEMCTL_RESTART[int]}
+	OPTION=n && net
+	}
+
 # 设置部分后缀 2/3
 case "$OPTION" in
 b ) bbrInstall; exit 0;;
@@ -739,6 +738,7 @@ v ) ver; exit 0;;
 n ) net; exit 0;;
 o ) onoff; exit 0;;
 r ) proxy_onoff; exit 0;;
+s ) stack_switch; exit 0;;
 esac
 
 # 必须加载 TUN 模块
