@@ -19,7 +19,7 @@ translate(){ [[ -n "$1" ]] && curl -sm8 "http://fanyi.youdao.com/translate?&doct
 if [[ $2 != '[lisence]' ]]; then
 	if [[ $2 =~ 'http' ]]; then LICENSETYPE=2 && URL=$2
 	elif [[ $2 =~ ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}$ ]]; then LICENSETYPE=1 && LICENSE=$2
-	elif [[ $2 = [46Dd] ]]; then SWITCHCHOOSE=$2
+	elif [[ $2 = [46Dd] ]]; then SWITCHCHOOSE=$(tr '[:upper:]' '[:lower:]' <<< "$2")
 	elif [[ $2 =~ ^[A-Za-z]{2}$ ]]; then EXPECT=$2
 	fi
 fi
@@ -565,11 +565,52 @@ change_ip(){
 	esac	
 	}
 
+# WGCF 配置修改，其中用到的 162.159.192.1 和 2606:4700:d0::a29f:c001 均是 engage.cloudflareclient.com 的IP。单双栈的转换
+MODIFY014='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
+MODIFY016='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;s/^.*0\.\0\/0/#&/g;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
+MODIFY01D='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
+MODIFY104='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
+MODIFY106='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/^.*0\.\0\/0/#&/g;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
+MODIFY10D='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
+MODIFY114='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/^.*\:\:\/0/#&/g" wgcf-profile.conf'
+MODIFY116='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/^.*0\.\0\/0/#&/g" wgcf-profile.conf'
+MODIFY11D='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/" wgcf-profile.conf'
+SWITCH014='sed -i "s/^#//g;s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
+SWITCH01D='sed -i "s/^#//g" /etc/wireguard/wgcf.conf'
+SWITCH106='sed -i "s/^#//g;s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
+SWITCH10D='sed -i "s/^#//g" /etc/wireguard/wgcf.conf'
+SWITCH114='sed -i "s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
+SWITCH116='sed -i "s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
+
+# 检查系统 WARP 单双栈情况。为了速度，先检查 WGCF 配置文件里的情况，再判断 trace
+check_stack(){
+	if [[ -e /etc/wireguard/wgcf.conf ]]; then
+		grep '0/0' /etc/wireguard/wgcf.conf | grep '#' || T4='on'
+		grep ':/0' /etc/wireguard/wgcf.conf | grep '#' || T6='on'
+		else T4="$TRACE4"; T6="$TRACE6"; [[ $T4 = plus ]] && T4='on'; [[ $T6 = plus ]] && T6='on'
+	fi
+	CASE=("@off" "off@" "off@off" "@on" "off@on" "on@" "on@off" "on@on")
+	for ((m=0;m<${#CASE[@]};m++)); do [[ $T4@$T6 = ${CASE[m]} ]] && break; done
+	TO1=("" "" "" "014" "014" "106" "106" "114")
+	TO2=("" "" "" "01D" "01D" "10D" "10D" "116")
+	}
+
+# 单双栈在线互换
+stack_switch(){
+	[[ $CLIENT = 3 && $SWITCHCHOOSE = [4d] ]] && red " ${T[${L}109]} " && exit 1
+	check_stack
+	[[ "${CASE[m]}@$SWITCHCHOOSE" =~ ^on@@4$|^@on@6$|^on@on@d$ ]] red " ${T[${L}146]} " && exit 1 || TO="${CASE[m]}@$SWITCHCHOOSE"
+	sh -c "$(eval echo "\$SWITCH$TO")"
+	${SYSTEMCTL_RESTART[int]}
+	OPTION=n && net
+	}
+
 # 设置部分后缀 1/3
 case "$OPTION" in
 h ) help; exit 0;;
 p ) plus; exit 0;;
 i ) change_ip; exit 0;;
+s ) stack_switch;;
 esac
 
 green " ${T[${L}37]} "
@@ -802,45 +843,6 @@ input_port(){
 			echo "$PORT" | grep -qvE "^[1-9][0-9]{1,4}$" && reading " $(eval echo "${T[${L}111]}") " PORT
 			echo "$PORT" | grep -qE "^[1-9][0-9]{1,4}$" && [[ $(ss -nltp) =~ :"$PORT"[[:space:]] ]] && reading " $(eval echo "${T[${L}103]}") " PORT
 		done
-	}
-
-
-# WGCF 配置修改，其中用到的 162.159.192.1 和 2606:4700:d0::a29f:c001 均是 engage.cloudflareclient.com 的IP。单双栈的转换
-MODIFY014='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
-MODIFY016='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;s/^.*0\.\0\/0/#&/g;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
-MODIFY01D='sed -i "s/1.1.1.1/2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;s/engage.cloudflareclient.com/[2606:4700:d0::a29f:c001]/g" wgcf-profile.conf'
-MODIFY104='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
-MODIFY106='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/^.*0\.\0\/0/#&/g;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
-MODIFY10D='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf'
-MODIFY114='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/^.*\:\:\/0/#&/g" wgcf-profile.conf'
-MODIFY116='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/;s/^.*0\.\0\/0/#&/g" wgcf-profile.conf'
-MODIFY11D='sed -i "s/1.1.1.1/1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844/g;7 s/^/PostDown = ip -6 rule delete from '$LAN6' lookup main\n/;7 s/^/PostUp = ip -6 rule add from '$LAN6' lookup main\n/;7 s/^/PostDown = ip -4 rule delete from '$LAN4' lookup main\n/;7 s/^/PostUp = ip -4 rule add from '$LAN4' lookup main\n/" wgcf-profile.conf'
-SWITCH014='sed -i "s/^#//g;s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
-SWITCH01D='sed -i "s/^#//g" /etc/wireguard/wgcf.conf'
-SWITCH106='sed -i "s/^#//g;s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
-SWITCH10D='sed -i "s/^#//g" /etc/wireguard/wgcf.conf'
-SWITCH114='sed -i "s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
-SWITCH116='sed -i "s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
-
-# 单双栈在线互换
-stack_switch(){
-	if [[ $OPTION = s ]]; then
-	[[ $CLIENT = 3 && $SWITCHCHOOSE = [4d] ]] && red " ${T[${L}109]} " && exit 1
-	case "$SWITCHCHOOSE" in
-	4 ) [[ $T4@$T6 = on@ || $T4@$T6 = on@off ]] && red " ${T[${L}146]} " && exit 1 || TO=${TO1[m]};;
-	6 ) [[ $T4@$T6 = @on || $T4@$T6 = off@on ]] && red " ${T[${L}146]} " && exit 1
-	    [[ $T4@$T6 = on@on ]] && TO=${TO2[m]} || TO=${TO1[m]};;
-	d ) [[ $T4@$T6 = on@on ]] && red " ${T[${L}146]} " && exit 1 || TO=${TO2[m]};;
-	* ) yellow " $(eval echo "${T[${L}145]}") " && reading " ${T[${L}50]} " SWITCHTO
-		case "$SWITCHTO" in
-		1 ) TO=${TO1[m]};;	2 ) TO=${TO2[m]};;	0 ) exit;;
-		* ) red " ${T[${L}51]} [0-2] "; sleep 1; stack_switch;;
-		esac;;
-	esac
-	fi
-	sh -c "$(eval echo "\$SWITCH$TO")"
-	${SYSTEMCTL_RESTART[int]}
-	OPTION=n && net
 	}
 
 # WGCF 安装
@@ -1148,12 +1150,6 @@ update(){
 }
 
 # 判断当前 WARP 网络接口及 Client 的运行状态，并对应的给菜单和动作赋值
-T4="$TRACE4"; T6="$TRACE6"; [[ $T4 = plus ]] && T4='on'; [[ $T6 = plus ]] && T6='on'
-CASE=("@off" "off@" "off@off" "@on" "off@on" "on@" "on@off" "on@on")
-for ((m=0;m<${#CASE[@]};m++)); do [[ $T4@$T6 = ${CASE[m]} ]] && break; done
-TO1=("" "" "" "014" "014" "106" "106" "114")
-TO2=("" "" "" "01D" "01D" "10D" "10D" "116")
-
 case $CLIENT in
 2 ) OPTION1="${T[${L}88]}"; OPTION2="${T[${L}143]}"; OPTION3="${T[${L}144]}"; OPTION4="${T[${L}78]}"; OPTION5="${T[${L}77]}";
     ACTION1(){ proxy_onoff; }; ACTION2(){ input_port; warp-cli --accept-tos set-proxy-port "$PORT"; };
@@ -1163,7 +1159,8 @@ case $CLIENT in
     ACTION1(){ proxy_onoff; }; ACTION2(){ input_port; warp-cli --accept-tos set-proxy-port "$PORT"; };
     ACTION3(){ CONF=106; [[ $TRACE6 != off ]] && red " ${T[${L}145]} " && exit 1 || install; }; ACTION4(){ update; }; ACTION5(){ onff; };;
 
-* ) case "$m" in
+* ) check_stack
+case "$m" in
 [0-2] ) NATIVE=("IPv6 only" "IPv4 only" "${T[${L}69]}")
 	CONF1=("014" "104" "114")
 	CONF2=("016" "106" "116")
@@ -1222,6 +1219,5 @@ case "$OPTION" in
 	install;;
 c )	[[ $CLIENT = 3 ]] && red " ${T[${L}92]} " && exit 1 || proxy;;
 a )	update;;
-s )	stack_switch;;
 * )	menu;;
 esac
