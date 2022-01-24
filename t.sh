@@ -563,14 +563,6 @@ change_ip(){
 	esac	
 	}
 
-# WARP 单双栈切换选项
-SWITCH014='sed -i "s/#//g;s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
-SWITCH01D='sed -i "s/#//g" /etc/wireguard/wgcf.conf'
-SWITCH106='sed -i "s/#//g;s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
-SWITCH10D='sed -i "s/#//g" /etc/wireguard/wgcf.conf'
-SWITCH114='sed -i "s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
-SWITCH116='sed -i "s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
-
 # 设置部分后缀 1/3
 case "$OPTION" in
 h ) help; exit 0;;
@@ -718,6 +710,15 @@ check_stack(){
 # 单双栈在线互换。先看菜单是否有选择，再看传参数值，再没有显示2个可选项
 stack_switch(){
 	[[ $CLIENT = 3 && $SWITCHCHOOSE = [4D] ]] && red " ${T[${L}109]} " && exit 1
+
+	# WARP 单双栈切换选项
+	SWITCH014='sed -i "s/#//g;s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
+	SWITCH01D='sed -i "s/#//g" /etc/wireguard/wgcf.conf'
+	SWITCH106='sed -i "s/#//g;s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
+	SWITCH10D='sed -i "s/#//g" /etc/wireguard/wgcf.conf'
+	SWITCH114='sed -i "s/^.*\:\:\/0/#&/g" /etc/wireguard/wgcf.conf'
+	SWITCH116='sed -i "s/^.*0\.\0\/0/#&/g" /etc/wireguard/wgcf.conf'
+
 	check_stack
 	if [[ $CHOOSE1 = [12] ]]; then TO=$(eval echo \${TO$CHOOSE1[m]})
 	elif [[ $SWITCHCHOOSE = [46D] ]]; then
