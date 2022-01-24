@@ -710,11 +710,13 @@ proxy_onoff(){
 # 检查系统 WARP 单双栈情况。为了速度，先检查 WGCF 配置文件里的情况，再判断 trace
 check_stack(){
 	if [[ -e /etc/wireguard/wgcf.conf ]]; then
-		grep '0/0' /etc/wireguard/wgcf.conf | grep '#' || T4='on'
-		grep ':/0' /etc/wireguard/wgcf.conf | grep '#' || T6='on'
-		else T4="$TRACE4"; T6="$TRACE6"; [[ $T4 = plus ]] && T4='on'; [[ $T6 = plus ]] && T6='on'
+		grep '0/0' /etc/wireguard/wgcf.conf | grep '#' && T4='0' || T4='1'
+		grep ':/0' /etc/wireguard/wgcf.conf | grep '#' && T6='0' || T6='1'
+		else 
+		case "$TRACE4" in off ) T4='0';; 'on'|'plus' ) T4='1';; esac
+		case "$TRACE6" in off ) T6='0';; 'on'|'plus' ) T6='1';; esac
 	fi
-	CASE=("@off" "off@" "off@off" "@on" "off@on" "on@" "on@off" "on@on")
+	CASE=("@0" "0@" "0@0" "@1" "0@1" "1@" "1@0" "1@1")
 	for ((m=0;m<${#CASE[@]};m++)); do [[ $T4@$T6 = ${CASE[m]} ]] && break; done
 	TO1=("" "" "" "014" "014" "106" "106" "114")
 	TO2=("" "" "" "01D" "01D" "10D" "10D" "116")
@@ -724,7 +726,7 @@ check_stack(){
 stack_switch(){
 	[[ $CLIENT = 3 && $SWITCHCHOOSE = [4d] ]] && red " ${T[${L}109]} " && exit 1
 	check_stack
-	[[ "${CASE[m]}@$SWITCHCHOOSE" =~ ^on@@4$|^@on@6$|^on@on@d$ ]] && red " ${T[${L}146]} " && exit 1 || TO="${CASE[m]}@$SWITCHCHOOSE"
+	[[ "${CASE[m]}@$SWITCHCHOOSE" =~ ^1@@4$|^@1@6$|^1@1@d$ ]] && red " ${T[${L}146]} " && exit 1 || TO="$T4$T6$SWITCHCHOOSE"
 	sh -c "$(eval echo "\$SWITCH$TO")"
 	${SYSTEMCTL_RESTART[int]}
 	OPTION=n && net
