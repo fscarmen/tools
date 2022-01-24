@@ -710,8 +710,8 @@ proxy_onoff(){
 # 检查系统 WARP 单双栈情况。为了速度，先检查 WGCF 配置文件里的情况，再判断 trace
 check_stack(){
 	if [[ -e /etc/wireguard/wgcf.conf ]]; then
-		grep '0/0' /etc/wireguard/wgcf.conf | grep '#' && T4='0' || T4='1'
-		grep ':/0' /etc/wireguard/wgcf.conf | grep '#' && T6='0' || T6='1'
+		grep -q '0/0' /etc/wireguard/wgcf.conf | grep -q '#' && T4='0' || T4='1'
+		grep -q ':/0' /etc/wireguard/wgcf.conf | grep -q '#' && T6='0' || T6='1'
 		else 
 		case "$TRACE4" in off ) T4='0';; 'on'|'plus' ) T4='1';; esac
 		case "$TRACE6" in off ) T6='0';; 'on'|'plus' ) T6='1';; esac
