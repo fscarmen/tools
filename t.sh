@@ -723,13 +723,14 @@ check_stack(){
 	TO2=("" "" "" "01D" "01D" "10D" "10D" "116")
 	}
 
-# 单双栈在线互换
+# 单双栈在线互换。先看菜单是否有选择，再看传参数值，再没有显示2个可选项
 stack_switch(){
 	[[ $CLIENT = 3 && $SWITCHCHOOSE = [4D] ]] && red " ${T[${L}109]} " && exit 1
 	check_stack
-	if [[ $SWITCHCHOOSE = [46D] ]]; then
+	if [[ $CHOOSE1 = [12] ]]; then TO=$(eval echo \${TO$CHOOSE1[m]})
+	elif [[ $SWITCHCHOOSE = [46D] ]]; then
 	[[ "$T4@$T6@$SWITCHCHOOSE" =~ '1@0@4'|'0@1@6'|'1@1@D' ]] && red " ${T[${L}146]} " && exit 1 || TO="$T4$T6$SWITCHCHOOSE"
-	else 
+	else
 	OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"
 	yellow " $(eval echo "${T[${L}145]}") " && reading " ${T[${L}50]} " SWITCHTO
 		case "$SWITCHTO" in
