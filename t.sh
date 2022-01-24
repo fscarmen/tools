@@ -726,7 +726,7 @@ check_stack(){
 stack_switch(){
 	[[ $CLIENT = 3 && $SWITCHCHOOSE = [4D] ]] && red " ${T[${L}109]} " && exit 1
 	check_stack
-	[[ "${CASE[m]}@$SWITCHCHOOSE" =~ ^1@.@4$|^.@1@6$|^1@1@d$ ]] && red " ${T[${L}146]} " && exit 1 || TO="$T4$T6$SWITCHCHOOSE"
+	[[ "${CASE[m]}@$SWITCHCHOOSE" =~ '1@@4'|'1@0@4'|'@1@6'|'0@1@6'|'1@1@d' ]] && red " ${T[${L}146]} " && exit 1 || TO="$T4$T6$SWITCHCHOOSE"
 	sh -c "$(eval echo "\$SWITCH$TO")"
 	${SYSTEMCTL_RESTART[int]}
 	OPTION=n && net
