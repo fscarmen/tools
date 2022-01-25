@@ -58,16 +58,6 @@ E ) L=E;;	C ) L=C;;
 [[ $LANGUAGE = 2 ]] && L=C;;
 esac
 
-input_region(){
-	REGION=$(tr '[:lower:]' '[:upper:]' <<< $(curl --user-agent "${UA_Browser}" $NF -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g')) ||
-	REGION=${REGION:-'US'}
-	reading " $(eval echo "${T[${L}13]}") " EXPECT
-	until [[ -z $EXPECT || $EXPECT = [Yy] || $EXPECT =~ ^[A-Za-z]{2}$ ]]; do
-		reading " $(eval echo "${T[${L}56]}") " EXPECT
-	done
-	[[ -z $EXPECT || $EXPECT = Y ]] && EXPECT="$REGION"
-	}
-
 # 多方式判断操作系统，试到有值为止。只支持 Debian 10/11、Ubuntu 18.04/20.04 或 CentOS 7/8 ,如非上述操作系统，退出脚本
 CMD=(	"$(grep -i pretty_name /etc/os-release 2>/dev/null | cut -d \" -f2)"
 	"$(hostnamectl 2>/dev/null | grep -i system | cut -d : -f2)"
@@ -118,18 +108,28 @@ case $WGCFSTATUS$SOCKS5STATUS in
 01 ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
      NF="--socks5 $PROXYSOCKS5"
      input_region;;
-10 ) NF='-4'
-     input_region;;
+10 ) NF='-4';;
 11 ) yellow " ${T[${L}6]} " && reading " ${T[${L}3]} " CHOOSE3
       case "$CHOOSE3" in
       2 ) NF='-6';;
       * ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
           NF="--socks5 $PROXYSOCKS5";;
-      esac
-      input_region;;
+      esac;;
  esac
 
+input_region(){
+	REGION=$(tr '[:lower:]' '[:upper:]' <<< $(curl --user-agent "${UA_Browser}" $NF -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g')) ||
+	REGION=${REGION:-'US'}
+	reading " $(eval echo "${T[${L}13]}") " EXPECT
+	until [[ -z $EXPECT || $EXPECT = [Yy] || $EXPECT =~ ^[A-Za-z]{2}$ ]]; do
+		reading " $(eval echo "${T[${L}56]}") " EXPECT
+	done
+	[[ -z $EXPECT || $EXPECT = Y ]] && EXPECT="$REGION"
+	}
+
 install(){
+input_region
+
 # 流媒体解锁守护进程，定时5分钟检查一次
 sed -i '/warp_unlock.sh/d' /etc/crontab && echo "*/5 * * * *  root bash /root/warp_unlock.sh $AREA" >> /etc/crontab
 
@@ -162,9 +162,11 @@ green " ${T[${L}10]} "
 }
 
 uninstall(){
+wg-quick down wgcf >/dev/null 2>&1
 sed -i '/warp_unlock.sh/d' /etc/crontab
 kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1
 rm -f /root/warp_unlock.sh
+wg-quick up wgcf >/dev/null 2>&1
 
 # 输出执行结果
 green " ${T[${L}11]} "
