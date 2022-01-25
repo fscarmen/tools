@@ -93,12 +93,12 @@ type -P curl >/dev/null 2>&1 || (yellow " ${T[${L}7]} " && ${PACKAGE_INSTALL[int
 
 # 判断是否已经安装 WARP 网络接口或者 Socks5 代理,如已经安装组件尝试启动。再分情况作相应处理
 type -P wg-quick >/dev/null 2>&1 && [[ -z $(wg 2>/dev/null) ]] && wg-quick up wgcf >/dev/null 2>&1
-[[ -n $(wg 2>/dev/null) ]] && WGCF_STATUS=1 || WGCF_STATUS=0
+[[ -n $(wg 2>/dev/null) ]] && WGCFSTATUS=1 || WGCFSTATUS=0
 
 type -P warp-cli >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'warp-svc' ]] && warp-cli --accept-tos connect >/dev/null 2>&1
-[[ $(ss -nltp) =~ 'warp-svc' ]] && SOCKS5_STATUS=1 || SOCKS5_STATUS=0
+[[ $(ss -nltp) =~ 'warp-svc' ]] && SOCKS5STATUS=1 || SOCKS5STATUS=0
 
-case $WGCF_STATUS$SOCKS5_STATUS in
+case $WGCFSTATUS$SOCKS5STATUS in
 00 ) yellow " ${T[${L}4]} " && reading " ${T[${L}3]} " CHOOSE2
      case "$CHOOSE2" in
       2 ) wget -N https://cdn.jsdelivr.net/gh/kkkyg/CFwarp/CFwarp.sh && bash CFwarp.sh;;
@@ -108,11 +108,11 @@ case $WGCF_STATUS$SOCKS5_STATUS in
      esac
      bash warp_crontab.sh;;
 01 ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+');;
-10 ) ;;
+10 ) NF='-4';;
 11 ) yellow " ${T[${L}6]} " && reading " ${T[${L}3]} " CHOOSE3
       case "$CHOOSE3" in
-      2 ) ;;
-      * ) ;;
+      2 ) NF='-6';;
+      * ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+');;
       esac;;
  esac
 
@@ -121,11 +121,23 @@ install(){
 sed -i '/warp_unlock.sh/d' /etc/crontab && echo "*/5 * * * *  root bash /root/warp_unlock.sh $AREA" >> /etc/crontab
 
 # 生成 warp_unlock.sh 文件，判断当前流媒体解锁状态，遇到不解锁时更换 WARP IP，直至刷成功。5分钟后还没有刷成功，将不会重复该进程而浪费系统资源
-        cat <<EOF >/root/warp_unlock.sh
-[[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]] &&
-        until [[ -z \$(docker ps -a | egrep "Created|Exited") ]]
-                do docker start \$(docker ps -a | egrep "Created|Exited" | awk '{print \$1}')
-        done
+cat <<EOF >/root/warp_unlock.sh
+if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
+
+check(){
+RESULT=\$(curl --user-agent "${UA_Browser}" "$NF" --socks5 "$PROXYSOCKS5" -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
+[[ \$RESULT = 200 ]] && REGION=$(tr '[:lower:]' '[:upper:]' <<< \$(curl --user-agent "${UA_Browser}" "$NF" --socks5 "$PROXYSOCKS5" -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
+REGION=\${REGION:-'US'}
+}
+
+UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
+check
+until [[ \$REGION = "$AREA" ]]; do
+systemctl restart wg-quick@wgcf
+check
+done
+fi
+
 EOF
 
 # 输出执行结果
