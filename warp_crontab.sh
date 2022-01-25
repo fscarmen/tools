@@ -22,8 +22,8 @@ T[E2]="The script must be run as root, you can enter sudo -i and then download a
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E3]="Choose:"
 T[C3]="请选择:"
-T[E4]="\n Neither the WARP network interface nor Socks5 are installed, please select the installation script:\n 1. fscarmen (Default)\n 2. yyykg\n 3. P3terx\n 0.Exit\n"
-T[C4]="\n WARP 网络接口和 Socks5 都没有安装，请选择安装脚本:\n 1. fscarmen (默认)\n 2. yyykg\n 3. P3terx\n 0.退出\n"
+T[E4]="\n Neither the WARP network interface nor Socks5 are installed, please select the installation script:\n 1. fscarmen (Default)\n 2. yyykg\n 3. P3terx\n 0. Exit\n"
+T[C4]="\n WARP 网络接口和 Socks5 都没有安装，请选择安装脚本:\n 1. fscarmen (默认)\n 2. yyykg\n 3. P3terx\n 0. 退出\n"
 T[E5]="The script supports Debian, Ubuntu, CentOS or Alpine systems only. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C5]="本脚本只支持 Debian、Ubuntu、CentOS 或 Alpine 系统,问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E6]="Please choose to brush WARP IP:\n 1. \WARP Socks5 Proxy (Default)\n 2. \$ WARP IPv6 Interface\n"
@@ -99,12 +99,11 @@ type -P warp-cli >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'warp-svc' ]] && warp-cl
 case $WGCFSTATUS$SOCKS5STATUS in
 00 ) yellow " ${T[${L}4]} " && reading " ${T[${L}3]} " CHOOSE2
      case "$CHOOSE2" in
-      2 ) wget -N https://cdn.jsdelivr.net/gh/kkkyg/CFwarp/CFwarp.sh && bash CFwarp.sh;;
-      3 ) bash <(curl -fsSL git.io/warp.sh) menu;;
+      2 ) wget -N https://cdn.jsdelivr.net/gh/kkkyg/CFwarp/CFwarp.sh && bash CFwarp.sh; exit;;
+      3 ) bash <(curl -fsSL git.io/warp.sh) menu; exit;;
       0 ) exit;;
-      * ) wget -N https://cdn.jsdelivr.net/gh/fscarmen/warp/menu.sh && bash menu.sh;;
+      * ) wget -N https://cdn.jsdelivr.net/gh/fscarmen/warp/menu.sh && bash menu.sh; exit;;
      esac
-     bash warp_crontab.sh;;
 01 ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
      NF="-s4m7 --socks5 $PROXYSOCKS5"
      RESTART="socks5_restart";;
