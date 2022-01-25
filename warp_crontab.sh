@@ -134,6 +134,7 @@ UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
 check
 until [[ \$REGION = "$AREA" ]]; do
 systemctl restart wg-quick@wgcf
+sleep 5
 check
 done
 fi
