@@ -646,14 +646,12 @@ net(){
 	[[ $SYSTEM != Alpine ]] && [[ $(systemctl is-active wg-quick@wgcf) != 'active' ]] && wg-quick down wgcf >/dev/null 2>&1
 	${SYSTEMCTL_START[int]} >/dev/null 2>&1
 	wg-quick up wgcf >/dev/null 2>&1
-	grep '0/0' /etc/wireguard/wgcf.conf | grep -qv '#' && ip4_info
-	grep ':/0' /etc/wireguard/wgcf.conf | grep -qv '#' && ip6_info
+	ip4_info; ip6_info
 	until [[ $TRACE4$TRACE6 =~ on|plus ]]
 		do	(( i++ )) || true
 			yellow " $(eval echo "${T[${L}12]}") "
 			${SYSTEMCTL_RESTART[int]} >/dev/null 2>&1
-			grep '0/0' /etc/wireguard/wgcf.conf | grep -qv '#' && ip4_info
-			grep ':/0' /etc/wireguard/wgcf.conf | grep -qv '#' && ip6_info
+			ip4_info; ip6_info
 			if [[ $i = "$j" ]]; then
 				if [[ $LICENSETYPE = 2 ]]; then 
 				unset LICENSETYPE && i=0 && green " ${T[${L}129]} " &&
@@ -1222,15 +1220,20 @@ menu(){
 
 # 设置部分后缀 3/3
 case "$OPTION" in
-# 在已运行 Linux Client 前提下，不能安装 WARP IPv4 或者双栈网络接口
-[46d] )	case "$OPTION" in
-	4 ) [[ $CLIENT = 3 ]] && red " ${T[${L}110]} " && exit 1
-	    CONF=${CONF1[m]};; 
-	6 ) CONF=${CONF2[m]};;
-	d ) [[ $CLIENT = 3 ]] && red " ${T[${L}110]} " && exit 1
-	    CONF=${CONF3[m]};;
-	esac
-	install;;
+# 在已运行 Linux Client 前提下，不能安装 WARP IPv4 或者双栈网络接口。如已经运行 WARP ，参数 4,6,d 从原来的安装改为切换
+[46d] )	if [[ -n $(wg) ]]; then
+	SWITCHCHOOSE="$OPTION"; OPTION='s'
+	stack_switch
+	else
+		case "$OPTION" in
+		4 ) [[ $CLIENT = 3 ]] && red " ${T[${L}110]} " && exit 1
+		    CONF=${CONF1[m]};; 
+		6 ) CONF=${CONF2[m]};;
+		d ) [[ $CLIENT = 3 ]] && red " ${T[${L}110]} " && exit 1
+		    CONF=${CONF3[m]};;
+		esac
+		install
+	fi;;
 c )	[[ $CLIENT = 3 ]] && red " ${T[${L}92]} " && exit 1 || proxy;;
 a )	update;;
 * )	menu;;
