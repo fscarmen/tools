@@ -42,8 +42,8 @@ T[E12]="\n 1. Install the streaming media unlock daemon. Check it every 5 minute
 T[C12]="\n 1. 安装流媒体解锁守护进程,定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功\n 2. 卸载\n 0. 退出\n"
 T[E13]="The current Netflix region is \$REGION. Confirm press [y] . If you want another regions, please enter the two-digit region abbreviation. \(such as hk,sg. Default is \$REGION\):"
 T[C13]="当前 Netflix 地区是:\$REGION，需要解锁当前地区请按 y , 如需其他地址请输入两位地区简写 \(如 hk ,sg，默认:\$REGION\):"
-T[E14]=""
-T[C14]=""
+T[E14]="Wrong input. The script is aborted."
+T[C14]="输入错误，脚本退出"
 T[E15]=""
 T[C15]=""
 T[E16]=""
@@ -106,8 +106,7 @@ case $WGCFSTATUS$SOCKS5STATUS in
      esac
      bash warp_crontab.sh;;
 01 ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
-     NF="--socks5 $PROXYSOCKS5"
-     input_region;;
+     NF="--socks5 $PROXYSOCKS5";;
 10 ) NF='-4';;
 11 ) yellow " ${T[${L}6]} " && reading " ${T[${L}3]} " CHOOSE3
       case "$CHOOSE3" in
@@ -122,13 +121,13 @@ input_region(){
 	REGION=${REGION:-'US'}
 	reading " $(eval echo "${T[${L}13]}") " EXPECT
 	until [[ -z $EXPECT || $EXPECT = [Yy] || $EXPECT =~ ^[A-Za-z]{2}$ ]]; do
-		reading " $(eval echo "${T[${L}56]}") " EXPECT
+		reading " $(eval echo "${T[${L}13]}") " EXPECT
 	done
 	[[ -z $EXPECT || $EXPECT = Y ]] && EXPECT="$REGION"
 	}
 
 install(){
-input_region
+[[ -z "$EXPECT" ]] && input_region
 
 # 流媒体解锁守护进程，定时5分钟检查一次
 sed -i '/warp_unlock.sh/d' /etc/crontab && echo "*/5 * * * *  root bash /root/warp_unlock.sh $AREA" >> /etc/crontab
@@ -180,5 +179,5 @@ case "$CHOOSE1" in
 1 ) install;;
 2 ) uninstall;;
 0 ) exit 0;;
-* ) red " 输入错误，脚本退出 ";exit 1;;
+* ) red " ${T[${L}14]} ";exit 1;;
 esac
