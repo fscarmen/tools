@@ -124,17 +124,21 @@ sed -i '/warp_unlock.sh/d' /etc/crontab && echo "*/5 * * * *  root bash /root/wa
 cat <<EOF >/root/warp_unlock.sh
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
 
-check(){
-RESULT=\$(curl --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36" $NF --socks5 $PROXYSOCKS5 -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
-[[ \$RESULT = 200 ]] && REGION=$(tr '[:lower:]' '[:upper:]' <<< \$(curl --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36" "$NF" --socks5 "$PROXYSOCKS5" -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
-REGION=\${REGION:-'US'}
+check1(){
+unset RESULT REGION1 R1
+RESULT1=\$(curl --user-agent "\${UA_Browser}" $NF  -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
+if [[ \$RESULT = 200 ]]; then
+REGION1=\$(tr '[:lower:]' '[:upper:]' <<< \$(curl --user-agent "${UA_Browser}" $NF  -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
+REGION1=\${REGION1:-'US'}
+fi
+[[ \$REGION1 != "$AREA" ]] && R1='0'
 }
 
-check
-until [[ \$REGION = "$AREA" ]]; do
+UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
+check1
+until [[ ! \$R1  =~ 0  ]]; do
 systemctl restart wg-quick@wgcf
-sleep 5
-check
+check1
 done
 fi
 
