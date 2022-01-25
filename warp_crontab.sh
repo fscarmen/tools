@@ -114,7 +114,7 @@ case $WGCFSTATUS$SOCKS5STATUS in
       case "$CHOOSE3" in
       2 ) NF='-6'; RESTART="wgcf_restart";;
       * ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
-          NF="--socks5 $PROXYSOCKS5"
+          NF="-s4m7 --socks5 \"$PROXYSOCKS5\""
 	  RESTART="socks5_restart";;
       esac;;
  esac
