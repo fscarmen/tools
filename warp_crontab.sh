@@ -106,7 +106,7 @@ case $WGCFSTATUS$SOCKS5STATUS in
      esac
      bash warp_crontab.sh;;
 01 ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
-     NF="--socks5 $PROXYSOCKS5"
+     NF="-s4m7 --socks5 \"$PROXYSOCKS5\""
      RESTART="socks5_restart";;
 10 ) NF='-4'
      RESTART="wgcf_restart";;
