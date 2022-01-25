@@ -187,8 +187,8 @@ T[E77]="Turn off WARP"
 T[C77]="暂时关闭 WARP"
 T[E78]="Upgrade to WARP+ or Teams account"
 T[C78]="升级为 WARP+ 或 Teams 账户"
-T[E79]=""
-T[C79]=""
+T[E79]="WARP is already running and will switch to single and dual stack mutual switching mode"
+T[C79]="WARP 已经运行，将改为单双栈相互切换模式"
 T[E80]=""
 T[C80]=""
 T[E81]="Step 3/3: Searching for the best MTU value is ready."
@@ -1223,7 +1223,7 @@ case "$OPTION" in
 # 在已运行 Linux Client 前提下，不能安装 WARP IPv4 或者双栈网络接口。如已经运行 WARP ，参数 4,6,d 从原来的安装改为切换
 [46d] )	if [[ -n $(wg) ]]; then
 	SWITCHCHOOSE="$OPTION"; OPTION='s'
-	stack_switch
+	yellow " ${T[${L}79]} " && stack_switch
 	else
 		case "$OPTION" in
 		4 ) [[ $CLIENT = 3 ]] && red " ${T[${L}110]} " && exit 1
