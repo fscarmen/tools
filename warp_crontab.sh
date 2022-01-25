@@ -106,13 +106,16 @@ case $WGCFSTATUS$SOCKS5STATUS in
      esac
      bash warp_crontab.sh;;
 01 ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
-     NF="--socks5 $PROXYSOCKS5";;
-10 ) NF='-4';;
+     NF="--socks5 $PROXYSOCKS5"
+     RESTART="socks5_restart";;
+10 ) NF='-4'
+     RESTART="wgcf_restart";;
 11 ) yellow " ${T[${L}6]} " && reading " ${T[${L}3]} " CHOOSE3
       case "$CHOOSE3" in
-      2 ) NF='-6';;
+      2 ) NF='-6'; RESTART="wgcf_restart";;
       * ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
-          NF="--socks5 $PROXYSOCKS5";;
+          NF="--socks5 $PROXYSOCKS5"
+	  RESTART="socks5_restart";;
       esac;;
  esac
 
@@ -130,12 +133,18 @@ input_region(){
 install(){
 [[ -z "$EXPECT" ]] && input_region
 
-# 流媒体解锁守护进程，定时5分钟检查一次
-sed -i '/warp_unlock.sh/d' /etc/crontab && echo "*/5 * * * *  root bash /root/warp_unlock.sh $AREA" >> /etc/crontab
+# 流媒体解锁守护进程，定时5分钟检查一次，结果输出到 ip.log 文件
+sed -i '/warp_unlock.sh/d' /etc/crontab && echo "*/5 * * * *  root bash /root/warp_unlock.sh $AREA 2>&1 | tee $PWD/ip.log " >> /etc/crontab
 
 # 生成 warp_unlock.sh 文件，判断当前流媒体解锁状态，遇到不解锁时更换 WARP IP，直至刷成功。5分钟后还没有刷成功，将不会重复该进程而浪费系统资源
 cat <<EOF >/root/warp_unlock.sh
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
+
+wgcf_restart(){ systemctl restart wg-quick@wgcf && sleep 5; }
+		
+socks5_restart(){
+warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 && sleep $2 &&
+[[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license) >/dev/null 2>&1 && sleep 5; }
 
 check1(){
 unset RESULT REGION1 R1
@@ -150,8 +159,7 @@ echo "\$REGION1" | grep -qi "$EXPECT" || R1='0'
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
 check1
 until [[ ! \$R1  =~ 0  ]]; do
-systemctl restart wg-quick@wgcf
-sleep 3
+$RESTART
 check1
 done
 fi
