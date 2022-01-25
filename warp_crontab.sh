@@ -170,11 +170,13 @@ green " ${T[${L}10]} "
 }
 
 uninstall(){
-wg-quick down wgcf >/dev/null 2>&1
+type -P wg-quick >/dev/null 2>&1 && wg-quick down wgcf >/dev/null 2>&1
+type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos delete >/dev/null 2>&1 && sleep 1
 sed -i '/warp_unlock.sh/d' /etc/crontab
 kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1
 rm -f /root/warp_unlock.sh
-wg-quick up wgcf >/dev/null 2>&1
+type -P wg-quick >/dev/null 2>&1 && wg-quick up wgcf >/dev/null 2>&1
+type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1
 
 # 输出执行结果
 green " ${T[${L}11]} "
