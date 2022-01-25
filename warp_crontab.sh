@@ -140,7 +140,7 @@ if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a
 check1(){
 unset RESULT REGION1 R1
 RESULT1=\$(curl --user-agent "\${UA_Browser}" $NF  -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
-if [[ \$RESULT = 200 ]]; then
+if [[ \$RESULT1 = 200 ]]; then
 REGION1=\$(tr '[:lower:]' '[:upper:]' <<< \$(curl --user-agent "${UA_Browser}" $NF  -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
 REGION1=\${REGION1:-'US'}
 fi
