@@ -26,8 +26,8 @@ T[E4]="\n Neither the WARP network interface nor Socks5 are installed, please se
 T[C4]="\n WARP 网络接口和 Socks5 都没有安装，请选择安装脚本:\n 1. fscarmen (默认)\n 2. yyykg\n 3. P3terx\n 0. 退出\n"
 T[E5]="The script supports Debian, Ubuntu, CentOS or Alpine systems only. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C5]="本脚本只支持 Debian、Ubuntu、CentOS 或 Alpine 系统,问题反馈:[https://github.com/fscarmen/warp/issues]"
-T[E6]="Please choose to brush WARP IP:\n 1. \WARP Socks5 Proxy (Default)\n 2. \$ WARP IPv6 Interface\n"
-T[C6]="\n 请选择刷 WARP IP 方式:\n 1. \WARP Socks5 代理 (默认)\n 2. \$ WARP IPv4 网络接口\n"
+T[E6]="Please choose to brush WARP IP:\n 1. WARP Socks5 Proxy (Default)\n 2. WARP IPv6 Interface\n"
+T[C6]="\n 请选择刷 WARP IP 方式:\n 1. WARP Socks5 代理 (默认)\n 2. WARP IPv6 网络接口\n"
 T[E7]="Installing curl..."
 T[C7]="安装curl中……"
 T[E8]="It is necessary to upgrade the latest package library before install curl.It will take a little time,please be patiently..."
@@ -103,7 +103,7 @@ case $WGCFSTATUS$SOCKS5STATUS in
       3 ) bash <(curl -fsSL git.io/warp.sh) menu; exit;;
       0 ) exit;;
       * ) wget -N https://cdn.jsdelivr.net/gh/fscarmen/warp/menu.sh && bash menu.sh; exit;;
-     esac
+     esac;;
 01 ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
      NF="-s4m7 --socks5 $PROXYSOCKS5"
      RESTART="socks5_restart";;
@@ -147,9 +147,9 @@ warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >
 
 check1(){
 unset RESULT REGION1 R1
-	RESULT1=\$(curl --user-agent "\${UA_Browser}" $NF  -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
+	RESULT1=\$(curl --user-agent "\${UA_Browser}" $NF -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
 if [[ \$RESULT1 = 200 ]]; then
-REGION1=\$(tr '[:lower:]' '[:upper:]' <<< \$(curl --user-agent "${UA_Browser}" $NF  -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
+REGION1=\$(tr '[:lower:]' '[:upper:]' <<< \$(curl --user-agent "${UA_Browser}" $NF -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
 REGION1=\${REGION1:-'US'}
 fi
 echo "\$REGION1" | grep -qi "$EXPECT" || R1='0'
