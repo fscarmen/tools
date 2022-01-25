@@ -106,7 +106,7 @@ case $WGCFSTATUS$SOCKS5STATUS in
      esac
      bash warp_crontab.sh;;
 01 ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
-     NF="-s4m7 --socks5 \"$PROXYSOCKS5\""
+     NF="-s4m7 --socks5 $PROXYSOCKS5"
      RESTART="socks5_restart";;
 10 ) NF='-4'
      RESTART="wgcf_restart";;
@@ -114,7 +114,7 @@ case $WGCFSTATUS$SOCKS5STATUS in
       case "$CHOOSE3" in
       2 ) NF='-6'; RESTART="wgcf_restart";;
       * ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
-          NF="-s4m7 --socks5 \"$PROXYSOCKS5\""
+          NF="-s4m7 --socks5 $PROXYSOCKS5"
 	  RESTART="socks5_restart";;
       esac;;
  esac
@@ -148,7 +148,7 @@ warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >
 
 check1(){
 unset RESULT REGION1 R1
-RESULT1=\$(curl --user-agent "\${UA_Browser}" $NF  -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
+	RESULT1=\$(curl --user-agent "\${UA_Browser}" $NF  -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
 if [[ \$RESULT1 = 200 ]]; then
 REGION1=\$(tr '[:lower:]' '[:upper:]' <<< \$(curl --user-agent "${UA_Browser}" $NF  -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
 REGION1=\${REGION1:-'US'}
