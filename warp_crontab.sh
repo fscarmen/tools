@@ -39,7 +39,7 @@ T[C10]="媒体解锁守护进程已安装成功"
 T[E11]="The media unlock daemon is completely uninstalled."
 T[C11]="媒体解锁守护进程已彻底卸载"
 T[E12]="\n 1. Install the streaming media unlock daemon. Check it every 5 minutes.\n 2. Uninstall\n 0. Exit\n"
-T[C12]="\n 1. 安装流媒体解锁守护进程,定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功。\n 2. 卸载\n 0. 退出\n"
+T[C12]="\n 1. 安装流媒体解锁守护进程,定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功\n 2. 卸载\n 0. 退出\n"
 T[E13]="The current Netflix region is \$REGION. Confirm press [y] . If you want another regions, please enter the two-digit region abbreviation. \(such as hk,sg. Default is \$REGION\):"
 T[C13]="当前 Netflix 地区是:\$REGION，需要解锁当前地区请按 y , 如需其他地址请输入两位地区简写 \(如 hk ,sg，默认:\$REGION\):"
 T[E14]=""
@@ -143,13 +143,15 @@ RESULT1=\$(curl --user-agent "\${UA_Browser}" $NF  -fsL --write-out %{http_code}
 if [[ \$RESULT = 200 ]]; then
 REGION1=\$(tr '[:lower:]' '[:upper:]' <<< \$(curl --user-agent "${UA_Browser}" $NF  -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
 REGION1=\${REGION1:-'US'}
-echo "\$REGION1" | grep -qi "$EXPECT" && R1='0'
+fi
+echo "\$REGION1" | grep -qi "$EXPECT" || R1='0'
 }
 
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
 check1
 until [[ ! \$R1  =~ 0  ]]; do
 systemctl restart wg-quick@wgcf
+sleep 3
 check1
 done
 fi
