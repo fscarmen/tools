@@ -5,6 +5,7 @@ export LANG=en_US.UTF-8
 # 期望解锁地区传参
 [[ $1 =~ ^[A-Za-z]{2}$ ]] && EXPECT="$1"
 
+# 设置关连数组 T 用于中英文
 declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
@@ -70,34 +71,31 @@ CMD=(	"$(grep -i pretty_name /etc/os-release 2>/dev/null | cut -d \" -f2)"
 	"$(grep . /etc/issue 2>/dev/null | cut -d \\ -f1 | sed '/^[ ]*$/d')"
 	)
 
-for i in "${CMD[@]}"; do
-	SYS="$i" && [[ -n $SYS ]] && break
+for a in "${CMD[@]}"; do
+	SYS="$a" && [[ -n $SYS ]] && break
 done
 
-# 自定义 Alpine 系统若干函数
-alpine_wgcf_restart(){ wg-quick down wgcf >/dev/null 2>&1; wg-quick up wgcf >/dev/null 2>&1; }
+REGEX=("debian" "ubuntu" "centos|red hat|kernel|oracle linux|alma|rocky" "'amazon linux'")
+RELEASE=("Debian" "Ubuntu" "CentOS" "CentOS")
+PACKAGE_UPDATE=("apt -y update" "apt -y update" "yum -y update" "yum -y update")
+PACKAGE_INSTALL=("apt -y install" "apt -y install" "yum -y install" "yum -y install")
 
-REGEX=("debian" "ubuntu" "centos|red hat|kernel|oracle linux|alma|rocky" "'amazon linux'" "alpine")
-RELEASE=("Debian" "Ubuntu" "CentOS" "CentOS" "Alpine")
-PACKAGE_UPDATE=("apt -y update" "apt -y update" "yum -y update" "yum -y update" "apk update -f")
-PACKAGE_INSTALL=("apt -y install" "apt -y install" "yum -y install" "yum -y install" "apk add -f")
-SYSTEMCTL_RESTART=("systemctl restart wg-quick@wgcf" "systemctl restart wg-quick@wgcf" "systemctl restart wg-quick@wgcf" "systemctl restart wg-quick@wgcf" "alpine_wgcf_restart")
-
-for ((int=0; int<${#REGEX[@]}; int++)); do
-	[[ $(echo "$SYS" | tr '[:upper:]' '[:lower:]') =~ ${REGEX[int]} ]] && SYSTEM="${RELEASE[int]}" && [[ -n $SYSTEM ]] && break
+for ((b=0; b<${#REGEX[@]}; b++)); do
+	[[ $(echo "$SYS" | tr '[:upper:]' '[:lower:]') =~ ${REGEX[b]} ]] && SYSTEM="${RELEASE[b]}" && [[ -n $SYSTEM ]] && break
 done
 [[ -z $SYSTEM ]] && red " ${T[${L}5]} " && exit 1
 }
 
 # 检查依赖
 check_dependencies(){
-type -P curl >/dev/null 2>&1 || (yellow " ${T[${L}7]} " && ${PACKAGE_INSTALL[int]} curl) || (yellow " ${T[${L}8]} " && ${PACKAGE_UPDATE[int]} && ${PACKAGE_INSTALL[int]} curl)
+type -P curl >/dev/null 2>&1 || (yellow " ${T[${L}7]} " && ${PACKAGE_INSTALL[b]} curl) || (yellow " ${T[${L}8]} " && ${PACKAGE_UPDATE[b]} && ${PACKAGE_INSTALL[b]} curl)
 ! type -P curl >/dev/null 2>&1 && yellow " ${T[${L}9]} " && exit 1
 }
 
 # 检查解锁方式是否已运行
 check_unlock_running(){
-
+	unlock_method=("$(grep -qE "\*/5.*warp_unlock.*" /etc/crontab && echo 1)")
+	for ((c=0; c<${#unlock_method[@]}; c++)); do [[ ${unlock_method[c]} = '1' ]] && break; done
 }
 
 # 判断是否已经安装 WARP 网络接口或者 Socks5 代理,如已经安装组件尝试启动。再分情况作相应处理
