@@ -214,9 +214,9 @@ green " ${T[${L}11]} "
 choose_laguage
 check_unlock_running
 if echo ${unlock_method[*]} | grep -q '1'; then
-menushow="${T[${L}14]}"
+MENU_SHOW="${T[${L}14]}"
 else
-menushow="${T[${L}12]}"
+MENU_SHOW="${T[${L}12]}"
 check_system_info
 check_dependencies
 check_warp
@@ -225,7 +225,7 @@ fi
 # 菜单显示
 clear
 green " https://github.com/fscarmen/tools/issues\n=========================================================== "
-yellow " ${T[${L}12]} " && reading " ${T[${L}3]} " CHOOSE1
+yellow " $MENU_SHOW " && reading " ${T[${L}3]} " CHOOSE1
 case "$CHOOSE1" in
 1 ) export_unlock_file;;
 2 ) uninstall;;
