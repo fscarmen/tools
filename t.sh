@@ -215,10 +215,10 @@ choose_laguage
 check_unlock_running
 if echo ${unlock_method[*]} | grep -q '1'; then
 MENU_SHOW="${T[${L}16]}"
-ACTION[1]="uninstall"
+ACTION[1](){ uninstall; }
 else
 MENU_SHOW="${T[${L}12]}"
-ACTION[1]="export_unlock_file"
+ACTION[1](){ export_unlock_file; }
 check_system_info
 check_dependencies
 check_warp
@@ -230,7 +230,7 @@ clear
 green " https://github.com/fscarmen/tools/issues\n=========================================================== "
 yellow " $MENU_SHOW " && reading " ${T[${L}3]} " CHOOSE1
 case "$CHOOSE1" in
-1 ) "$ACTION[1]";;
+1 ) "${ACTION[1]}";;
 0 ) exit 0;;
 * ) red " ${T[${L}14]} "; sleep 1; menu;;
 esac
