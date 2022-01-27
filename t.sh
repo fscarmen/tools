@@ -35,16 +35,16 @@ T[E10]="Media unlock daemon installed successfully."
 T[C10]="媒体解锁守护进程已安装成功"
 T[E11]="The media unlock daemon is completely uninstalled."
 T[C11]="媒体解锁守护进程已彻底卸载"
-T[E12]="\n 1. Install the stream media unlock daemon. Check it every 5 minutes.\n 2. Uninstall\n 0. Exit\n"
-T[C12]="\n 1. 安装流媒体解锁守护进程,定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功\n 2. 卸载\n 0. 退出\n"
+T[E12]="\n 1. Install the stream media unlock daemon. Check it every 5 minutes.\n 0. Exit\n"
+T[C12]="\n 1. 安装流媒体解锁守护进程,定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功\n 0. 退出\n"
 T[E13]="The current region is \$REGION. Confirm press [y] . If you want another regions, please enter the two-digit region abbreviation. \(such as hk,sg. Default is \$REGION\):"
 T[C13]="当前地区是:\$REGION，需要解锁当前地区请按 y , 如需其他地址请输入两位地区简写 \(如 hk ,sg，默认:\$REGION\):"
 T[E14]="Wrong input. The script is aborted."
 T[C14]="输入错误，脚本退出"
 T[E15]="\n Select the stream media you wanna unlock (Multiple selections are possible, such as 123. The default is select all)\n 1. Netflix"
 T[C15]="\n 选择你期望解锁的流媒体 (可多选，如 123，默认为全选)\n 1. Netflix"
-T[E16]=""
-T[C16]=""
+T[E16]="\n 1. Stream media unlock daemon is running.\n 1. Uninstall\n 0. Exit\n"
+T[C16]="\n 1. 流媒体解锁守护正在运行中\n 1. 卸载\n 0. 退出\n"
 T[E17]=""
 T[C17]=""
 
@@ -213,10 +213,14 @@ green " ${T[${L}11]} "
 # 主程序运行
 choose_laguage
 check_unlock_running
-if ${unlock_method[*] | grep -q 1
+if echo ${unlock_method[*]} | grep -q '1'; then
+menushow="${T[${L}14]}"
+else
+menushow="${T[${L}12]}"
 check_system_info
 check_dependencies
 check_warp
+fi
 
 # 菜单显示
 clear
