@@ -3,7 +3,7 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/b
 export LANG=en_US.UTF-8
 
 # 当前脚本版本号和新增功能
-VERSION=beta
+VERSION=1.0
 
 # 期望解锁地区传参
 [[ $1 =~ ^[A-Za-z]{2}$ ]] && EXPECT="$1"
@@ -13,8 +13,8 @@ declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
-T[E1]=""
-T[C1]=""
+T[E1]="Born to make stream media unlock by WARP. 1. Media unlock daemon. Check it every 5 minutes. If unlocked, the scheduled task exits immediately. If it is not unlocked, it will be swiped successfully in the background. Advantages: Minimized use of system resources. Disadvantage: Can't see the results as intuitively as screen"
+T[C1]="为 WARP 解锁流媒体而生。 1. 流媒体解锁守护进程,定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功。 优点: 占用系统资源最小化。 缺点: 不能像 screen 那么直观看到结果"
 T[E2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E3]="Choose:"
@@ -43,10 +43,14 @@ T[E14]="Wrong input."
 T[C14]="输入错误"
 T[E15]="\n Select the stream media you wanna unlock (Multiple selections are possible, such as 123. The default is select all)\n 1. Netflix"
 T[C15]="\n 选择你期望解锁的流媒体 (可多选，如 123，默认为全选)\n 1. Netflix"
-T[E16]="\n Stream media unlock daemon is running.\n 1. Uninstall\n 0. Exit\n"
-T[C16]="\n 流媒体解锁守护正在运行中\n 1. 卸载\n 0. 退出\n"
-T[E17]=""
-T[C17]=""
+T[E16]="The script specifically adds WARP network interface for VPS, detailed:[https://github.com/fscarmen/warp]\n Features:\n	* Support WARP+ account. Third-party scripts are use to increase WARP+ quota or upgrade kernel.\n	* Not only menus, but commands with option.\n	* Intelligent analysis of operating system：Ubuntu 18.04、20.04，Debian 10、11，CentOS 7、8, Alpine 3. Be sure to choose the LTS system. And architecture：AMD or ARM\n	* Automatically select four WireGuard solutions. Performance: Kernel with WireGuard integration＞Install kernel module＞wireguard-go\n	* Intelligent analysis of the latest version of the WGCF\n	* Suppert WARP Linux client.\n	* Output WARP status, IP region and asn\n"
+T[C16]="本项目专为 VPS 添加 wgcf 网络接口，详细说明：[https://github.com/fscarmen/warp]\n脚本特点:\n	* 支持 WARP+ 账户，附带第三方刷 WARP+ 流量和升级内核 BBR 脚本\n	* 普通用户友好的菜单，进阶者通过后缀选项快速搭建\n	* 智能判断操作系统：Ubuntu 、Debian 、CentOS 和 Alpine，请务必选择 LTS 系统；硬件结构类型：AMD 或者 ARM\n	* 结合 Linux 版本和虚拟化方式，自动优选4个 WireGuard 方案。网络性能方面：内核集成 WireGuard＞安装内核模块＞wireguard-go\n	* 智能判断 WGCF 作者 github库的最新版本 （Latest release）\n	* 支持 WARP Linux Socks5 Client\n	* 输出执行结果，提示是否使用 WARP IP ，IP 归属地和线路提供商\n"
+T[E17]="Version"
+T[C17]="脚本版本"
+T[E18]="New features"
+T[C18]="功能新增"
+T[E19]="\n Stream media unlock daemon is running.\n 1. Uninstall\n 0. Exit\n"
+T[C19]="\n 流媒体解锁守护正在运行中\n 1. 卸载\n 0. 退出\n"
 
 # 自定义字体彩色，read 函数，友道翻译函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -215,11 +219,11 @@ green " ${T[${L}11]} "
 choose_laguage
 check_unlock_running
 if echo ${unlock_method[*]} | grep -q '1'; then
-MENU_SHOW="${T[${L}16]}"
+MENU_SHOW="${T[${L}19]}"
 ACTION1(){ uninstall; }
 else
 MENU_SHOW="${T[${L}12]}"
-ACTION1(){ export_unlock_file; bash /etc/wireguard/warp_unlock.sh; }
+ACTION1(){ export_unlock_file; }
 check_system_info
 check_dependencies
 check_warp
@@ -228,7 +232,8 @@ fi
 # 菜单显示
 menu(){
 clear
-green " https://github.com/fscarmen/tools/issues\n=========================================================== "
+red "======================================================================================================================\n"
+green " ${T[${L}17]}：$VERSION  ${T[${L}18]}：${T[${L}1]}\n "
 yellow " $MENU_SHOW " && reading " ${T[${L}3]} " CHOOSE1
 case "$CHOOSE1" in
 1 ) ACTION1;;
