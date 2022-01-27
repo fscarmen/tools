@@ -186,6 +186,7 @@ echo "\${REGION[0]}" | grep -qi "$EXPECT" || R[0]='0'
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
 $UNLOCK_SELECT
 until [[ ! \${R[*]}  =~ 0  ]]; do
+unset R
 $RESTART
 $UNLOCK_SELECT
 done
@@ -218,7 +219,7 @@ MENU_SHOW="${T[${L}16]}"
 ACTION1(){ uninstall; }
 else
 MENU_SHOW="${T[${L}12]}"
-ACTION1(){ export_unlock_file; }
+ACTION1(){ export_unlock_file; bash /etc/wireguard/warp_unlock.sh; }
 check_system_info
 check_dependencies
 check_warp
