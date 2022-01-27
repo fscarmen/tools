@@ -180,7 +180,7 @@ if [[ \${RESULT[0]} = 200 ]]; then
 REGION[0]=\$(tr '[:lower:]' '[:upper:]' <<< \$(curl --user-agent "${UA_Browser}" $NF -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
 REGION[0]=\${REGION[0]:-'US'}
 fi
-echo "\${REGION[0]}" | grep -qi "$EXPECT" || R[i=0]='0'
+echo "\${REGION[0]}" | grep -qi "$EXPECT" || R[0]='0'
 }
 
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
