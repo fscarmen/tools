@@ -230,7 +230,7 @@ clear
 green " https://github.com/fscarmen/tools/issues\n=========================================================== "
 yellow " $MENU_SHOW " && reading " ${T[${L}3]} " CHOOSE1
 case "$CHOOSE1" in
-1 ) ;;
+1 ) sh -c "$ACTION[1]";;
 0 ) exit 0;;
 * ) red " ${T[${L}14]} "; sleep 1; menu;;
 esac
