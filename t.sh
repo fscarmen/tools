@@ -39,8 +39,8 @@ T[E12]="\n 1. Install the stream media unlock daemon. Check it every 5 minutes.\
 T[C12]="\n 1. 安装流媒体解锁守护进程,定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功\n 0. 退出\n"
 T[E13]="The current region is \$REGION. Confirm press [y] . If you want another regions, please enter the two-digit region abbreviation. \(such as hk,sg. Default is \$REGION\):"
 T[C13]="当前地区是:\$REGION，需要解锁当前地区请按 y , 如需其他地址请输入两位地区简写 \(如 hk ,sg，默认:\$REGION\):"
-T[E14]="Wrong input. The script is aborted."
-T[C14]="输入错误，脚本退出"
+T[E14]="Wrong input."
+T[C14]="输入错误"
 T[E15]="\n Select the stream media you wanna unlock (Multiple selections are possible, such as 123. The default is select all)\n 1. Netflix"
 T[C15]="\n 选择你期望解锁的流媒体 (可多选，如 123，默认为全选)\n 1. Netflix"
 T[E16]="\n 1. Stream media unlock daemon is running.\n 1. Uninstall\n 0. Exit\n"
@@ -215,20 +215,25 @@ choose_laguage
 check_unlock_running
 if echo ${unlock_method[*]} | grep -q '1'; then
 MENU_SHOW="${T[${L}16]}"
+ACTION[1]="uninstall"
 else
 MENU_SHOW="${T[${L}12]}"
+ACTION[1]="export_unlock_file"
 check_system_info
 check_dependencies
 check_warp
 fi
 
 # 菜单显示
+menu(){
 clear
 green " https://github.com/fscarmen/tools/issues\n=========================================================== "
 yellow " $MENU_SHOW " && reading " ${T[${L}3]} " CHOOSE1
 case "$CHOOSE1" in
-1 ) export_unlock_file;;
-2 ) uninstall;;
+1 ) ;;
 0 ) exit 0;;
-* ) red " ${T[${L}14]} ";exit 1;;
+* ) red " ${T[${L}14]} "; sleep 1; menu;;
 esac
+}
+
+menu
