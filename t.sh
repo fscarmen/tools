@@ -43,8 +43,8 @@ T[E14]="Wrong input."
 T[C14]="输入错误"
 T[E15]="\n Select the stream media you wanna unlock (Multiple selections are possible, such as 123. The default is select all)\n 1. Netflix"
 T[C15]="\n 选择你期望解锁的流媒体 (可多选，如 123，默认为全选)\n 1. Netflix"
-T[E16]="\n 1. Stream media unlock daemon is running.\n 1. Uninstall\n 0. Exit\n"
-T[C16]="\n 1. 流媒体解锁守护正在运行中\n 1. 卸载\n 0. 退出\n"
+T[E16]="\n Stream media unlock daemon is running.\n 1. Uninstall\n 0. Exit\n"
+T[C16]="\n 流媒体解锁守护正在运行中\n 1. 卸载\n 0. 退出\n"
 T[E17]=""
 T[C17]=""
 
@@ -230,7 +230,7 @@ clear
 green " https://github.com/fscarmen/tools/issues\n=========================================================== "
 yellow " $MENU_SHOW " && reading " ${T[${L}3]} " CHOOSE1
 case "$CHOOSE1" in
-1 ) sh -c "$ACTION[1]";;
+1 ) "$ACTION[1]";;
 0 ) exit 0;;
 * ) red " ${T[${L}14]} "; sleep 1; menu;;
 esac
