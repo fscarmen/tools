@@ -214,7 +214,7 @@ green " ${T[${L}11]} "
 choose_laguage
 check_unlock_running
 if echo ${unlock_method[*]} | grep -q '1'; then
-MENU_SHOW="${T[${L}14]}"
+MENU_SHOW="${T[${L}16]}"
 else
 MENU_SHOW="${T[${L}12]}"
 check_system_info
