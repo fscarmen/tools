@@ -164,7 +164,7 @@ input_streammedia_unlock
 sed -i '/warp_unlock.sh/d' /etc/crontab && echo "*/5 * * * *  root bash /etc/wireguard/warp_unlock.sh $AREA" >> /etc/crontab
 
 # 生成 warp_unlock.sh 文件，判断当前流媒体解锁状态，遇到不解锁时更换 WARP IP，直至刷成功。5分钟后还没有刷成功，将不会重复该进程而浪费系统资源
-cat <<EOF >/root/warp_unlock.sh
+cat <<EOF >/etc/wireguard/unlock.sh
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
 
 wgcf_restart(){ systemctl restart wg-quick@wgcf && sleep 5; }
@@ -185,9 +185,9 @@ echo "\$REGION1" | grep -qi "$EXPECT" || R[0]='0'
 
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
 $UNLOCK_SELECT
-until [[ ! ${R[*]}  =~ 0  ]]; do
+until [[ ! \${R[*]}  =~ 0  ]]; do
 $RESTART
-check1
+$UNLOCK_SELECT
 done
 fi
 
@@ -202,7 +202,7 @@ type -P wg-quick >/dev/null 2>&1 && wg-quick down wgcf >/dev/null 2>&1
 type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos delete >/dev/null 2>&1 && sleep 1
 sed -i '/warp_unlock.sh/d' /etc/crontab
 kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1
-rm -f /root/warp_unlock.sh
+rm -f /etc/wireguard/warp_unlock.sh
 type -P wg-quick >/dev/null 2>&1 && wg-quick up wgcf >/dev/null 2>&1
 type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1
 
