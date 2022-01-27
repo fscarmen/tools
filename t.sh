@@ -140,7 +140,7 @@ for ((d=0; d<"$SUPPORT_NUM"; d++)); do
        ( [[ -z "$CHOOSE4" ]] || echo "$CHOOSE4" | grep -q "$((d+1))" ) && STREAM_UNLOCK[d]='1' || STREAM_UNLOCK[d]='0'
 done
 UNLOCK_SELECT=$(for ((e=0; e<"$((SUPPORT_NUM+1))"; e++)); do
-                [[ "${STREAM_UNLOCK[e]}" = 1 ]] && echo -e "check$echeck$UNLOCK_SELECT"
+                [[ "${STREAM_UNLOCK[e]}" = 1 ]] && echo -e "[[ ! \${R[*]} =~ 0 ]] && check$e;"
 		done)
 }
 
@@ -161,7 +161,7 @@ input_streammedia_unlock
 [[ -z "$EXPECT" ]] && input_region
 
 # 流媒体解锁守护进程，定时5分钟检查一次，结果输出到 ip.log 文件
-sed -i '/warp_unlock.sh/d' /etc/crontab && echo "*/5 * * * *  root bash /root/warp_unlock.sh $AREA 2>&1 | tee $PWD/ip.log " >> /etc/crontab
+sed -i '/warp_unlock.sh/d' /etc/crontab && echo "*/5 * * * *  root bash /etc/wireguard/warp_unlock.sh $AREA" >> /etc/crontab
 
 # 生成 warp_unlock.sh 文件，判断当前流媒体解锁状态，遇到不解锁时更换 WARP IP，直至刷成功。5分钟后还没有刷成功，将不会重复该进程而浪费系统资源
 cat <<EOF >/root/warp_unlock.sh
@@ -180,12 +180,12 @@ if [[ \$RESULT1 = 200 ]]; then
 REGION1=\$(tr '[:lower:]' '[:upper:]' <<< \$(curl --user-agent "${UA_Browser}" $NF -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
 REGION1=\${REGION1:-'US'}
 fi
-echo "\$REGION1" | grep -qi "$EXPECT" || R1='0'
+echo "\$REGION1" | grep -qi "$EXPECT" || R[0]='0'
 }
 
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
 $UNLOCK_SELECT
-until [[ ! \$R1  =~ 0  ]]; do
+until [[ ! ${R[*]}  =~ 0  ]]; do
 $RESTART
 check1
 done
