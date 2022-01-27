@@ -212,6 +212,8 @@ green " ${T[${L}11]} "
 
 # 主程序运行
 choose_laguage
+check_unlock_running
+if ${unlock_method[*] | grep -q 1
 check_system_info
 check_dependencies
 check_warp
