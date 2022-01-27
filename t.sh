@@ -215,7 +215,6 @@ choose_laguage
 check_system_info
 check_dependencies
 check_warp
-export_unlock_file
 
 # 菜单显示
 clear
