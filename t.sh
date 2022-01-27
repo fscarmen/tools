@@ -164,7 +164,7 @@ input_streammedia_unlock
 sed -i '/warp_unlock.sh/d' /etc/crontab && echo "*/5 * * * *  root bash /etc/wireguard/warp_unlock.sh $AREA" >> /etc/crontab
 
 # 生成 warp_unlock.sh 文件，判断当前流媒体解锁状态，遇到不解锁时更换 WARP IP，直至刷成功。5分钟后还没有刷成功，将不会重复该进程而浪费系统资源
-cat <<EOF >/etc/wireguard/unlock.sh
+cat <<EOF >/etc/wireguard/warp_unlock.sh
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
 
 wgcf_restart(){ systemctl restart wg-quick@wgcf && sleep 5; }
