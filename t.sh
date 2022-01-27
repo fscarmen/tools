@@ -2,6 +2,9 @@
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/bin
 export LANG=en_US.UTF-8
 
+# 当前脚本版本号和新增功能
+VERSION=beta
+
 # 期望解锁地区传参
 [[ $1 =~ ^[A-Za-z]{2}$ ]] && EXPECT="$1"
 
@@ -32,14 +35,14 @@ T[E10]="Media unlock daemon installed successfully."
 T[C10]="媒体解锁守护进程已安装成功"
 T[E11]="The media unlock daemon is completely uninstalled."
 T[C11]="媒体解锁守护进程已彻底卸载"
-T[E12]="\n 1. Install the streaming media unlock daemon. Check it every 5 minutes.\n 2. Uninstall\n 0. Exit\n"
+T[E12]="\n 1. Install the stream media unlock daemon. Check it every 5 minutes.\n 2. Uninstall\n 0. Exit\n"
 T[C12]="\n 1. 安装流媒体解锁守护进程,定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功\n 2. 卸载\n 0. 退出\n"
-T[E13]="The current Netflix region is \$REGION. Confirm press [y] . If you want another regions, please enter the two-digit region abbreviation. \(such as hk,sg. Default is \$REGION\):"
-T[C13]="当前 Netflix 地区是:\$REGION，需要解锁当前地区请按 y , 如需其他地址请输入两位地区简写 \(如 hk ,sg，默认:\$REGION\):"
+T[E13]="The current region is \$REGION. Confirm press [y] . If you want another regions, please enter the two-digit region abbreviation. \(such as hk,sg. Default is \$REGION\):"
+T[C13]="当前地区是:\$REGION，需要解锁当前地区请按 y , 如需其他地址请输入两位地区简写 \(如 hk ,sg，默认:\$REGION\):"
 T[E14]="Wrong input. The script is aborted."
 T[C14]="输入错误，脚本退出"
-T[E15]=""
-T[C15]=""
+T[E15]="\n Select the stream media you wanna unlock (Multiple selections are possible, such as 123. The default is select all)\n"
+T[C15]="\n 选择你期望解锁的流媒体 (可多选，如 123，默认为全选)\n"
 T[E16]=""
 T[C16]=""
 T[E17]=""
@@ -86,7 +89,7 @@ done
 [[ -z $SYSTEM ]] && red " ${T[${L}5]} " && exit 1
 }
 
-# 检查依赖
+# 检查依赖，安装 curl
 check_dependencies(){
 type -P curl >/dev/null 2>&1 || (yellow " ${T[${L}7]} " && ${PACKAGE_INSTALL[b]} curl) || (yellow " ${T[${L}8]} " && ${PACKAGE_UPDATE[b]} && ${PACKAGE_INSTALL[b]} curl)
 ! type -P curl >/dev/null 2>&1 && yellow " ${T[${L}9]} " && exit 1
@@ -101,25 +104,25 @@ check_unlock_running(){
 # 判断是否已经安装 WARP 网络接口或者 Socks5 代理,如已经安装组件尝试启动。再分情况作相应处理
 check_warp(){
 type -P wg-quick >/dev/null 2>&1 && [[ -z $(wg 2>/dev/null) ]] && wg-quick up wgcf >/dev/null 2>&1
-[[ -n $(wg 2>/dev/null) ]] && WGCFSTATUS=1 || WGCFSTATUS=0
+[[ -n $(wg 2>/dev/null) ]] && STATUS[0]=1 || STATUS[0]=0
 
 type -P warp-cli >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'warp-svc' ]] && warp-cli --accept-tos connect >/dev/null 2>&1
-[[ $(ss -nltp) =~ 'warp-svc' ]] && SOCKS5STATUS=1 || SOCKS5STATUS=0
+[[ $(ss -nltp) =~ 'warp-svc' ]] && STATUS[1]=1 || STATUS[1]=0
 
-case $WGCFSTATUS$SOCKS5STATUS in
-00 ) yellow " ${T[${L}4]} " && reading " ${T[${L}3]} " CHOOSE2
+case echo ${STATUS[*]} in
+'0 0') yellow " ${T[${L}4]} " && reading " ${T[${L}3]} " CHOOSE2
      case "$CHOOSE2" in
       2 ) wget -N https://cdn.jsdelivr.net/gh/kkkyg/CFwarp/CFwarp.sh && bash CFwarp.sh; exit;;
       3 ) bash <(curl -fsSL git.io/warp.sh) menu; exit;;
       0 ) exit;;
       * ) wget -N https://cdn.jsdelivr.net/gh/fscarmen/warp/menu.sh && bash menu.sh; exit;;
      esac;;
-01 ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
+'0 1' ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
      NF="-s4m7 --socks5 $PROXYSOCKS5"
      RESTART="socks5_restart";;
-10 ) NF='-4'
+'1 0' ) NF='-4'
      RESTART="wgcf_restart";;
-11 ) yellow " ${T[${L}6]} " && reading " ${T[${L}3]} " CHOOSE3
+'1 1' ) yellow " ${T[${L}6]} " && reading " ${T[${L}3]} " CHOOSE3
       case "$CHOOSE3" in
       2 ) NF='-6'; RESTART="wgcf_restart";;
       * ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
@@ -129,20 +132,32 @@ case $WGCFSTATUS$SOCKS5STATUS in
  esac
 }
 
+# 期望解锁流媒体, 变量 SUPPORT_NUM 限制选项枚举的试数，不填默认全选
+input_streammedia_unlock(){
+SUPPORT_NUM='1'
+yellow " ${T[${L}15]} " && reading " ${T[${L}3]} " CHOOSE4
+for ((d=0; d<"$SUPPORT_NUM"; d++)); do
+       ( [[ -z "$CHOOSE4" ]] || echo "$CHOOSE4" | grep -q "$((d+1))" ) && STREAM_UNLOCK[d]='1' || STREAM_UNLOCK[d]='0'
+done
+UNLOCK_SELECT=$(for ((e=0; e<"$((SUPPORT_NUM+1))"; e++)); do
+                [[ "${STREAM_UNLOCK[e]}" = 1 ]] && echo -e "check$echeck$UNLOCK_SELECT"
+		done)
+}
+
 # 期望解锁地区
 input_region(){
-	UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
-	REGION=$(tr '[:lower:]' '[:upper:]' <<< $(curl --user-agent "${UA_Browser}" $NF -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
-	REGION=${REGION:-'US'}
+	REGION=$(curl -sm8 https://ip.gs/country-iso)
 	reading " $(eval echo "${T[${L}13]}") " EXPECT
 	until [[ -z $EXPECT || $EXPECT = [Yy] || $EXPECT =~ ^[A-Za-z]{2}$ ]]; do
 		reading " $(eval echo "${T[${L}13]}") " EXPECT
 	done
-	[[ -z $EXPECT || $EXPECT = Y ]] && EXPECT="$REGION"
+	[[ -z $EXPECT || $EXPECT = [Yy] ]] && EXPECT="$REGION"
 	}
 
 # 根据用户选择在线生成解锁程序，放在 /etc/wireguard/unlock.sh
 export_unlock_file(){
+input_streammedia_unlock
+
 [[ -z "$EXPECT" ]] && input_region
 
 # 流媒体解锁守护进程，定时5分钟检查一次，结果输出到 ip.log 文件
@@ -158,8 +173,8 @@ socks5_restart(){
 warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 && sleep 15 &&
 [[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license \$(cat /etc/wireguard/license) >/dev/null 2>&1 && sleep 2; }
 
-check1(){
-unset RESULT REGION1 R1
+check0(){
+unset RESULT REGION R
 	RESULT1=\$(curl --user-agent "\${UA_Browser}" $NF -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
 if [[ \$RESULT1 = 200 ]]; then
 REGION1=\$(tr '[:lower:]' '[:upper:]' <<< \$(curl --user-agent "${UA_Browser}" $NF -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
@@ -169,7 +184,7 @@ echo "\$REGION1" | grep -qi "$EXPECT" || R1='0'
 }
 
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
-check1
+$UNLOCK_SELECT
 until [[ ! \$R1  =~ 0  ]]; do
 $RESTART
 check1
