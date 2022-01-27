@@ -109,7 +109,7 @@ type -P wg-quick >/dev/null 2>&1 && [[ -z $(wg 2>/dev/null) ]] && wg-quick up wg
 type -P warp-cli >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'warp-svc' ]] && warp-cli --accept-tos connect >/dev/null 2>&1
 [[ $(ss -nltp) =~ 'warp-svc' ]] && STATUS[1]=1 || STATUS[1]=0
 
-case echo ${STATUS[*]} in
+case "${STATUS[*]}" in
 '0 0') yellow " ${T[${L}4]} " && reading " ${T[${L}3]} " CHOOSE2
      case "$CHOOSE2" in
       2 ) wget -N https://cdn.jsdelivr.net/gh/kkkyg/CFwarp/CFwarp.sh && bash CFwarp.sh; exit;;
