@@ -41,8 +41,8 @@ T[E13]="The current region is \$REGION. Confirm press [y] . If you want another 
 T[C13]="当前地区是:\$REGION，需要解锁当前地区请按 y , 如需其他地址请输入两位地区简写 \(如 hk ,sg，默认:\$REGION\):"
 T[E14]="Wrong input. The script is aborted."
 T[C14]="输入错误，脚本退出"
-T[E15]="\n Select the stream media you wanna unlock (Multiple selections are possible, such as 123. The default is select all)\n"
-T[C15]="\n 选择你期望解锁的流媒体 (可多选，如 123，默认为全选)\n"
+T[E15]="\n Select the stream media you wanna unlock (Multiple selections are possible, such as 123. The default is select all)\n 1. Netflix"
+T[C15]="\n 选择你期望解锁的流媒体 (可多选，如 123，默认为全选)\n 1. Netflix"
 T[E16]=""
 T[C16]=""
 T[E17]=""
@@ -103,10 +103,10 @@ check_unlock_running(){
 
 # 判断是否已经安装 WARP 网络接口或者 Socks5 代理,如已经安装组件尝试启动。再分情况作相应处理
 check_warp(){
-type -P wg-quick >/dev/null 2>&1 && [[ -z $(wg 2>/dev/null) ]] && wg-quick up wgcf >/dev/null 2>&1
+#type -P wg-quick >/dev/null 2>&1 && [[ -z $(wg 2>/dev/null) ]] && wg-quick up wgcf >/dev/null 2>&1
 [[ -n $(wg 2>/dev/null) ]] && STATUS[0]=1 || STATUS[0]=0
 
-type -P warp-cli >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'warp-svc' ]] && warp-cli --accept-tos connect >/dev/null 2>&1
+#type -P warp-cli >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'warp-svc' ]] && warp-cli --accept-tos connect >/dev/null 2>&1
 [[ $(ss -nltp) =~ 'warp-svc' ]] && STATUS[1]=1 || STATUS[1]=0
 
 case "${STATUS[*]}" in
@@ -223,7 +223,7 @@ clear
 green " https://github.com/fscarmen/tools/issues\n=========================================================== "
 yellow " ${T[${L}12]} " && reading " ${T[${L}3]} " CHOOSE1
 case "$CHOOSE1" in
-1 ) install;;
+1 ) export_unlock_file;;
 2 ) uninstall;;
 0 ) exit 0;;
 * ) red " ${T[${L}14]} ";exit 1;;
