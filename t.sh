@@ -169,6 +169,7 @@ sed -i '/warp_unlock.sh/d' /etc/crontab && echo "*/5 * * * *  root bash /etc/wir
 
 # 生成 warp_unlock.sh 文件，判断当前流媒体解锁状态，遇到不解锁时更换 WARP IP，直至刷成功。5分钟后还没有刷成功，将不会重复该进程而浪费系统资源
 cat <<EOF >/etc/wireguard/warp_unlock.sh
+timedatectl set-timezone Asia/Shanghai
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
 
 wgcf_restart(){ systemctl restart wg-quick@wgcf && sleep 5; }
@@ -184,16 +185,19 @@ if [[ \${RESULT[0]} = 200 ]]; then
 REGION[0]=\$(tr '[:lower:]' '[:upper:]' <<< \$(curl --user-agent "${UA_Browser}" $NF -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
 REGION[0]=\${REGION[0]:-'US'}
 fi
-echo "\${REGION[0]}" | grep -qi "$EXPECT" || R[0]='0'
+echo "\${REGION[0]}" | grep -qi "$EXPECT" && R[0]='Yes' || R[0]='No'
+echo -e "\$(date +'%F %T'). Netflix: \${R[0]}"
 }
 
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
 $UNLOCK_SELECT
-until [[ ! \${R[*]}  =~ 0  ]]; do
+until [[ ! \${R[*]}  =~ 'No' ]]; do
 unset R
 $RESTART
 $UNLOCK_SELECT
 done
+
+else echo -e "\$(date +'%F %T'). Brushing IP is working now."
 fi
 
 EOF
