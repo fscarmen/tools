@@ -172,6 +172,7 @@ sh -c "$TASK"
 
 # 生成 warp_unlock.sh 文件，判断当前流媒体解锁状态，遇到不解锁时更换 WARP IP，直至刷成功。5分钟后还没有刷成功，将不会重复该进程而浪费系统资源
 cat <<EOF >/etc/wireguard/warp_unlock.sh
+EXPECT="$EXPECT"
 timedatectl set-timezone Asia/Shanghai
 
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
@@ -189,7 +190,7 @@ if [[ \${RESULT[0]} = 200 ]]; then
 REGION[0]=\$(curl --user-agent "${UA_Browser}" $NF -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g' | tr '[:lower:]' '[:upper:]')
 REGION[0]=\${REGION[0]:-'US'}
 fi
-echo "\${REGION[0]}" | grep -qi "$EXPECT" && R[0]='Yes' || R[0]='No'
+echo "\${REGION[0]}" | grep -qi "\$EXPECT" && R[0]='Yes' || R[0]='No'
 echo -e "\$(date +'%F %T'). Netflix: \${R[0]}" | tee -a /root/result.log
 }
 
