@@ -105,8 +105,7 @@ type -P curl >/dev/null 2>&1 || (yellow " ${T[${L}7]} " && ${PACKAGE_INSTALL[b]}
 
 # 检查解锁方式是否已运行
 check_unlock_running(){
-	unlock_method=("$(grep -qE "warp_unlock" /etc/crontab && echo 1)")
-	for ((c=0; c<${#unlock_method[@]}; c++)); do [[ ${unlock_method[c]} = '1' ]] && break; done
+	grep -qE "warp_unlock" /etc/crontab && RUNNING=1
 }
 
 # 判断是否已经安装 WARP 网络接口或者 Socks5 代理,如已经安装组件尝试启动。再分情况作相应处理
@@ -234,7 +233,7 @@ green " ${T[${L}11]} "
 choose_laguage
 check_unlock_running
 action0(){ exit 0; }
-if echo ${unlock_method[*]} | grep -q '1'; then
+if [[ "$RUNNING" = 1 ]]; then
 MENU_SHOW="${T[${L}19]}"
 action1(){ uninstall; }
 action2(){ exit 0; }
