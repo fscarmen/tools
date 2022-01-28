@@ -103,7 +103,7 @@ type -P curl >/dev/null 2>&1 || (yellow " ${T[${L}7]} " && ${PACKAGE_INSTALL[b]}
 
 # 检查解锁方式是否已运行
 check_unlock_running(){
-	unlock_method=("$(grep -qE "\*/5.*warp_unlock.*" /etc/crontab && echo 1)")
+	unlock_method=("$(grep -qE "warp_unlock" /etc/crontab && echo 1)")
 	for ((c=0; c<${#unlock_method[@]}; c++)); do [[ ${unlock_method[c]} = '1' ]] && break; done
 }
 
