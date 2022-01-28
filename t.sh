@@ -162,12 +162,17 @@ input_region(){
 	}
 
 # 选择后台运行方式
-select_methods(){
+select_mode(){
 yellow " ${T[${L}20]} " && reading " ${T[${L}3]} " CHOOSE5
 case "$CHOOSE5" in
-'coming soon' ) ;;
-* ) # 流媒体解锁守护进程，定时5分钟检查一次，结果输出到 ip.log 文件
-method="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * *  root bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 >> /root/ip.log" >> /etc/crontab;;"
+2 ) # screen 新建一个会话 u 在刷，结果输出到 ip.log 文件
+TASKS="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/ip.log\" >> /etc/crontab";;
+MODE2[0]="while true; do"
+MODE2[1]="done"
+RUN='export_unlock_file; screen -USdm u bash "/etc/wireguard/warp_unlock.sh 2>&1 | tee -a /root/ip.log";;
+* ) # 定时5分钟检查一次，结果输出到 ip.log 文件
+TASKS="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/ip.log\" >> /etc/crontab"
+RUN='export_unlock_file";;
 esac
 }
 
@@ -177,14 +182,15 @@ input_streammedia_unlock
 
 [[ -z "$EXPECT" ]] && input_region
 
-select_methods
+select_mode
 
-# 把不同解锁方式做到当时任务里
-sh -c "${method1[0]}"
+# 把不同解锁方式做到计划任务里
+sh -c "$TASKS"
 
 # 生成 warp_unlock.sh 文件，判断当前流媒体解锁状态，遇到不解锁时更换 WARP IP，直至刷成功。5分钟后还没有刷成功，将不会重复该进程而浪费系统资源
 cat <<EOF >/etc/wireguard/warp_unlock.sh
 timedatectl set-timezone Asia/Shanghai
+
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
 
 wgcf_restart(){ systemctl restart wg-quick@wgcf && sleep 5; }
@@ -197,13 +203,15 @@ check0(){
 RESULT[0]=""; REGION[0]=""; R[0]="";
 RESULT[0]=\$(curl --user-agent "\${UA_Browser}" $NF -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
 if [[ \${RESULT[0]} = 200 ]]; then
-REGION[0]=\$(tr '[:lower:]' '[:upper:]' <<< \$(curl --user-agent "${UA_Browser}" $NF -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
+REGION[0]=\$(curl --user-agent "${UA_Browser}" $NF -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g' | tr '[:lower:]' '[:upper:]')
 REGION[0]=\${REGION[0]:-'US'}
 fi
 echo "\${REGION[0]}" | grep -qi "$EXPECT" && R[0]='Yes' || R[0]='No'
-echo -e "\$(date +'%F %T'). Netflix: \${R[0]}"
+echo -e "\$(date +'%F %T'). Netflix: \${R[0]}" | tee -a /root/ip.log
 }
 
+${MODE2[0]}
+echo -e "\$(date +'%F %T'). IP:\$(curl $NF https://ip.gs)" | tee -a /root/ip.log
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
 $UNLOCK_SELECT
 until [[ ! \${R[*]}  =~ 'No' ]]; do
@@ -212,9 +220,9 @@ $RESTART
 $UNLOCK_SELECT
 done
 
-else echo -e "\$(date +'%F %T'). Brushing IP is working now."
+else echo -e "\$(date +'%F %T'). Brushing IP is working now." | tee -a /root/ip.log
 fi
-
+${MODE2[1]}
 EOF
 
 # 输出执行结果
@@ -242,7 +250,7 @@ MENU_SHOW="${T[${L}19]}"
 ACTION1(){ uninstall; }
 else
 MENU_SHOW="${T[${L}12]}"
-ACTION1(){ export_unlock_file; }
+ACTION1(){ $RUN; }
 check_system_info
 check_dependencies
 check_warp
