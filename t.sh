@@ -51,8 +51,8 @@ T[E18]="New features"
 T[C18]="功能新增"
 T[E19]="\n Stream media unlock daemon is running.\n 1. Uninstall\n 0. Exit\n"
 T[C19]="\n 流媒体解锁守护正在运行中\n 1. 卸载\n 0. 退出\n"
-T[E20]=""
-T[C20]=""
+T[E20]="Media unlock daemon installed successfully. A session window u has been created, enter [screen -Udr u] and close [screen -SX u quit]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log"
+T[C20]="媒体解锁守护进程已安装成功，已创建一个会话窗口 u ，进入 [screen -Udr u]，关闭 [screen -SX u quit]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log"
 
 # 自定义字体彩色，read 函数，友道翻译函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -210,7 +210,7 @@ fi
 EOF
 
 # 输出执行结果
-green " ${T[${L}10]} "
+green " $RESULT_OUTPUT "
 }
 
 uninstall(){
@@ -229,11 +229,11 @@ green " ${T[${L}11]} "
 # 主程序运行
 choose_laguage
 check_unlock_running
+action0(){ exit 0; }
 if echo ${unlock_method[*]} | grep -q '1'; then
 MENU_SHOW="${T[${L}19]}"
 action1(){ uninstall; }
 action2(){ exit 0; }
-action3(){ exit 0; }
 else
 MENU_SHOW="${T[${L}12]}"
 check_system_info
@@ -241,6 +241,7 @@ check_dependencies
 check_warp
 action1(){
 TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/result.log\" >> /etc/crontab"
+RESULT_OUTPUT="${T[${L}10]}"
 export_unlock_file
 	}
 action2(){ 
@@ -248,6 +249,7 @@ MODE2[0]="while true; do"
 MODE2[1]="sleep 1h"
 MODE2[2]="done"
 TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/result.log\" >> /etc/crontab"
+RESULT_OUTPUT="${T[${L}20]}"
 export_unlock_file
 screen -USdm u bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/result.log
 	}
@@ -263,9 +265,7 @@ green " ${T[${L}17]}：$VERSION  ${T[${L}18]}：${T[${L}1]}\n "
 red "======================================================================================================================\n"
 yellow " $MENU_SHOW " && reading " ${T[${L}3]} " CHOOSE1
 case "$CHOOSE1" in
-1 ) action1;;
-2 ) action2;;
-3 ) action3;;
+[0-2] ) action$\CHOOSE1;;
 * ) red " ${T[${L}14]} "; sleep 1; menu;;
 esac
 }
