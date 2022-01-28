@@ -31,8 +31,8 @@ T[E8]="It is necessary to upgrade the latest package library before install curl
 T[C8]="先升级软件库才能继续安装 curl，时间较长，请耐心等待……"
 T[E9]="Failed to install curl. The script is aborted. Feedback: [https://github.com/fscarmen/warp_unlock/issues]"
 T[C9]="安装 curl 失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp_unlock/issues]"
-T[E10]="Media unlock daemon installed successfully."
-T[C10]="媒体解锁守护进程已安装成功"
+T[E10]="Media unlock daemon installed successfully. The running log of the scheduled task will be saved in /root/ip.log"
+T[C10]="媒体解锁守护进程已安装成功。定时任务运行日志将保存在 /root/ip.log"
 T[E11]="The media unlock daemon is completely uninstalled."
 T[C11]="媒体解锁守护进程已彻底卸载"
 T[E12]="\n 1. Install the stream media unlock daemon. Check it every 5 minutes.\n 0. Exit\n"
@@ -165,7 +165,7 @@ input_streammedia_unlock
 [[ -z "$EXPECT" ]] && input_region
 
 # 流媒体解锁守护进程，定时5分钟检查一次，结果输出到 ip.log 文件
-sed -i '/warp_unlock.sh/d' /etc/crontab && echo "*/5 * * * *  root bash /etc/wireguard/warp_unlock.sh $AREA" >> /etc/crontab
+sed -i '/warp_unlock.sh/d' /etc/crontab && echo "*/5 * * * *  root bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 >> /root/ip.log" >> /etc/crontab
 
 # 生成 warp_unlock.sh 文件，判断当前流媒体解锁状态，遇到不解锁时更换 WARP IP，直至刷成功。5分钟后还没有刷成功，将不会重复该进程而浪费系统资源
 cat <<EOF >/etc/wireguard/warp_unlock.sh
