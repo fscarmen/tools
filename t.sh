@@ -51,8 +51,8 @@ T[E18]="New features"
 T[C18]="功能新增"
 T[E19]="\n Stream media unlock daemon is running.\n 1. Uninstall\n 0. Exit\n"
 T[C19]="\n 流媒体解锁守护正在运行中\n 1. 卸载\n 0. 退出\n"
-T[E20]="\n Select the mode.\n 1. Check every 5 minutes. Run if it is unlock.\n"
-T[C20]="\n 选择解锁模式\n 1. 每5分钟检查一次，如不解锁就则刷至成功\n"
+T[E20]="\n Select the mode.\n 1. Check every 5 minutes. Run if it is unlock.\n 2. Create a screen named [u] and run\n"
+T[C20]="\n 选择解锁模式\n 1. 每5分钟检查一次，如不解锁就则刷至成功\n 2. 创建一个名为 [u] 的 Screen 在后台刷\n"
 
 
 # 自定义字体彩色，read 函数，友道翻译函数
@@ -166,13 +166,13 @@ select_mode(){
 yellow " ${T[${L}20]} " && reading " ${T[${L}3]} " CHOOSE5
 case "$CHOOSE5" in
 2 ) # screen 新建一个会话 u 在刷，结果输出到 ip.log 文件
-TASKS="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/ip.log\" >> /etc/crontab";;
+TASKS="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/ip.log\" >> /etc/crontab"
 MODE2[0]="while true; do"
 MODE2[1]="done"
-RUN='export_unlock_file; screen -USdm u bash "/etc/wireguard/warp_unlock.sh 2>&1 | tee -a /root/ip.log";;
+RUN="export_unlock_file; screen -USdm u bash /etc/wireguard/warp_unlock.sh 2>&1 | tee -a /root/ip.log";;
 * ) # 定时5分钟检查一次，结果输出到 ip.log 文件
 TASKS="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/ip.log\" >> /etc/crontab"
-RUN='export_unlock_file";;
+RUN="export_unlock_file";;
 esac
 }
 
