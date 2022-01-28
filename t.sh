@@ -53,8 +53,8 @@ T[E19]="\n Stream media unlock daemon is running.\n 1. Uninstall\n 0. Exit\n"
 T[C19]="\n 流媒体解锁守护正在运行中\n 1. 卸载\n 0. 退出\n"
 T[E20]="Media unlock daemon installed successfully. A session window u has been created, enter [screen -Udr u] and close [screen -SX u quit]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log"
 T[C20]="媒体解锁守护进程已安装成功，已创建一个会话窗口 u ，进入 [screen -Udr u]，关闭 [screen -SX u quit]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log"
-T[E21]="Media unlock daemon installed successfully. A jobs has been created, check [job -l | grep warp_unlock] and close [kill -9 \$(jobs -l | grep warp_unlock | awk '{print \$2}')]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log"
-T[C21]="媒体解锁守护进程已安装成功，已创建一个jobs，查看 [job -l | grep warp_unlock]，关闭 [kill -9 \$(jobs -l | grep warp_unlock | awk '{print \$2}')]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log"
+T[E21]="Media unlock daemon installed successfully. A jobs has been created, check [pgrep -laf warp_unlock] and close [kill -9 \$(pgrep -f warp_unlock)]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log"
+T[C21]="媒体解锁守护进程已安装成功，已创建一个jobs，查看 [pgrep -laf warp_unlock]，关闭 [kill -9 \$(pgrep -f warp_unlock)]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log"
 
 # 自定义字体彩色，read 函数，友道翻译函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
