@@ -31,8 +31,8 @@ T[E8]="It is necessary to upgrade the latest package library before install curl
 T[C8]="先升级软件库才能继续安装 curl，时间较长，请耐心等待……"
 T[E9]="Failed to install curl. The script is aborted. Feedback: [https://github.com/fscarmen/warp_unlock/issues]"
 T[C9]="安装 curl 失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp_unlock/issues]"
-T[E10]="Media unlock daemon installed successfully. The running log of the scheduled task will be saved in /root/ip.log"
-T[C10]="媒体解锁守护进程已安装成功。定时任务运行日志将保存在 /root/ip.log"
+T[E10]="Media unlock daemon installed successfully. The running log of the scheduled task will be saved in /root/result.log"
+T[C10]="媒体解锁守护进程已安装成功。定时任务运行日志将保存在 /root/result.log"
 T[E11]="The media unlock daemon is completely uninstalled."
 T[C11]="媒体解锁守护进程已彻底卸载"
 T[E12]="\n 1. Install the stream media unlock daemon. Check it every 5 minutes.\n 2. Create a screen named [u] and run\n 0. Exit\n"
@@ -190,11 +190,11 @@ REGION[0]=\$(curl --user-agent "${UA_Browser}" $NF -fs --max-time 10 --write-out
 REGION[0]=\${REGION[0]:-'US'}
 fi
 echo "\${REGION[0]}" | grep -qi "$EXPECT" && R[0]='Yes' || R[0]='No'
-echo -e "\$(date +'%F %T'). Netflix: \${R[0]}" | tee -a /root/ip.log
+echo -e "\$(date +'%F %T'). Netflix: \${R[0]}" | tee -a /root/result.log
 }
 
 ${MODE2[0]}
-echo -e "\$(date +'%F %T'). IP:\$(curl $NF https://ip.gs)" | tee -a /root/ip.log
+echo -e "\$(date +'%F %T'). IP:\$(curl $NF https://ip.gs)" | tee -a /root/result.log
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
 $UNLOCK_SELECT
 until [[ ! \${R[*]}  =~ 'No' ]]; do
@@ -205,7 +205,7 @@ done
 ${MODE2[1]}
 ${MODE2[2]}
 
-else echo -e "\$(date +'%F %T'). Brushing IP is working now." | tee -a /root/ip.log
+else echo -e "\$(date +'%F %T'). Brushing IP is working now." | tee -a /root/result.log
 fi
 EOF
 
@@ -218,7 +218,7 @@ type -P wg-quick >/dev/null 2>&1 && wg-quick down wgcf >/dev/null 2>&1
 type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos delete >/dev/null 2>&1 && sleep 1
 sed -i '/warp_unlock.sh/d' /etc/crontab
 kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1
-rm -f /etc/wireguard/warp_unlock.sh
+rm -f /etc/wireguard/warp_unlock.sh /root/result.log
 type -P wg-quick >/dev/null 2>&1 && wg-quick up wgcf >/dev/null 2>&1
 type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1
 
@@ -240,16 +240,16 @@ check_system_info
 check_dependencies
 check_warp
 action1(){
-TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/ip.log\" >> /etc/crontab"
+TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/result.log\" >> /etc/crontab"
 export_unlock_file
 	}
 action2(){ 
 MODE2[0]="while true; do"
 MODE2[1]="sleep 1h"
 MODE2[2]="done"
-TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/ip.log\" >> /etc/crontab"
+TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/result.log\" >> /etc/crontab"
 export_unlock_file
-screen -USdm u bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/ip.log
+screen -USdm u bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/result.log
 	}
 action3(){ exit 0; }
 fi
