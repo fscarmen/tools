@@ -202,10 +202,11 @@ unset R
 $RESTART
 $UNLOCK_SELECT
 done
+${MODE2[1]}
+${MODE2[2]}
 
 else echo -e "\$(date +'%F %T'). Brushing IP is working now." | tee -a /root/ip.log
 fi
-${MODE2[1]}
 EOF
 
 # 输出执行结果
@@ -244,7 +245,8 @@ export_unlock_file
 	}
 action2(){ 
 MODE2[0]="while true; do"
-MODE2[1]="done"
+MODE2[1]="sleep 1h"
+MODE2[2]="done"
 TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/ip.log\" >> /etc/crontab"
 export_unlock_file
 screen -USdm u bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/ip.log
