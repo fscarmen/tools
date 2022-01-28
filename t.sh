@@ -146,7 +146,7 @@ for ((d=0; d<"$SUPPORT_NUM"; d++)); do
        ( [[ -z "$CHOOSE4" ]] || echo "$CHOOSE4" | grep -q "$((d+1))" ) && STREAM_UNLOCK[d]='1' || STREAM_UNLOCK[d]='0'
 done
 UNLOCK_SELECT=$(for ((e=0; e<"$((SUPPORT_NUM+1))"; e++)); do
-                [[ "${STREAM_UNLOCK[e]}" = 1 ]] && echo -e "[[ ! \${R[*]} =~ 0 ]] && check$e;"
+                [[ "${STREAM_UNLOCK[e]}" = 1 ]] && echo -e "[[ ! \${R[*]} =~ 'No' ]] && check$e;"
 		done)
 }
 
