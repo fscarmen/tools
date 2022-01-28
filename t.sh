@@ -279,7 +279,7 @@ green " ${T[${L}17]}：$VERSION  ${T[${L}18]}：${T[${L}1]}\n "
 red "======================================================================================================================\n"
 yellow " $MENU_SHOW " && reading " ${T[${L}3]} " CHOOSE1
 case "$CHOOSE1" in
-[0-3] ) action$\CHOOSE1;;
+[0-3] ) action$CHOOSE1;;
 * ) red " ${T[${L}14]} "; sleep 1; menu;;
 esac
 }
