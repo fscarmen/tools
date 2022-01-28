@@ -51,6 +51,9 @@ T[E18]="New features"
 T[C18]="功能新增"
 T[E19]="\n Stream media unlock daemon is running.\n 1. Uninstall\n 0. Exit\n"
 T[C19]="\n 流媒体解锁守护正在运行中\n 1. 卸载\n 0. 退出\n"
+T[E20]="\n Select the mode.\n 1. Check every 5 minutes. Run if it is unlock.\n"
+T[C20]="\n 选择解锁模式\n 1. 每5分钟检查一次，如不解锁就则刷至成功\n"
+
 
 # 自定义字体彩色，read 函数，友道翻译函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -158,14 +161,26 @@ input_region(){
 	[[ -z $EXPECT || $EXPECT = [Yy] ]] && EXPECT="$REGION"
 	}
 
+# 选择后台运行方式
+select_methods(){
+yellow " ${T[${L}20]} " && reading " ${T[${L}3]} " CHOOSE5
+case "$CHOOSE5" in
+'coming soon' ) ;;
+* ) # 流媒体解锁守护进程，定时5分钟检查一次，结果输出到 ip.log 文件
+method="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * *  root bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 >> /root/ip.log" >> /etc/crontab;;"
+esac
+}
+
 # 根据用户选择在线生成解锁程序，放在 /etc/wireguard/unlock.sh
 export_unlock_file(){
 input_streammedia_unlock
 
 [[ -z "$EXPECT" ]] && input_region
 
-# 流媒体解锁守护进程，定时5分钟检查一次，结果输出到 ip.log 文件
-sed -i '/warp_unlock.sh/d' /etc/crontab && echo "*/5 * * * *  root bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 >> /root/ip.log" >> /etc/crontab
+select_methods
+
+# 把不同解锁方式做到当时任务里
+sh -c "${method1[0]}"
 
 # 生成 warp_unlock.sh 文件，判断当前流媒体解锁状态，遇到不解锁时更换 WARP IP，直至刷成功。5分钟后还没有刷成功，将不会重复该进程而浪费系统资源
 cat <<EOF >/etc/wireguard/warp_unlock.sh
