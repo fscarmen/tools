@@ -35,8 +35,8 @@ T[E10]="Media unlock daemon installed successfully. The running log of the sched
 T[C10]="媒体解锁守护进程已安装成功。定时任务运行日志将保存在 /root/ip.log"
 T[E11]="The media unlock daemon is completely uninstalled."
 T[C11]="媒体解锁守护进程已彻底卸载"
-T[E12]="\n 1. Install the stream media unlock daemon. Check it every 5 minutes.\n 0. Exit\n"
-T[C12]="\n 1. 安装流媒体解锁守护进程,定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功\n 0. 退出\n"
+T[E12]="\n 1. Install the stream media unlock daemon. Check it every 5 minutes.\n 2. Create a screen named [u] and run\n 0. Exit\n"
+T[C12]="\n 1. 安装流媒体解锁守护进程,定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功\n 2. 创建一个名为 [u] 的 Screen 在后台刷\n 0. 退出\n"
 T[E13]="The current region is \$REGION. Confirm press [y] . If you want another regions, please enter the two-digit region abbreviation. \(such as hk,sg. Default is \$REGION\):"
 T[C13]="当前地区是:\$REGION，需要解锁当前地区请按 y , 如需其他地址请输入两位地区简写 \(如 hk ,sg，默认:\$REGION\):"
 T[E14]="Wrong input."
@@ -51,9 +51,8 @@ T[E18]="New features"
 T[C18]="功能新增"
 T[E19]="\n Stream media unlock daemon is running.\n 1. Uninstall\n 0. Exit\n"
 T[C19]="\n 流媒体解锁守护正在运行中\n 1. 卸载\n 0. 退出\n"
-T[E20]="\n Select the mode.\n 1. Check every 5 minutes. Run if it is unlock.\n 2. Create a screen named [u] and run\n"
-T[C20]="\n 选择解锁模式\n 1. 每5分钟检查一次，如不解锁就则刷至成功\n 2. 创建一个名为 [u] 的 Screen 在后台刷\n"
-
+T[E20]=""
+T[C20]=""
 
 # 自定义字体彩色，read 函数，友道翻译函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -161,20 +160,6 @@ input_region(){
 	[[ -z $EXPECT || $EXPECT = [Yy] ]] && EXPECT="$REGION"
 	}
 
-# 选择后台运行方式
-select_mode(){
-yellow " ${T[${L}20]} " && reading " ${T[${L}3]} " CHOOSE5
-case "$CHOOSE5" in
-2 ) # screen 新建一个会话 u 在刷，结果输出到 ip.log 文件
-TASKS="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/ip.log\" >> /etc/crontab"
-MODE2[0]="while true; do"
-MODE2[1]="done"
-RUN="export_unlock_file; screen -USdm u bash /etc/wireguard/warp_unlock.sh 2>&1 | tee -a /root/ip.log";;
-* ) # 定时5分钟检查一次，结果输出到 ip.log 文件
-TASKS="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/ip.log\" >> /etc/crontab"
-RUN="export_unlock_file";;
-esac
-}
 
 # 根据用户选择在线生成解锁程序，放在 /etc/wireguard/unlock.sh
 export_unlock_file(){
@@ -247,13 +232,26 @@ choose_laguage
 check_unlock_running
 if echo ${unlock_method[*]} | grep -q '1'; then
 MENU_SHOW="${T[${L}19]}"
-ACTION1(){ uninstall; }
+action1(){ uninstall; }
+action2(){ exit 0; }
+action3(){ exit 0; }
 else
 MENU_SHOW="${T[${L}12]}"
-ACTION1(){ $RUN; }
 check_system_info
 check_dependencies
 check_warp
+action1(){
+sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/ip.log\" >> /etc/crontab
+export_unlock_file
+	}
+action2(){ 
+MODE2[0]="while true; do"
+MODE2[1]="done"
+sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/ip.log\" >> /etc/crontab
+export_unlock_file
+screen -USdm u bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/ip.log
+	}
+action3(){ exit 0; }
 fi
 
 # 菜单显示
@@ -265,8 +263,9 @@ green " ${T[${L}17]}：$VERSION  ${T[${L}18]}：${T[${L}1]}\n "
 red "======================================================================================================================\n"
 yellow " $MENU_SHOW " && reading " ${T[${L}3]} " CHOOSE1
 case "$CHOOSE1" in
-1 ) ACTION1;;
-0 ) exit 0;;
+1 ) action1;;
+2 ) action2;;
+3 ) action3;;
 * ) red " ${T[${L}14]} "; sleep 1; menu;;
 esac
 }
