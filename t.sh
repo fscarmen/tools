@@ -35,8 +35,8 @@ T[E10]="Media unlock daemon installed successfully. The running log of the sched
 T[C10]="媒体解锁守护进程已安装成功。定时任务运行日志将保存在 /root/result.log"
 T[E11]="The media unlock daemon is completely uninstalled."
 T[C11]="媒体解锁守护进程已彻底卸载"
-T[E12]="\n 1. Install the stream media unlock daemon. Check it every 5 minutes.\n 2. Create a screen named [u] and run\n 0. Exit\n"
-T[C12]="\n 1. 安装流媒体解锁守护进程,定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功\n 2. 创建一个名为 [u] 的 Screen 在后台刷\n 0. 退出\n"
+T[E12]="\n 1. Install the stream media unlock daemon. Check it every 5 minutes.\n 2. Create a screen named [u] and run\n 3. Create a jobs with nohup to run in the background\n 0. Exit\n"
+T[C12]="\n 1. 安装流媒体解锁守护进程,定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功\n 2. 创建一个名为 [u] 的 Screen 在后台刷\n 3. 用 nohup 创建一个 jobs 在后台刷\n 0. 退出\n"
 T[E13]="The current region is \$REGION. Confirm press [y] . If you want another regions, please enter the two-digit region abbreviation. \(such as hk,sg. Default is \$REGION\):"
 T[C13]="当前地区是:\$REGION，需要解锁当前地区请按 y , 如需其他地址请输入两位地区简写 \(如 hk ,sg，默认:\$REGION\):"
 T[E14]="Wrong input."
@@ -53,6 +53,8 @@ T[E19]="\n Stream media unlock daemon is running.\n 1. Uninstall\n 0. Exit\n"
 T[C19]="\n 流媒体解锁守护正在运行中\n 1. 卸载\n 0. 退出\n"
 T[E20]="Media unlock daemon installed successfully. A session window u has been created, enter [screen -Udr u] and close [screen -SX u quit]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log"
 T[C20]="媒体解锁守护进程已安装成功，已创建一个会话窗口 u ，进入 [screen -Udr u]，关闭 [screen -SX u quit]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log"
+T[E21]="Media unlock daemon installed successfully. A jobs has been created, check [job -l | grep warp_unlock] and close [kill -9 \$(jobs -l | grep warp_unlock | awk '{print \$2}')]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log"
+T[C21]="媒体解锁守护进程已安装成功，已创建一个jobs，查看 [job -l | grep warp_unlock]，关闭 [kill -9 \$(jobs -l | grep warp_unlock | awk '{print \$2}')]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log"
 
 # 自定义字体彩色，read 函数，友道翻译函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -219,6 +221,7 @@ type -P wg-quick >/dev/null 2>&1 && wg-quick down wgcf >/dev/null 2>&1
 type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos delete >/dev/null 2>&1 && sleep 1
 sed -i '/warp_unlock.sh/d' /etc/crontab
 kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1
+kill -9 $(jobs -l | grep warp_unlock | awk '{print $2}')
 rm -f /etc/wireguard/warp_unlock.sh /root/result.log
 type -P wg-quick >/dev/null 2>&1 && wg-quick up wgcf >/dev/null 2>&1
 type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1
@@ -241,7 +244,7 @@ check_system_info
 check_dependencies
 check_warp
 action1(){
-TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/result.log\" >> /etc/crontab"
+TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh 2>&1 | tee -a /root/result.log\" >> /etc/crontab"
 RESULT_OUTPUT="${T[${L}10]}"
 export_unlock_file
 	}
@@ -249,12 +252,22 @@ action2(){
 MODE2[0]="while true; do"
 MODE2[1]="sleep 1h"
 MODE2[2]="done"
-TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/result.log\" >> /etc/crontab"
+TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh 2>&1 | tee -a /root/result.log\" >> /etc/crontab"
 RESULT_OUTPUT="${T[${L}20]}"
 export_unlock_file
 screen -USdm u bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/result.log
 	}
-action3(){ exit 0; }
+action3(){ 
+MODE2[0]="while true; do"
+MODE2[1]="sleep 1h"
+MODE2[2]="done"
+TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root nohup bash /etc/wireguard/warp_unlock.sh &\" >> /etc/crontab"
+RESULT_OUTPUT="${T[${L}21]}"
+export_unlock_file
+nohup bash /etc/wireguard/warp_unlock.sh >> result.log 2>&1 &
+	}
+
+action0(){ exit 0; }
 fi
 
 # 菜单显示
@@ -266,7 +279,7 @@ green " ${T[${L}17]}：$VERSION  ${T[${L}18]}：${T[${L}1]}\n "
 red "======================================================================================================================\n"
 yellow " $MENU_SHOW " && reading " ${T[${L}3]} " CHOOSE1
 case "$CHOOSE1" in
-[0-2] ) action$\CHOOSE1;;
+[0-3] ) action$\CHOOSE1;;
 * ) red " ${T[${L}14]} "; sleep 1; menu;;
 esac
 }
