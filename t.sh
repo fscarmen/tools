@@ -25,12 +25,12 @@ T[E5]="The script supports Debian, Ubuntu, CentOS or Alpine systems only. Feedba
 T[C5]="本脚本只支持 Debian、Ubuntu、CentOS 或 Alpine 系统,问题反馈:[https://github.com/fscarmen/warp_unlock/issues]"
 T[E6]="Please choose to brush WARP IP:\n 1. WARP Socks5 Proxy (Default)\n 2. WARP IPv6 Interface\n"
 T[C6]="\n 请选择刷 WARP IP 方式:\n 1. WARP Socks5 代理 (默认)\n 2. WARP IPv6 网络接口\n"
-T[E7]="Installing curl..."
-T[C7]="安装curl中……"
-T[E8]="It is necessary to upgrade the latest package library before install curl.It will take a little time,please be patiently..."
-T[C8]="先升级软件库才能继续安装 curl，时间较长，请耐心等待……"
-T[E9]="Failed to install curl. The script is aborted. Feedback: [https://github.com/fscarmen/warp_unlock/issues]"
-T[C9]="安装 curl 失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp_unlock/issues]"
+T[E7]="Installing \$c..."
+T[C7]="安装 \$c 中……"
+T[E8]="It is necessary to upgrade the latest package library before install \$c.It will take a little time,please be patiently..."
+T[C8]="先升级软件库才能继续安装 \$c，时间较长，请耐心等待……"
+T[E9]="Failed to install \$c. The script is aborted. Feedback: [https://github.com/fscarmen/warp_unlock/issues]"
+T[C9]="安装 \$c 失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp_unlock/issues]"
 T[E10]="Media unlock daemon installed successfully. The running log of the scheduled task will be saved in /root/result.log"
 T[C10]="媒体解锁守护进程已安装成功。定时任务运行日志将保存在 /root/result.log"
 T[E11]="The media unlock daemon is completely uninstalled."
@@ -63,8 +63,8 @@ yellow(){ echo -e "\033[33m\033[01m$1\033[0m"; }
 reading(){ read -rp "$(green "$1")" "$2"; }
 translate(){ [[ -n "$1" ]] && curl -sm8 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$1" | cut -d \" -f18 2>/dev/null; }
 check_dependencies(){ for c in $@; do
-type -P $c >/dev/null 2>&1 || (yellow " ${T[${L}7]} " && ${PACKAGE_INSTALL[b]} $c) || (yellow " ${T[${L}8]} " && ${PACKAGE_UPDATE[b]} && ${PACKAGE_INSTALL[b]} $c)
-! type -P $c >/dev/null 2>&1 && yellow " ${T[${L}9]} " && exit 1; }
+type -P $c >/dev/null 2>&1 || (yellow " $(eval echo "${T[${L}7]}") " && ${PACKAGE_INSTALL[b]} $c) || (yellow " $(eval echo "${T[${L}8]}") " && ${PACKAGE_UPDATE[b]} && ${PACKAGE_INSTALL[b]} $c)
+! type -P $c >/dev/null 2>&1 && yellow " $(eval echo "${T[${L}9]}") " && exit 1; }
 
 # 选择语言，先判断 /etc/wireguard/language 里的语言选择，没有的话再让用户选择，默认英语
 select_laguage(){
