@@ -56,12 +56,15 @@ T[C20]="媒体解锁守护进程已安装成功，已创建一个会话窗口 u 
 T[E21]="Media unlock daemon installed successfully. A jobs has been created, check [pgrep -laf warp_unlock] and close [kill -9 \$(pgrep -f warp_unlock)]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log"
 T[C21]="媒体解锁守护进程已安装成功，已创建一个jobs，查看 [pgrep -laf warp_unlock]，关闭 [kill -9 \$(pgrep -f warp_unlock)]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log"
 
-# 自定义字体彩色，read 函数，友道翻译函数
+# 自定义字体彩色，read 函数，友道翻译函数，安装依赖函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
 green(){ echo -e "\033[32m\033[01m$1\033[0m"; }
 yellow(){ echo -e "\033[33m\033[01m$1\033[0m"; }
 reading(){ read -rp "$(green "$1")" "$2"; }
 translate(){ [[ -n "$1" ]] && curl -sm8 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$1" | cut -d \" -f18 2>/dev/null; }
+check_dependencies(){ for c in $@; do
+type -P $c >/dev/null 2>&1 || (yellow " ${T[${L}7]} " && ${PACKAGE_INSTALL[b]} $c) || (yellow " ${T[${L}8]} " && ${PACKAGE_UPDATE[b]} && ${PACKAGE_INSTALL[b]} $c)
+! type -P $c >/dev/null 2>&1 && yellow " ${T[${L}9]} " && exit 1; }
 
 # 选择语言，先判断 /etc/wireguard/language 里的语言选择，没有的话再让用户选择，默认英语
 select_laguage(){
@@ -97,11 +100,8 @@ done
 [[ -z $SYSTEM ]] && red " ${T[${L}5]} " && exit 1
 }
 
-# 检查依赖，安装 curl
-check_dependencies(){
-type -P curl >/dev/null 2>&1 || (yellow " ${T[${L}7]} " && ${PACKAGE_INSTALL[b]} curl) || (yellow " ${T[${L}8]} " && ${PACKAGE_UPDATE[b]} && ${PACKAGE_INSTALL[b]} curl)
-! type -P curl >/dev/null 2>&1 && yellow " ${T[${L}9]} " && exit 1
-}
+# 安装 curl
+check_curl(){ check_dependencies curl; }
 
 # 检查解锁方式是否已运行
 check_unlock_running(){
@@ -146,7 +146,7 @@ yellow " ${T[${L}15]} " && reading " ${T[${L}3]} " CHOOSE4
 for ((d=0; d<"$SUPPORT_NUM"; d++)); do
        ( [[ -z "$CHOOSE4" ]] || echo "$CHOOSE4" | grep -q "$((d+1))" ) && STREAM_UNLOCK[d]='1' || STREAM_UNLOCK[d]='0'
 done
-UNLOCK_SELECT=$(for ((e=0; e<"$((SUPPORT_NUM+1))"; e++)); do
+UNLOCK_SELECT=$(for ((e=0; e<"$SUPPORT_NUM"; e++)); do
                 [[ "${STREAM_UNLOCK[e]}" = 1 ]] && echo -e "[[ ! \${R[*]} =~ 'No' ]] && check$e;"
 		done)
 }
@@ -271,7 +271,7 @@ action2(){ exit 0; }
 else
 MENU_SHOW="${T[${L}12]}"
 check_system_info
-check_dependencies
+check_curl
 check_warp
 action1(){
 TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh 2>&1 | tee -a /root/result.log\" >> /etc/crontab"
@@ -284,6 +284,7 @@ MODE2[1]="sleep 1h"
 MODE2[2]="done"
 TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh 2>&1 | tee -a /root/result.log\" >> /etc/crontab"
 RESULT_OUTPUT="${T[${L}20]}"
+check_dependencies screen
 export_unlock_file
 screen -USdm u bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/result.log
 	}
