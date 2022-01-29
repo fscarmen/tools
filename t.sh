@@ -31,8 +31,8 @@ T[E8]="It is necessary to upgrade the latest package library before install \$c.
 T[C8]="先升级软件库才能继续安装 \$c，时间较长，请耐心等待……"
 T[E9]="Failed to install \$c. The script is aborted. Feedback: [https://github.com/fscarmen/warp_unlock/issues]"
 T[C9]="安装 \$c 失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp_unlock/issues]"
-T[E10]="\nMedia unlock daemon installed successfully. The running log of the scheduled task will be saved in /root/result.log\n"
-T[C10]="\n媒体解锁守护进程已安装成功。定时任务运行日志将保存在 /root/result.log\n"
+T[E10]="\n Media unlock daemon installed successfully. The running log of the scheduled task will be saved in /root/result.log\n"
+T[C10]="\n 媒体解锁守护进程已安装成功。定时任务运行日志将保存在 /root/result.log\n"
 T[E11]="\n The media unlock daemon is completely uninstalled.\n"
 T[C11]="\n 媒体解锁守护进程已彻底卸载\n"
 T[E12]="\n 1. Install the stream media unlock daemon. Check it every 5 minutes.\n 2. Create a screen named [u] and run\n 3. Create a jobs with nohup to run in the background\n 0. Exit\n"
@@ -107,9 +107,6 @@ for ((b=0; b<${#REGEX[@]}; b++)); do
 done
 [[ -z $SYSTEM ]] && red " ${T[${L}5]} " && exit 1
 }
-
-# 安装 curl
-check_curl(){ check_dependencies curl; }
 
 # 检查解锁方式是否已运行
 check_unlock_running(){
@@ -281,7 +278,7 @@ action2(){ exit 0; }
 else
 MENU_SHOW="${T[${L}12]}"
 check_system_info
-check_curl
+check_dependencies curl
 check_warp
 action1(){
 TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh 2>&1 | tee -a /root/result.log\" >> /etc/crontab"
