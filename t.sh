@@ -41,8 +41,8 @@ T[E13]="The current region is \$REGION. Confirm press [y] . If you want another 
 T[C13]="当前地区是:\$REGION，需要解锁当前地区请按 y , 如需其他地址请输入两位地区简写 \(如 hk ,sg，默认:\$REGION\):"
 T[E14]="Wrong input."
 T[C14]="输入错误"
-T[E15]="\n Select the stream media you wanna unlock (Multiple selections are possible, such as 123. The default is select all)\n 1. Netflix 2. Disney+\n"
-T[C15]="\n 选择你期望解锁的流媒体 (可多选，如 123，默认为全选)\n 1. Netflix 2. Disney+\n"
+T[E15]="\n Select the stream media you wanna unlock (Multiple selections are possible, such as 123. The default is select all)\n 1. Netflix\n 2. Disney+\n"
+T[C15]="\n 选择你期望解锁的流媒体 (可多选，如 123，默认为全选)\n 1. Netflix\n 2. Disney+\n"
 T[E16]="This project is designed for brushing WARP IP in order to unlock various streaming media, detailed:[https://github.com/fscarmen/warp_unlock]\n Features:\n	* did not write\n"
 T[C16]="本项目专为刷 WARP IP 以便解锁各流媒体。详细说明：[https://github.com/fscarmen/warp_unlock]\n脚本特点:\n	* 未写\n"
 T[E17]="Version"
@@ -153,7 +153,7 @@ UNLOCK_SELECT=$(for ((e=0; e<"$((SUPPORT_NUM+1))"; e++)); do
 
 # 期望解锁地区
 input_region(){
-	REGION=$(curl -sm8 https://ip.gs/country-iso)
+	REGION=$(curl -sm8 https://ip.gs/country-iso 2>/dev/null)
 	reading " $(eval echo "${T[${L}13]}") " EXPECT
 	until [[ -z $EXPECT || $EXPECT = [Yy] || $EXPECT =~ ^[A-Za-z]{2}$ ]]; do
 		reading " $(eval echo "${T[${L}13]}") " EXPECT
@@ -243,11 +243,13 @@ green " $RESULT_OUTPUT "
 }
 
 uninstall(){
+screen -QX u quit >/dev/null 2>&1
+screen -wipe >/dev/null 2>&1
 type -P wg-quick >/dev/null 2>&1 && wg-quick down wgcf >/dev/null 2>&1
 type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos delete >/dev/null 2>&1 && sleep 1
 sed -i '/warp_unlock.sh/d' /etc/crontab
 kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1
-kill -9 $(jobs -l | grep warp_unlock | awk '{print $2}')
+kill -9 $(jobs -l | grep warp_unlock | awk '{print $2}') >/dev/null 2>&1
 rm -f /etc/wireguard/warp_unlock.sh /root/result.log
 type -P wg-quick >/dev/null 2>&1 && wg-quick up wgcf >/dev/null 2>&1
 type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1
