@@ -55,8 +55,8 @@ T[E20]="Media unlock daemon installed successfully. A session window u has been 
 T[C20]="\n 媒体解锁守护进程已安装成功，已创建一个会话窗口 u ，进入 [screen -Udr u]，关闭 [screen -SX u quit]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
 T[E21]="Media unlock daemon installed successfully. A jobs has been created, check [pgrep -laf warp_unlock] and close [kill -9 \$(pgrep -f warp_unlock)]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log\n"
 T[C21]="\n 媒体解锁守护进程已安装成功，已创建一个jobs，查看 [pgrep -laf warp_unlock]，关闭 [kill -9 \$(pgrep -f warp_unlock)]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
-T[E22]="\\\n The script runs on today: \$TODAY. Total:\$TOTAL\\\n"
-T[C22]="\\\n 脚本当天运行次数:\$TODAY，累计运行次数：\$TOTAL\\\n"
+T[E22]="The script runs on today: \$TODAY. Total:\$TOTAL\\\n"
+T[C22]="脚本当天运行次数:\$TODAY，累计运行次数：\$TOTAL\\\n"
 
 # 自定义字体彩色，read 函数，友道翻译函数，安装依赖函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
