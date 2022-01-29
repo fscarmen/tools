@@ -293,7 +293,7 @@ TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USd
 RESULT_OUTPUT="${T[${L}20]}"
 check_dependencies screen
 export_unlock_file
-screen -USdm u bash /etc/wireguard/warp_unlock.sh $AREA 2>&1 | tee -a /root/result.log
+screen -USdm u bash /etc/wireguard/warp_unlock.sh 2>&1
 	}
 action3(){ 
 MODE2[0]="while true; do"
