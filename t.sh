@@ -141,7 +141,7 @@ case "${STATUS[*]}" in
 
 # 期望解锁流媒体, 变量 SUPPORT_NUM 限制选项枚举的试数，不填默认全选
 input_streammedia_unlock(){
-SUPPORT_NUM='1'
+SUPPORT_NUM='2'
 yellow " ${T[${L}15]} " && reading " ${T[${L}3]} " CHOOSE4
 for ((d=0; d<"$SUPPORT_NUM"; d++)); do
        ( [[ -z "$CHOOSE4" ]] || echo "$CHOOSE4" | grep -q "$((d+1))" ) && STREAM_UNLOCK[d]='1' || STREAM_UNLOCK[d]='0'
