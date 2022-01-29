@@ -3,7 +3,7 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/b
 export LANG=en_US.UTF-8
 
 # 当前脚本版本号和新增功能
-VERSION=1.0
+VERSION=1.1
 
 # 期望解锁地区传参
 [[ $1 =~ ^[A-Za-z]{2}$ ]] && EXPECT="$1"
@@ -13,8 +13,8 @@ declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
-T[E1]="Born to make stream media unlock by WARP. 1. Media unlock daemon. Check it every 5 minutes. If unlocked, the scheduled task exits immediately. If it is not unlocked, it will be swiped successfully in the background. Advantages: Minimized use of system resources. Disadvantage: Can't see the results as intuitively as screen"
-T[C1]="为 WARP 解锁流媒体而生。 1. 流媒体解锁守护进程,定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功。 优点: 占用系统资源最小化。 缺点: 不能像 screen 那么直观看到结果"
+T[E1]="1.Add two ways the unlock; 2.Output the running log file to /root/result.log"
+T[C1]="1.增加两种解锁方式; 2.增加运行日志输出 /root/result.log"
 T[E2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp_unlock/issues]"
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp_unlock/issues]"
 T[E3]="Choose:"
@@ -41,8 +41,8 @@ T[E13]="The current region is \$REGION. Confirm press [y] . If you want another 
 T[C13]="当前地区是:\$REGION，需要解锁当前地区请按 y , 如需其他地址请输入两位地区简写 \(如 hk ,sg，默认:\$REGION\):"
 T[E14]="Wrong input."
 T[C14]="输入错误"
-T[E15]="\n Select the stream media you wanna unlock (Multiple selections are possible, such as 123. The default is select all)\n 1. Netflix"
-T[C15]="\n 选择你期望解锁的流媒体 (可多选，如 123，默认为全选)\n 1. Netflix"
+T[E15]="\n Select the stream media you wanna unlock (Multiple selections are possible, such as 123. The default is select all)\n 1. Netflix 2. Disney+\n"
+T[C15]="\n 选择你期望解锁的流媒体 (可多选，如 123，默认为全选)\n 1. Netflix 2. Disney+\n"
 T[E16]="This project is designed for brushing WARP IP in order to unlock various streaming media, detailed:[https://github.com/fscarmen/warp_unlock]\n Features:\n	* did not write\n"
 T[C16]="本项目专为刷 WARP IP 以便解锁各流媒体。详细说明：[https://github.com/fscarmen/warp_unlock]\n脚本特点:\n	* 未写\n"
 T[E17]="Version"
@@ -64,7 +64,7 @@ reading(){ read -rp "$(green "$1")" "$2"; }
 translate(){ [[ -n "$1" ]] && curl -sm8 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$1" | cut -d \" -f18 2>/dev/null; }
 
 # 选择语言，先判断 /etc/wireguard/language 里的语言选择，没有的话再让用户选择，默认英语
-choose_laguage(){
+select_laguage(){
 case $(cat /etc/wireguard/language 2>&1) in
 E ) L=E;;	C ) L=C;;
 * ) L=E && yellow " ${T[${L}0]} " && reading " ${T[${L}3]} " LANGUAGE 
@@ -125,15 +125,15 @@ case "${STATUS[*]}" in
       * ) wget -N https://cdn.jsdelivr.net/gh/fscarmen/warp/menu.sh && bash menu.sh; exit;;
      esac;;
 '0 1' ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
-     NF="-s4m7 --socks5 $PROXYSOCKS5"
+     NIC="-s4m7 --socks5 $PROXYSOCKS5"
      RESTART="socks5_restart";;
-'1 0' ) NF='-4'
+'1 0' ) NIC='-4'
      RESTART="wgcf_restart";;
 '1 1' ) yellow " ${T[${L}6]} " && reading " ${T[${L}3]} " CHOOSE3
       case "$CHOOSE3" in
-      2 ) NF='-6'; RESTART="wgcf_restart";;
+      2 ) NIC='-6'; RESTART="wgcf_restart";;
       * ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
-          NF="-s4m7 --socks5 $PROXYSOCKS5"
+          NIC="-s4m7 --socks5 $PROXYSOCKS5"
 	  RESTART="socks5_restart";;
       esac;;
  esac
@@ -161,7 +161,6 @@ input_region(){
 	[[ -z $EXPECT || $EXPECT = [Yy] ]] && EXPECT="$REGION"
 	}
 
-
 # 根据用户选择在线生成解锁程序，放在 /etc/wireguard/unlock.sh
 export_unlock_file(){
 input_streammedia_unlock
@@ -172,6 +171,7 @@ input_streammedia_unlock
 sh -c "$TASK"
 
 # 生成 warp_unlock.sh 文件，判断当前流媒体解锁状态，遇到不解锁时更换 WARP IP，直至刷成功。5分钟后还没有刷成功，将不会重复该进程而浪费系统资源
+# 感谢以下两位作者: lmc [https://github.com/lmc999/RegionRestrictionCheck] 和 luoxue-bot [https://github.com/luoxue-bot/warp_auto_change_ip]
 cat <<EOF >/etc/wireguard/warp_unlock.sh
 EXPECT="$EXPECT"
 timedatectl set-timezone Asia/Shanghai
@@ -186,17 +186,44 @@ warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >
 
 check0(){
 RESULT[0]=""; REGION[0]=""; R[0]="";
-RESULT[0]=\$(curl --user-agent "\${UA_Browser}" $NF -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
+RESULT[0]=\$(curl --user-agent "\${UA_Browser}" $NIC -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
 if [[ \${RESULT[0]} = 200 ]]; then
-REGION[0]=\$(curl --user-agent "${UA_Browser}" $NF -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g' | tr '[:lower:]' '[:upper:]')
+REGION[0]=\$(curl --user-agent "${UA_Browser}" $NIC -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g' | tr '[:lower:]' '[:upper:]')
 REGION[0]=\${REGION[0]:-'US'}
 fi
 echo "\${REGION[0]}" | grep -qi "\$EXPECT" && R[0]='Yes' || R[0]='No'
 echo -e "\$(date +'%F %T'). Netflix: \${R[0]}" | tee -a /root/result.log
 }
 
+check1(){
+PreAssertion=\$(curl $NIC --user-agent "\${UA_Browser}" -s --max-time 10 -X POST "https://global.edge.bamgrid.com/devices" -H "authorization: Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -H "content-type: application/json; charset=UTF-8" -d '{"deviceFamily":"browser","applicationRuntime":"chrome","deviceProfile":"windows","attributes":{}}' 2>&1)
+[[ "\$PreAssertion" == "curl"* ]] && R[1]='No'
+if [[ \${R[1]} != 'No' ]]; then
+assertion=\$(echo \$PreAssertion | python -m json.tool 2> /dev/null | grep assertion | cut -f4 -d'"')
+PreDisneyCookie=\$(curl -s --max-time 10 "https://raw.githubusercontent.com/lmc999/RegionRestrictionCheck/main/cookies" | sed -n '1p')
+disneycookie=\$(echo \$PreDisneyCookie | sed "s/DISNEYASSERTION/\${assertion}/g")
+TokenContent=\$(curl $NIC --user-agent "\${UA_Browser}" -s --max-time 10 -X POST "https://global.edge.bamgrid.com/token" -H "authorization: Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -d "\$disneycookie")
+isBanned=\$(echo \$TokenContent | python -m json.tool 2> /dev/null | grep 'forbidden-location')
+is403=\$(echo \$TokenContent | grep '403 ERROR')
+[[ -n "\$isBanned\$is403" ]] && R[1]='No'
+fi
+
+if [[ \${R[1]} != 'No' ]]; then
+fakecontent=\$(curl -s --max-time 10 "https://raw.githubusercontent.com/lmc999/RegionRestrictionCheck/main/cookies" | sed -n '8p')
+refreshToken=\$(echo \$TokenContent | python -m json.tool 2> /dev/null | grep 'refresh_token' | awk '{print \$2}' | cut -f2 -d'"')
+disneycontent=\$(echo \$fakecontent | sed "s/ILOVEDISNEY/\${refreshToken}/g")
+tmpresult=\$(curl $NIC --user-agent "\${UA_Browser}" -X POST -sSL --max-time 10 "https://disney.api.edge.bamgrid.com/graph/v1/device/graphql" -H "authorization: ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -d "\$disneycontent" 2>&1)
+previewcheck=\$(curl $NIC -s -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://disneyplus.com" | grep preview)
+isUnabailable=\$(echo \$previewcheck | grep 'unavailable')      
+region=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | grep 'countryCode' | cut -f4 -d'"')
+inSupportedLocation=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | grep 'inSupportedLocation' | awk '{print \$2}' | cut -f1 -d',')
+[[ "\$region" == "JP" || ( -n "\$region" && "\$inSupportedLocation" == "true" ) ]] && R[1]='Yes' || R[1]='No'
+fi
+echo -e "\$(date +'%F %T'). Netflix: \${R[1]}" | tee -a /root/result.log
+}
+
 ${MODE2[0]}
-echo -e "\$(date +'%F %T'). IP:\$(curl $NF https://ip.gs)" | tee -a /root/result.log
+echo -e "\$(date +'%F %T'). IP:\$(curl $NIC https://ip.gs)" | tee -a /root/result.log
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
 $UNLOCK_SELECT
 until [[ ! \${R[*]}  =~ 'No' ]]; do
@@ -230,7 +257,7 @@ green " ${T[${L}11]} "
 }
 
 # 主程序运行
-choose_laguage
+select_laguage
 check_unlock_running
 action0(){ exit 0; }
 if [[ "$RUNNING" = 1 ]]; then
