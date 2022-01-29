@@ -233,7 +233,7 @@ echo -e "\$(date +'%F %T'). Disney+: \${R[1]}" | tee -a /root/result.log
 }
 
 ${MODE2[0]}
-echo -e "\$(date +'%F %T'). IP:\$(curl $NIC https://ip.gs)" | tee -a /root/result.log
+echo -e "\$(date +'%F %T'). IP:\$(curl $NIC https://ip.gs 2>/dev/null)" | tee -a /root/result.log
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
 $UNLOCK_SELECT
 until [[ ! \${R[*]}  =~ 'No' ]]; do
