@@ -3,7 +3,7 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/b
 export LANG=en_US.UTF-8
 
 # 当前脚本版本号和新增功能
-VERSION=1.1
+VERSION=1.02
 
 # 期望解锁地区传参
 [[ $1 =~ ^[A-Za-z]{2}$ ]] && EXPECT="$1"
@@ -37,14 +37,14 @@ T[E11]="The media unlock daemon is completely uninstalled."
 T[C11]="媒体解锁守护进程已彻底卸载"
 T[E12]="\n 1. Install the stream media unlock daemon. Check it every 5 minutes.\n 2. Create a screen named [u] and run\n 3. Create a jobs with nohup to run in the background\n 0. Exit\n"
 T[C12]="\n 1. 安装流媒体解锁守护进程,定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功\n 2. 创建一个名为 [u] 的 Screen 在后台刷\n 3. 用 nohup 创建一个 jobs 在后台刷\n 0. 退出\n"
-T[E13]="\nThe current region is \$REGION. Confirm press [y] . If you want another regions, please enter the two-digit region abbreviation. \(such as hk,sg. Default is \$REGION\):\n"
-T[C13]="\n当前地区是:\$REGION，需要解锁当前地区请按 y , 如需其他地址请输入两位地区简写 \(如 hk ,sg，默认:\$REGION\):\n"
+T[E13]="\\\n The current region is \$REGION. Confirm press [y] . If you want another regions, please enter the two-digit region abbreviation. \(such as hk,sg. Default is \$REGION\):\\\n"
+T[C13]="\\\n 当前地区是:\$REGION，需要解锁当前地区请按 y , 如需其他地址请输入两位地区简写 \(如 hk ,sg，默认:\$REGION\):\\\n"
 T[E14]="Wrong input."
 T[C14]="输入错误"
 T[E15]="\n Select the stream media you wanna unlock (Multiple selections are possible, such as 123. The default is select all)\n 1. Netflix\n 2. Disney+\n"
 T[C15]="\n 选择你期望解锁的流媒体 (可多选，如 123，默认为全选)\n 1. Netflix\n 2. Disney+\n"
-T[E16]="This project is designed for brushing WARP IP in order to unlock various streaming media, detailed:[https://github.com/fscarmen/warp_unlock]\n Features:\n	* did not write\n"
-T[C16]="本项目专为刷 WARP IP 以便解锁各流媒体。详细说明：[https://github.com/fscarmen/warp_unlock]\n脚本特点:\n	* 未写\n"
+T[E16]="The script Born to make stream media unlock by WARP. Detail:[https://github.com/fscarmen/warp]\n Features:\n	* Support a variety of main stream streaming media detection.\n	* Multiple ways to unlock.\n	* Support WARP Socks5 Proxy to detect and replace IP.\n	* log output\n"
+T[C16]="本项目专为 WARP 解锁流媒体而生。详细说明：[https://github.com/fscarmen/warp]\n脚本特点:\n	* 支持多种主流串流影视检测\n	* 多种方式解锁\n	* 支持 WARP Socks5 Proxy 检测和更换 IP\n	* 日志输出\n"
 T[E17]="Version"
 T[C17]="脚本版本"
 T[E18]="New features"
@@ -52,9 +52,9 @@ T[C18]="功能新增"
 T[E19]="\n Stream media unlock daemon is running.\n 1. Uninstall\n 0. Exit\n"
 T[C19]="\n 流媒体解锁守护正在运行中\n 1. 卸载\n 0. 退出\n"
 T[E20]="Media unlock daemon installed successfully. A session window u has been created, enter [screen -Udr u] and close [screen -SX u quit]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log\n"
-T[C20]="\n媒体解锁守护进程已安装成功，已创建一个会话窗口 u ，进入 [screen -Udr u]，关闭 [screen -SX u quit]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
+T[C20]="\n 媒体解锁守护进程已安装成功，已创建一个会话窗口 u ，进入 [screen -Udr u]，关闭 [screen -SX u quit]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
 T[E21]="Media unlock daemon installed successfully. A jobs has been created, check [pgrep -laf warp_unlock] and close [kill -9 \$(pgrep -f warp_unlock)]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log\n"
-T[C21]="\n媒体解锁守护进程已安装成功，已创建一个jobs，查看 [pgrep -laf warp_unlock]，关闭 [kill -9 \$(pgrep -f warp_unlock)]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
+T[C21]="\n 媒体解锁守护进程已安装成功，已创建一个jobs，查看 [pgrep -laf warp_unlock]，关闭 [kill -9 \$(pgrep -f warp_unlock)]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
 
 # 自定义字体彩色，read 函数，友道翻译函数，安装依赖函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -65,6 +65,12 @@ translate(){ [[ -n "$1" ]] && curl -sm8 "http://fanyi.youdao.com/translate?&doct
 check_dependencies(){ for c in $@; do
 type -P $c >/dev/null 2>&1 || (yellow " $(eval echo "${T[${L}7]}") " && ${PACKAGE_INSTALL[b]} $c) || (yellow " $(eval echo "${T[${L}8]}") " && ${PACKAGE_UPDATE[b]} && ${PACKAGE_INSTALL[b]} $c)
 ! type -P $c >/dev/null 2>&1 && yellow " $(eval echo "${T[${L}9]}") " && exit 1; done;	 }
+
+# 脚本当天及累计运行次数统计
+statistics_of_run-times(){
+COUNT=$(curl -sm1 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Ffscarmen%2Fwarp_unlock%2Fmain%2Funlock.sh&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false" 2>&1) &&
+TODAY=$(expr "$COUNT" : '.*\s\([0-9]\{1,\}\)\s/.*') && TOTAL=$(expr "$COUNT" : '.*/\s\([0-9]\{1,\}\)\s.*')
+	}
 
 # 选择语言，先判断 /etc/wireguard/language 里的语言选择，没有的话再让用户选择，默认英语
 select_laguage(){
@@ -171,7 +177,7 @@ input_streammedia_unlock
 sh -c "$TASK"
 
 # 生成 warp_unlock.sh 文件，判断当前流媒体解锁状态，遇到不解锁时更换 WARP IP，直至刷成功。5分钟后还没有刷成功，将不会重复该进程而浪费系统资源
-# 感谢以下两位作者: lmc [https://github.com/lmc999/RegionRestrictionCheck] 和 luoxue-bot [https://github.com/luoxue-bot/warp_auto_change_ip]
+# 感谢以下两位作者: lmc999 [https://github.com/lmc999/RegionRestrictionCheck] 和 luoxue-bot [https://github.com/luoxue-bot/warp_auto_change_ip]
 cat <<EOF >/etc/wireguard/warp_unlock.sh
 EXPECT="$EXPECT"
 timedatectl set-timezone Asia/Shanghai
@@ -261,6 +267,7 @@ green " ${T[${L}11]} "
 }
 
 # 主程序运行
+statistics_of_run-times
 select_laguage
 check_unlock_running
 action0(){ exit 0; }
