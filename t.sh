@@ -64,7 +64,7 @@ reading(){ read -rp "$(green "$1")" "$2"; }
 translate(){ [[ -n "$1" ]] && curl -sm8 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$1" | cut -d \" -f18 2>/dev/null; }
 check_dependencies(){ for c in $@; do
 type -P $c >/dev/null 2>&1 || (yellow " $(eval echo "${T[${L}7]}") " && ${PACKAGE_INSTALL[b]} $c) || (yellow " $(eval echo "${T[${L}8]}") " && ${PACKAGE_UPDATE[b]} && ${PACKAGE_INSTALL[b]} $c)
-! type -P $c >/dev/null 2>&1 && yellow " $(eval echo "${T[${L}9]}") " && exit 1; }
+! type -P $c >/dev/null 2>&1 && yellow " $(eval echo "${T[${L}9]}") " && exit 1; done;	 }
 
 # 选择语言，先判断 /etc/wireguard/language 里的语言选择，没有的话再让用户选择，默认英语
 select_laguage(){
@@ -221,7 +221,7 @@ region=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | grep 'countryCod
 inSupportedLocation=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | grep 'inSupportedLocation' | awk '{print \$2}' | cut -f1 -d',')
 [[ "\$region" == "JP" || ( -n "\$region" && "\$inSupportedLocation" == "true" ) ]] && R[1]='Yes' || R[1]='No'
 fi
-echo -e "\$(date +'%F %T'). Netflix: \${R[1]}" | tee -a /root/result.log
+echo -e "\$(date +'%F %T'). Disney+: \${R[1]}" | tee -a /root/result.log
 }
 
 ${MODE2[0]}
