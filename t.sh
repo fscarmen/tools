@@ -5,9 +5,6 @@ export LANG=en_US.UTF-8
 # 当前脚本版本号和新增功能
 VERSION=1.02
 
-# 期望解锁地区传参
-[[ $1 =~ ^[A-Za-z]{2}$ ]] && EXPECT="$1"
-
 # 设置关连数组 T 用于中英文
 declare -A T
 
@@ -35,10 +32,10 @@ T[E10]="\n Media unlock daemon installed successfully. The running log of the sc
 T[C10]="\n 媒体解锁守护进程已安装成功。定时任务运行日志将保存在 /root/result.log\n"
 T[E11]="\n The media unlock daemon is completely uninstalled.\n"
 T[C11]="\n 媒体解锁守护进程已彻底卸载\n"
-T[E12]="\n 1. Install the stream media unlock daemon. Check it every 5 minutes.\n 2. Create a screen named [u] and run\n 3. Create a jobs with nohup to run in the background\n 0. Exit\n"
-T[C12]="\n 1. 安装流媒体解锁守护进程,定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功\n 2. 创建一个名为 [u] 的 Screen 在后台刷\n 3. 用 nohup 创建一个 jobs 在后台刷\n 0. 退出\n"
+T[E12]="\n 1. Mode 1: Check it every 5 minutes.\n 2. Mode 2: Create a screen named [u] and run\n 3. Mode 3: Create a jobs with nohup to run in the background\n 0. Exit\n"
+T[C12]="\n 1. 模式1: 定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功\n 2. 模式2: 创建一个名为 [u] 的 Screen 在后台刷\n 3. 模式3: 用 nohup 创建一个 jobs 在后台刷\n 0. 退出\n"
 T[E13]="\\\n The current region is \$REGION. Confirm press [y] . If you want another regions, please enter the two-digit region abbreviation. \(such as hk,sg. Default is \$REGION\):"
-T[C13]="\\\n 当前地区是:\$REGION，需要解锁当前地区请按 y , 如需其他地址请输入两位地区简写 \(如 hk ,sg，默认:\$REGION\):"
+T[C13]="\\\n 当前地区是:\$REGION，需要解锁当前地区请按 y , 如需其他地址请输入两位地区简写 \(如 hk,sg，默认:\$REGION\):"
 T[E14]="Wrong input."
 T[C14]="输入错误"
 T[E15]="\n Select the stream media you wanna unlock (Multiple selections are possible, such as 123. The default is select all)\n 1. Netflix\n 2. Disney+\n"
@@ -57,6 +54,14 @@ T[E21]="Media unlock daemon installed successfully. A jobs has been created, che
 T[C21]="\n 媒体解锁守护进程已安装成功，已创建一个jobs，查看 [pgrep -laf warp_unlock]，关闭 [kill -9 \$(pgrep -f warp_unlock)]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
 T[E22]="The script runs on today: \$TODAY. Total:\$TOTAL\\\n"
 T[C22]="脚本当天运行次数:\$TODAY，累计运行次数：\$TOTAL\\\n"
+T[E23]="Please choose to brush WARP IP:\n 1. WARP IPv4 Interface (Default)\n 2. WARP IPv6 Interface\n"
+T[C23]="\n 请选择刷 WARP IP 方式:\n 1. WARP IPv4 网络接口 (默认)\n 2. WARP IPv6 网络接口\n"
+T[E24]="No WARP method specified."
+T[C24]="没有指定的 WARP 方式"
+T[E25]="No unlock method specified."
+T[C25]="没有指定的解锁模式"
+T[E26]="Expected region abbreviation should be two digits (eg hk,sg)."
+T[C26]="期望地区简码应该为两位 (如 hk,sg)"
 
 # 自定义字体彩色，read 函数，友道翻译函数，安装依赖函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -76,7 +81,7 @@ TODAY=$(expr "$COUNT" : '.*\s\([0-9]\{1,\}\)\s/.*') && TOTAL=$(expr "$COUNT" : '
 
 # 选择语言，先判断 /etc/wireguard/language 里的语言选择，没有的话再让用户选择，默认英语
 select_laguage(){
-[[ -z $language ]] && case $(cat /etc/wireguard/language 2>&1) in
+[[ -z $L ]] && case $(cat /etc/wireguard/language 2>&1) in
 E ) L=E;;	C ) L=C;;
 * ) L=E && yellow " ${T[${L}0]} " && reading " ${T[${L}3]} " LANGUAGE 
 [[ $LANGUAGE = 2 ]] && L=C;;
@@ -115,26 +120,38 @@ check_unlock_running(){
 
 # 判断是否已经安装 WARP 网络接口或者 Socks5 代理,如已经安装组件尝试启动。再分情况作相应处理
 check_warp(){
-#type -P wg-quick >/dev/null 2>&1 && [[ -z $(wg 2>/dev/null) ]] && wg-quick up wgcf >/dev/null 2>&1
-[[ -n $(wg 2>/dev/null) ]] && STATUS[0]=1 || STATUS[0]=0
+if [[ -z "${STATUS[*]}" ]]; then
+	if type -P wg-quick >/dev/null 2>&1; then
+		[[ -z $(wg 2>/dev/null) ]] && wg-quick up wgcf >/dev/null 2>&1
+		TRACE4=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
+		TRACE6=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
+		[[ $TRACE4 =~ on|plus ]] && STATUS[0]=1 || STATUS[0]=0
+		[[ $TRACE6 =~ on|plus ]] && STATUS[1]=1 || STATUS[1]=0
+	fi
 
-#type -P warp-cli >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'warp-svc' ]] && warp-cli --accept-tos connect >/dev/null 2>&1
-[[ $(ss -nltp) =~ 'warp-svc' ]] && STATUS[1]=1 || STATUS[1]=0
+	type -P warp-cli >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'warp-svc' ]] && warp-cli --accept-tos connect >/dev/null 2>&1
+	[[ $(ss -nltp) =~ 'warp-svc' ]] && STATUS[2]=1 || STATUS[2]=0
+fi
 
 case "${STATUS[*]}" in
-'0 0') yellow " ${T[${L}4]} " && reading " ${T[${L}3]} " CHOOSE2
+'0 0 0') yellow " ${T[${L}4]} " && reading " ${T[${L}3]} " CHOOSE2
      case "$CHOOSE2" in
       2 ) wget -N https://cdn.jsdelivr.net/gh/kkkyg/CFwarp/CFwarp.sh && bash CFwarp.sh; exit;;
       3 ) bash <(curl -fsSL git.io/warp.sh) menu; exit;;
       0 ) exit;;
       * ) wget -N https://cdn.jsdelivr.net/gh/fscarmen/warp/menu.sh && bash menu.sh; exit;;
      esac;;
-'0 1' ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
+'0 0 1' ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
      NIC="-s4m7 --socks5 $PROXYSOCKS5"
      RESTART="socks5_restart";;
-'1 0' ) NIC='-4'
-     RESTART="wgcf_restart";;
-'1 1' ) yellow " ${T[${L}6]} " && reading " ${T[${L}3]} " CHOOSE3
+'0 1 0' ) NIC='-6'; RESTART="wgcf_restart";;
+'1 0 0' ) NIC='-4'; RESTART="wgcf_restart";;
+'1 1 0' ) yellow " ${T[${L}23]} " && reading " ${T[${L}3]} " CHOOSE3
+      case "$CHOOSE3" in
+      2 ) NIC='-6'; RESTART="wgcf_restart";;
+      * ) NIC='-4'; RESTART="wgcf_restart";;
+      esac;;
+'0 1 1' ) yellow " ${T[${L}6]} " && reading " ${T[${L}3]} " CHOOSE3
       case "$CHOOSE3" in
       2 ) NIC='-6'; RESTART="wgcf_restart";;
       * ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
@@ -147,10 +164,12 @@ case "${STATUS[*]}" in
 # 期望解锁流媒体, 变量 SUPPORT_NUM 限制选项枚举的试数，不填默认全选
 input_streammedia_unlock(){
 SUPPORT_NUM='2'
-yellow " ${T[${L}15]} " && reading " ${T[${L}3]} " CHOOSE4
-for ((d=0; d<"$SUPPORT_NUM"; d++)); do
-       ( [[ -z "$CHOOSE4" ]] || echo "$CHOOSE4" | grep -q "$((d+1))" ) && STREAM_UNLOCK[d]='1' || STREAM_UNLOCK[d]='0'
-done
+if  [[ -z "${STREAM_UNLOCK[@]}" ]]
+	yellow " ${T[${L}15]} " && reading " ${T[${L}3]} " CHOOSE4
+	for ((d=0; d<"$SUPPORT_NUM"; d++)); do
+	       ( [[ -z "$CHOOSE4" ]] || echo "$CHOOSE4" | grep -q "$((d+1))" ) && STREAM_UNLOCK[d]='1' || STREAM_UNLOCK[d]='0'
+	done
+fi	
 UNLOCK_SELECT=$(for ((e=0; e<"$SUPPORT_NUM"; e++)); do
                 [[ "${STREAM_UNLOCK[e]}" = 1 ]] && echo -e "[[ ! \${R[*]} =~ 'No' ]] && check$e;"
 		done)
@@ -158,12 +177,14 @@ UNLOCK_SELECT=$(for ((e=0; e<"$SUPPORT_NUM"; e++)); do
 
 # 期望解锁地区
 input_region(){
+	if [[ -z "$EXPECT" ]]; then
 	REGION=$(curl -sm8 https://ip.gs/country-iso 2>/dev/null)
 	reading " $(eval echo "${T[${L}13]}") " EXPECT
 	until [[ -z $EXPECT || $EXPECT = [Yy] || $EXPECT =~ ^[A-Za-z]{2}$ ]]; do
 		reading " $(eval echo "${T[${L}13]}") " EXPECT
 	done
 	[[ -z $EXPECT || $EXPECT = [Yy] ]] && EXPECT="$REGION"
+	fi
 	}
 
 # 根据用户选择在线生成解锁程序，放在 /etc/wireguard/unlock.sh
@@ -267,15 +288,19 @@ green " ${T[${L}11]} "
 }
 
 # 传参
-while getopts ":CcEe" optname; do
-	case "$optname" in
-		"I") iface="$OPTARG"; useNIC="--interface $iface";;
-		"M") [[ "$OPTARG" == "4" ]] && NetworkType=4
-		     [[ "$OPTARG" == "6" ]] && NetworkType=6;;
-		C|c ) L='C';;
-		E|e ) L='E';;
-		":") echo "Unknown error while processing options"
-		exit 1;;
+while getopts ":CcEe46SsM:m:A:a:U:u:" OPTNAME; do
+	case "$OPTNAME" in
+		4 ) TRACE4=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
+		[[ ! $TRACE4 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 1 0);;
+		6 ) TRACE6=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
+		[[ ! $TRACE6 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 1 0);;
+		'S'|'s' ) [[ ! $(ss -nltp) =~ 'warp-svc' ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 0 1);;
+		'C'|'c' ) L='C';;
+		'E'|'e' ) L='E';;
+		'M'|'m' ) [[ "$OPTARG" != [1-3] ]] && red " ${T[${L}25]} " && exit 1 || action$OPTARG;;
+		'A'|'a' ) [[ ! "$OPTARG" =~ ^[A-Za-z]{2} ]] && red " ${T[${L}26]} " || EXPECT="$OPTARG";;
+		'U'|'u' ) echo "$OPTARG" | grep -qi 'n' && STREAM_UNLOCK[0]='1' || STREAM_UNLOCK[0]='0'
+			  echo "$OPTARG" | grep -qi 'd' && STREAM_UNLOCK[1]='1' || STREAM_UNLOCK[1]='0'
     	esac
     
 done
