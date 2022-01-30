@@ -291,6 +291,10 @@ type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>
 green " ${T[${L}11]} "
 }
 
+# 语言转参
+echo $@ | grep -qw '-e' && L=E
+echo $@ | grep -qw '-e' && L=C
+
 # 主程序运行 1/2
 statistics_of_run-times
 select_laguage
