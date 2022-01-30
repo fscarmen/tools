@@ -297,10 +297,10 @@ while getopts ":CcEe46SsM:m:A:a:U:u:" OPTNAME; do
 		'S'|'s' ) [[ ! $(ss -nltp) =~ 'warp-svc' ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 0 1);;
 		'C'|'c' ) L='C';;
 		'E'|'e' ) L='E';;
-		'M'|'m' ) [[ "$OPTARG" != [1-3] ]] && red " ${T[${L}25]} " && exit 1 || action$OPTARG;;
+		'M'|'m' ) [[ "$OPTARG" != [1-3] ]] && red " ${T[${L}25]} " && exit 1 || CHOOSE1=$OPTARG;;
 		'A'|'a' ) [[ ! "$OPTARG" =~ ^[A-Za-z]{2} ]] && red " ${T[${L}26]} " || EXPECT="$OPTARG";;
 		'U'|'u' ) echo "$OPTARG" | grep -qi 'n' && STREAM_UNLOCK[0]='1' || STREAM_UNLOCK[0]='0'
-			  echo "$OPTARG" | grep -qi 'd' && STREAM_UNLOCK[1]='1' || STREAM_UNLOCK[1]='0'
+			  echo "$OPTARG" | grep -qi 'd' && STREAM_UNLOCK[1]='1' || STREAM_UNLOCK[1]='0';;
     	esac
     
 done
@@ -354,11 +354,13 @@ yellow " ${T[${L}16]} "
 red "======================================================================================================================\n"
 green " ${T[${L}17]}：$VERSION  ${T[${L}18]}：${T[${L}1]}\n "
 red "======================================================================================================================\n"
+if [[ -z "$CHOOSE1" ]]; then
 yellow " $MENU_SHOW " && reading " ${T[${L}3]} " CHOOSE1
 case "$CHOOSE1" in
 [0-3] ) action$CHOOSE1;;
 * ) red " ${T[${L}14]} "; sleep 1; menu;;
 esac
+fi
 }
 
 menu
