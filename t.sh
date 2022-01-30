@@ -64,6 +64,8 @@ T[E26]="Expected region abbreviation should be two digits (eg hk,sg)."
 T[C26]="期望地区简码应该为两位 (如 hk,sg)"
 T[E27]="No unlock script is installed."
 T[C27]="解锁脚本还没有安装"
+T[E28]="Unlock script is installed."
+T[C28]="解锁脚本已安装"
 
 # 自定义字体彩色，read 函数，友道翻译函数，安装依赖函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -298,13 +300,17 @@ while getopts ":CcEe:Uu46SsM:m:A:a:N:n:" OPTNAME; do
 	case "$OPTNAME" in
 		'C'|'c' ) L='C';;
 		'E'|'e' ) L='E';;
-		'U'|'u' ) check_unlock_running; [[ "$RUNNING" != 1 ]] && red " ${T[${L}27]} " && exit 1 || CHOOSE1=1;;
+		'U'|'u' ) [[ -z "$RUNNING" ]] && check_unlock_running; [[ "$RUNNING" != 1 ]] && red " ${T[${L}27]} " && exit 1 || CHOOSE1=1;;
 		'4' ) TRACE4=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 		      [[ ! $TRACE4 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(1 0 0);;
 		'6' ) TRACE6=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 		      [[ ! $TRACE6 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 1 0);;
 		'S'|'s' ) [[ ! $(ss -nltp) =~ 'warp-svc' ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 0 1);;
-		'M'|'m' ) [[ $OPTARG != [1-3] ]] && red " ${T[${L}25]} " && exit 1 || CHOOSE1=$OPTARG;;
+		'M'|'m' ) [[ -z "$RUNNING" ]] && check_unlock_running
+			  if [[ "$RUNNING" = 1 ]]; then
+			  red " ${T[${L}28]} " && exit 1
+			  else [[ $OPTARG != [1-3] ]] && red " ${T[${L}25]} " && exit 1 || CHOOSE1=$OPTARG
+			  fi;;
 		'A'|'a' ) [[ ! "$OPTARG" =~ ^[A-Za-z]{2}$ ]] && red " ${T[${L}26]} " && exit 1 || EXPECT="$OPTARG";;
 		'N'|'n' ) echo "$OPTARG" | grep -qi 'n' && STREAM_UNLOCK[0]='1' || STREAM_UNLOCK[0]='0'
 			  echo "$OPTARG" | grep -qi 'd' && STREAM_UNLOCK[1]='1' || STREAM_UNLOCK[1]='0';;
