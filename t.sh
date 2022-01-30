@@ -208,7 +208,16 @@ timedatectl set-timezone Asia/Shanghai
 
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
 
-wgcf_restart(){ systemctl restart wg-quick@wgcf && sleep 5; }
+log_output="\\\$(date +'%F %T'). IP: \\\$WAN  \\\$COUNTRY  \\\$ASNORG \\\$CHECK_RESULT."
+
+ip(){
+IP_INFO="\$(curl $NIC https://ip.gs/json 2>/dev/null)"
+WAN=\$(expr "\$IP_INFO" : '.*ip\":\"\([^"]*\).*')
+COUNTRY=\$(expr "\$IP_INFO" : '.*country\":\"\([^"]*\).*')
+ASNORG=\$(expr "\$IP_INFO" : '.*asn_org\":\"\([^"]*\).*')
+}
+
+wgcf_restart(){ systemctl restart wg-quick@wgcf; ip; sleep 5; }
 		
 socks5_restart(){
 warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 && sleep 15 &&
@@ -222,7 +231,8 @@ REGION[0]=\$(curl --user-agent "${UA_Browser}" $NIC -fs --max-time 10 --write-ou
 REGION[0]=\${REGION[0]:-'US'}
 fi
 echo "\${REGION[0]}" | grep -qi "\$EXPECT" && R[0]='Yes' || R[0]='No'
-echo -e "\$(date +'%F %T'). Netflix: \${R[0]}" | tee -a /root/result.log
+CHECK_RESULT="Netflix: \${R[0]}"
+echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log
 }
 
 check1(){
@@ -251,11 +261,13 @@ region=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | grep 'countryCod
 inSupportedLocation=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | grep 'inSupportedLocation' | awk '{print \$2}' | cut -f1 -d',')
 [[ "\$region" == "JP" || ( -n "\$region" && "\$inSupportedLocation" == "true" ) ]] && R[1]='Yes' || R[1]='No'
 fi
-echo -e "\$(date +'%F %T'). Disney+: \${R[1]}" | tee -a /root/result.log
+CHECK_RESULT="Disney+: \${R[1]}"
+echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log
 }
 
 ${MODE2[0]}
-echo -e "\$(date +'%F %T'). IP:\$(curl $NIC https://ip.gs 2>/dev/null)" | tee -a /root/result.log
+ip
+echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
 $UNLOCK_SELECT
 until [[ ! \${R[*]}  =~ 'No' ]]; do
@@ -291,6 +303,7 @@ type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>
 green " ${T[${L}11]} "
 }
 
+# 传参 1/2
 echo "$@" | grep -qwi '\-e' && L=E
 echo "$@" | grep -qwi '\-c' && L=C
 
@@ -298,10 +311,9 @@ echo "$@" | grep -qwi '\-c' && L=C
 statistics_of_run-times
 select_laguage
 
-# 传参
+# 传参 2/2
 while getopts ":CcEeUu46SsM:m:A:a:N:n:" OPTNAME; do
 	case "$OPTNAME" in
-		#'L'|'l' ) [[ "$OPTARG" != [CcEe] ]] && red " Language can only be C or E " && exit 1 || L=$(tr '[:upper:]' '[:lower:]' <<< "$OPTARG");;
 		'C'|'c' ) L='C';;
 		'E'|'e' ) L='E';;
 		'U'|'u' ) [[ -z "$RUNNING" ]] && check_unlock_running; [[ "$RUNNING" != 1 ]] && red " ${T[${L}27]} " && exit 1 || CHOOSE1=1;;
@@ -322,7 +334,6 @@ while getopts ":CcEeUu46SsM:m:A:a:N:n:" OPTNAME; do
 done
 
 # 主程序运行 2/2
-
 check_unlock_running
 action0(){ exit 0; }
 if [[ "$RUNNING" = 1 ]]; then
