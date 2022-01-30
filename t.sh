@@ -5,7 +5,7 @@ export LANG=en_US.UTF-8
 # 当前脚本版本号和新增功能
 VERSION=1.02
 
-# 设置关连数组 T 用于中英文
+# 设置关联数组 T 用于中英文
 declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
