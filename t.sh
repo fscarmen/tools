@@ -295,7 +295,6 @@ while getopts ":CcEe" OPTNAME; do
 		'C'|'c' ) L='C';;
 		'E'|'e' ) L='E';;
     	esac
-    
 done
 
 # 主程序运行 1/2
@@ -320,7 +319,6 @@ while getopts ":Uu46SsM:m:A:a:N:n:" OPTNAME; do
 		      STATUS=(0 1 0)
 		      else red " ${T[${L}24]} " && exit 1
 		      fi;;
-		      [[ ! $TRACE6 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 1 0);;
 		'S'|'s' ) [[ ! $(ss -nltp) =~ 'warp-svc' ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 0 1);;
 		'M'|'m' ) [[ $OPTARG != [1-3] ]] && red " ${T[${L}25]} " && exit 1 || CHOOSE1=$OPTARG;;
 		'A'|'a' ) [[ ! "$OPTARG" =~ ^[A-Za-z]{2}$ ]] && red " ${T[${L}26]} " && exit 1 || EXPECT="$OPTARG";;
