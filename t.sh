@@ -266,6 +266,20 @@ type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>
 green " ${T[${L}11]} "
 }
 
+# 传参
+while getopts ":CcEe" optname; do
+	case "$optname" in
+		"I") iface="$OPTARG"; useNIC="--interface $iface";;
+		"M") [[ "$OPTARG" == "4" ]] && NetworkType=4
+		     [[ "$OPTARG" == "6" ]] && NetworkType=6;;
+		C|c ) language='C';;
+		E|e ) language='E';;
+		":") echo "Unknown error while processing options"
+		exit 1;;
+    	esac
+    
+done
+
 # 主程序运行
 statistics_of_run-times
 select_laguage
@@ -322,16 +336,4 @@ case "$CHOOSE1" in
 esac
 }
 
-while getopts ":CcEe" optname; do
-	case "$optname" in
-		"I") iface="$OPTARG"; useNIC="--interface $iface";;
-		"M") [[ "$OPTARG" == "4" ]] && NetworkType=4
-		     [[ "$OPTARG" == "6" ]] && NetworkType=6;;
-		C|c ) language='C';;
-		E|e ) language='E';;
-		":") echo "Unknown error while processing options"
-		exit 1;;
-    	esac
-    
-done
 menu
