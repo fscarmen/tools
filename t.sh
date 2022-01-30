@@ -288,7 +288,7 @@ green " ${T[${L}11]} "
 }
 
 # 传参
-while getopts ":CcEe46SsM:m:A:a:U:u:" OPTNAME; do
+while getopts ":CcEe46SsUuM:m:A:a:N:n:" OPTNAME; do
 	case "$OPTNAME" in
 		'4' ) TRACE4=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 		[[ ! $TRACE4 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(1 0 0);;
