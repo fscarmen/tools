@@ -83,7 +83,7 @@ TODAY=$(expr "$COUNT" : '.*\s\([0-9]\{1,\}\)\s/.*') && TOTAL=$(expr "$COUNT" : '
 
 # 选择语言，先判断 /etc/wireguard/language 里的语言选择，没有的话再让用户选择，默认英语
 select_laguage(){
-[[ -z $L ]] && case $(cat /etc/wireguard/language 2>&1) in
+case $(cat /etc/wireguard/language 2>&1) in
 E ) L=E;;	C ) L=C;;
 * ) L=E && yellow " ${T[${L}0]} " && reading " ${T[${L}3]} " LANGUAGE 
 [[ $LANGUAGE = 2 ]] && L=C;;
@@ -289,6 +289,10 @@ type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>
 green " ${T[${L}11]} "
 }
 
+# 主程序运行 1/2
+statistics_of_run-times
+select_laguage
+
 # 传参
 while getopts ":CcEe:Uu46SsM:m:A:a:N:n:" OPTNAME; do
 	case "$OPTNAME" in
@@ -307,9 +311,7 @@ while getopts ":CcEe:Uu46SsM:m:A:a:N:n:" OPTNAME; do
     	esac
 done
 
-# 主程序运行 1/2
-statistics_of_run-times
-select_laguage
+# 主程序运行 2/2
 check_unlock_running
 action0(){ exit 0; }
 if [[ "$RUNNING" = 1 ]]; then
