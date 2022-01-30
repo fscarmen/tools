@@ -208,7 +208,7 @@ timedatectl set-timezone Asia/Shanghai
 
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
 
-log_output="\\\$(date +'%F %T'). IP: \\\$WAN  Country: \\\$COUNTRY  ASN: \\\$ASNORG. \\\$CHECK_RESULT"
+log_output="\\\$(date +'%F %T'). IP: \\\$WAN.  Country: \\\$COUNTRY.  ASN: \\\$ASNORG.  \\\$CHECK_RESULT"
 
 ip(){
 IP_INFO="\$(curl $NIC https://ip.gs/json 2>/dev/null)"
@@ -217,7 +217,7 @@ COUNTRY=\$(expr "\$IP_INFO" : '.*country\":\"\([^"]*\).*')
 ASNORG=\$(expr "\$IP_INFO" : '.*asn_org\":\"\([^"]*\).*')
 }
 
-wgcf_restart(){ systemctl restart wg-quick@wgcf;  sleep 5 ; ip; }
+wgcf_restart(){ systemctl restart wg-quick@wgcf; sleep 5; ip; }
 		
 socks5_restart(){
 warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 && sleep 15 &&
