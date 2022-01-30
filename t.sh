@@ -62,6 +62,8 @@ T[E25]="No unlock method specified."
 T[C25]="没有指定的解锁模式"
 T[E26]="Expected region abbreviation should be two digits (eg hk,sg)."
 T[C26]="期望地区简码应该为两位 (如 hk,sg)"
+T[E27]="No unlock script is installed."
+T[C27]="解锁脚本还没有安装"
 
 # 自定义字体彩色，read 函数，友道翻译函数，安装依赖函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -287,12 +289,26 @@ type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>
 green " ${T[${L}11]} "
 }
 
-# 传参
-while getopts ":CcEeUu46SsM:m:A:a:N:n:" OPTNAME; do
+# 传参 1/2
+while getopts ":CcEe" OPTNAME; do
 	case "$OPTNAME" in
 		'C'|'c' ) L='C';;
 		'E'|'e' ) L='E';;
-		'U'|'u' ) uninstall; exit 0;;
+    	esac
+    
+done
+
+# 主程序运行 1/2
+statistics_of_run-times
+select_laguage
+check_unlock_running
+
+# 传参 2/2
+while getopts ":Uu46SsM:m:A:a:N:n:" OPTNAME; do
+	case "$OPTNAME" in
+		'U'|'u' ) if [ "$RUNNING" != 1 ]]; then
+			  red " ${T[${L}27]} " && exit 1
+			  else uninstall; exit 0;;
 		'4' ) TRACE4=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 		      [[ ! $TRACE4 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(1 0 0);;
 		'6' ) TRACE6=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
@@ -306,10 +322,7 @@ while getopts ":CcEeUu46SsM:m:A:a:N:n:" OPTNAME; do
     
 done
 
-# 主程序运行
-statistics_of_run-times
-select_laguage
-check_unlock_running
+# 主程序运行 2/2
 action0(){ exit 0; }
 if [[ "$RUNNING" = 1 ]]; then
 MENU_SHOW="${T[${L}19]}"
