@@ -292,14 +292,12 @@ green " ${T[${L}11]} "
 }
 
 # 主程序运行 1/2
-statistics_of_run-times
-select_laguage
+
 
 # 传参
-while getopts ":CcEe:Uu46SsM:m:A:a:N:n:" OPTNAME; do
+while getopts ":L:l:Uu46SsM:m:A:a:N:n:" OPTNAME; do
 	case "$OPTNAME" in
-		'C'|'c' ) L='C';;
-		'E'|'e' ) L='E';;
+		'L'|'l' ) [[ "$OPTARG" != [CcEe] ]] && red " Language can only be C or E " && exit 1 || L=$(tr '[:upper:]' '[:lower:]' <<< "$OPTARG");;
 		'U'|'u' ) [[ -z "$RUNNING" ]] && check_unlock_running; [[ "$RUNNING" != 1 ]] && red " ${T[${L}27]} " && exit 1 || CHOOSE1=1;;
 		'4' ) TRACE4=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 		      [[ ! $TRACE4 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(1 0 0);;
@@ -318,6 +316,8 @@ while getopts ":CcEe:Uu46SsM:m:A:a:N:n:" OPTNAME; do
 done
 
 # 主程序运行 2/2
+statistics_of_run-times
+select_laguage
 check_unlock_running
 action0(){ exit 0; }
 if [[ "$RUNNING" = 1 ]]; then
