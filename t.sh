@@ -288,18 +288,18 @@ green " ${T[${L}11]} "
 }
 
 # 传参
-while getopts ":CcEe46SsUuM:m:A:a:N:n:" OPTNAME; do
+while getopts ":CcEeUu46SsM:m:A:a:N:n:" OPTNAME; do
 	case "$OPTNAME" in
-		'4' ) TRACE4=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
-		[[ ! $TRACE4 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(1 0 0);;
-		'6' ) TRACE6=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
-		[[ ! $TRACE6 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 1 0);;
-		'S'|'s' ) [[ ! $(ss -nltp) =~ 'warp-svc' ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 0 1);;
 		'C'|'c' ) L='C';;
 		'E'|'e' ) L='E';;
+		'U'|'u' ) uninstall; exit 0;;
+		'4' ) TRACE4=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
+		      [[ ! $TRACE4 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(1 0 0);;
+		'6' ) TRACE6=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
+		      [[ ! $TRACE6 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 1 0);;
+		'S'|'s' ) [[ ! $(ss -nltp) =~ 'warp-svc' ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 0 1);;
 		'M'|'m' ) [[ "$OPTARG" != [1-3] ]] && red " ${T[${L}25]} " && exit 1 || CHOOSE1=$OPTARG;;
 		'A'|'a' ) [[ ! "$OPTARG" =~ ^[A-Za-z]{2}$ ]] && red " ${T[${L}26]} " && exit 1 || EXPECT="$OPTARG";;
-		'U'|'u' ) uninstall;;
 		'N'|'n' ) echo "$OPTARG" | grep -qi 'n' && STREAM_UNLOCK[0]='1' || STREAM_UNLOCK[0]='0'
 			  echo "$OPTARG" | grep -qi 'd' && STREAM_UNLOCK[1]='1' || STREAM_UNLOCK[1]='0';;
     	esac
