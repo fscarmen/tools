@@ -148,16 +148,16 @@ case "${STATUS[@]}" in
 '0 0 1' ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
      NIC="-s4m7 --socks5 $PROXYSOCKS5"
      RESTART="socks5_restart";;
-'0 1 0' ) NIC='-6'; RESTART="wgcf_restart";;
-'1 0 0' ) NIC='-4'; RESTART="wgcf_restart";;
+'0 1 0' ) NIC='-s6m7'; RESTART="wgcf_restart";;
+'1 0 0' ) NIC='-s4m7'; RESTART="wgcf_restart";;
 '1 1 0' ) yellow " ${T[${L}23]} " && reading " ${T[${L}3]} " CHOOSE3
       case "$CHOOSE3" in
-      2 ) NIC='-6'; RESTART="wgcf_restart";;
-      * ) NIC='-4'; RESTART="wgcf_restart";;
+      2 ) NIC='-s6m7'; RESTART="wgcf_restart";;
+      * ) NIC='-s4m7'; RESTART="wgcf_restart";;
       esac;;
 '0 1 1' ) yellow " ${T[${L}6]} " && reading " ${T[${L}3]} " CHOOSE3
       case "$CHOOSE3" in
-      2 ) NIC='-6'; RESTART="wgcf_restart";;
+      2 ) NIC='-s6m7'; RESTART="wgcf_restart";;
       * ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
           NIC="-s4m7 --socks5 $PROXYSOCKS5"
 	  RESTART="socks5_restart";;
@@ -217,7 +217,7 @@ COUNTRY=\$(expr "\$IP_INFO" : '.*country\":\"\([^"]*\).*')
 ASNORG=\$(expr "\$IP_INFO" : '.*asn_org\":\"\([^"]*\).*')
 }
 
-wgcf_restart(){ systemctl restart wg-quick@wgcf; ip; sleep 5; }
+wgcf_restart(){ systemctl restart wg-quick@wgcf;  sleep 5 ; ip; }
 		
 socks5_restart(){
 warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 && sleep 15 &&
