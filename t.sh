@@ -304,8 +304,8 @@ green " ${T[${L}11]} "
 }
 
 # 传参 1/2
-echo "$@" | grep -qwi '\-e' && L=E
-echo "$@" | grep -qwi '\-c' && L=C
+echo -e "$@" | grep -qwi '\-e' && L=E
+echo -e "$@" | grep -qwi '\-c' && L=C
 
 # 主程序运行 1/2
 statistics_of_run-times
