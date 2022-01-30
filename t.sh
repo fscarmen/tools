@@ -292,8 +292,8 @@ green " ${T[${L}11]} "
 }
 
 # 语言转参
-echo $@ | grep -qw '-e' && L=E
-echo $@ | grep -qw '-e' && L=C
+echo $@ | grep -qwi '\-e' && L=E
+echo $@ | grep -qwi '\-c' && L=C
 
 # 主程序运行 1/2
 statistics_of_run-times
