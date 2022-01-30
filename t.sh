@@ -322,12 +322,13 @@ case "$CHOOSE1" in
 esac
 }
 
-while getopts ":L:l:" optname; do
+while getopts ":CcEe" optname; do
 	case "$optname" in
 		"I") iface="$OPTARG"; useNIC="--interface $iface";;
 		"M") [[ "$OPTARG" == "4" ]] && NetworkType=4
 		     [[ "$OPTARG" == "6" ]] && NetworkType=6;;
-		L|l ) language='E';;
+		C|c ) language='C';;
+		E|e ) language='E';;
 		":") echo "Unknown error while processing options"
 		exit 1;;
     	esac
