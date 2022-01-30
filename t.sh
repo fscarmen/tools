@@ -208,7 +208,7 @@ timedatectl set-timezone Asia/Shanghai
 
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
 
-log_output="\\\$(date +'%F %T'). IP: \\\$WAN  \\\$COUNTRY  \\\$ASNORG \\\$CHECK_RESULT."
+log_output="\\\$(date +'%F %T'). IP: \\\$WAN  Country: \\\$COUNTRY  ASN: \\\$ASNORG. \\\$CHECK_RESULT"
 
 ip(){
 IP_INFO="\$(curl $NIC https://ip.gs/json 2>/dev/null)"
@@ -231,7 +231,7 @@ REGION[0]=\$(curl --user-agent "${UA_Browser}" $NIC -fs --max-time 10 --write-ou
 REGION[0]=\${REGION[0]:-'US'}
 fi
 echo "\${REGION[0]}" | grep -qi "\$EXPECT" && R[0]='Yes' || R[0]='No'
-CHECK_RESULT="Netflix: \${R[0]}"
+CHECK_RESULT="Netflix: \${R[0]}."
 echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log
 }
 
@@ -261,7 +261,7 @@ region=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | grep 'countryCod
 inSupportedLocation=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | grep 'inSupportedLocation' | awk '{print \$2}' | cut -f1 -d',')
 [[ "\$region" == "JP" || ( -n "\$region" && "\$inSupportedLocation" == "true" ) ]] && R[1]='Yes' || R[1]='No'
 fi
-CHECK_RESULT="Disney+: \${R[1]}"
+CHECK_RESULT="Disney+: \${R[1]}."
 echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log
 }
 
@@ -346,7 +346,7 @@ check_system_info
 check_dependencies curl
 check_warp
 action1(){
-TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh 2>&1 | tee -a /root/result.log\" >> /etc/crontab"
+TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh 2>&1\" >> /etc/crontab"
 RESULT_OUTPUT="${T[${L}10]}"
 export_unlock_file
 	}
@@ -354,7 +354,7 @@ action2(){
 MODE2[0]="while true; do"
 MODE2[1]="sleep 1h"
 MODE2[2]="done"
-TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh 2>&1 | tee -a /root/result.log\" >> /etc/crontab"
+TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh 2>&1\" >> /etc/crontab"
 RESULT_OUTPUT="${T[${L}20]}"
 check_dependencies screen
 export_unlock_file
