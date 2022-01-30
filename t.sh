@@ -272,8 +272,8 @@ while getopts ":CcEe" optname; do
 		"I") iface="$OPTARG"; useNIC="--interface $iface";;
 		"M") [[ "$OPTARG" == "4" ]] && NetworkType=4
 		     [[ "$OPTARG" == "6" ]] && NetworkType=6;;
-		C|c ) language='C';;
-		E|e ) language='E';;
+		C|c ) L='C';;
+		E|e ) L='E';;
 		":") echo "Unknown error while processing options"
 		exit 1;;
     	esac
