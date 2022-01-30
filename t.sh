@@ -291,7 +291,7 @@ green " ${T[${L}11]} "
 while getopts ":CcEe46SsM:m:A:a:U:u:" OPTNAME; do
 	case "$OPTNAME" in
 		4 ) TRACE4=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
-		[[ ! $TRACE4 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 1 0);;
+		[[ ! $TRACE4 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(1 0 0);;
 		6 ) TRACE6=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 		[[ ! $TRACE6 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 1 0);;
 		'S'|'s' ) [[ ! $(ss -nltp) =~ 'warp-svc' ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 0 1);;
