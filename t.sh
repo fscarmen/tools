@@ -122,7 +122,7 @@ check_unlock_running(){
 
 # 判断是否已经安装 WARP 网络接口或者 Socks5 代理,如已经安装组件尝试启动。再分情况作相应处理
 check_warp(){
-if [[ -z "${STATUS[*]}" ]]; then
+if [[ -z "${STATUS[@]}" ]]; then
 	if type -P wg-quick >/dev/null 2>&1; then
 		[[ -z $(wg 2>/dev/null) ]] && wg-quick up wgcf >/dev/null 2>&1
 		TRACE4=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
@@ -135,7 +135,7 @@ if [[ -z "${STATUS[*]}" ]]; then
 	[[ $(ss -nltp) =~ 'warp-svc' ]] && STATUS[2]=1 || STATUS[2]=0
 fi
 
-case "${STATUS[*]}" in
+case "${STATUS[@]}" in
 '0 0 0') yellow " ${T[${L}4]} " && reading " ${T[${L}3]} " CHOOSE2
      case "$CHOOSE2" in
       2 ) wget -N https://cdn.jsdelivr.net/gh/kkkyg/CFwarp/CFwarp.sh && bash CFwarp.sh; exit;;
@@ -311,8 +311,15 @@ while getopts ":Uu46SsM:m:A:a:N:n:" OPTNAME; do
 			  else uninstall; exit 0
 			  fi;;
 		'4' ) TRACE4=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
-		      [[ ! $TRACE4 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(1 0 0);;
+		      if [[ $TRACE4 =~ on|plus ]]; then
+		      STATUS=(1 0 0)
+		      else red " ${T[${L}24]} " && exit 1
+		      fi;;
 		'6' ) TRACE6=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
+		      if [[ $TRACE6 =~ on|plus ]]; then
+		      STATUS=(0 1 0)
+		      else red " ${T[${L}24]} " && exit 1
+		      fi;;
 		      [[ ! $TRACE6 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 1 0);;
 		'S'|'s' ) [[ ! $(ss -nltp) =~ 'warp-svc' ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 0 1);;
 		'M'|'m' ) [[ $OPTARG != [1-3] ]] && red " ${T[${L}25]} " && exit 1 || CHOOSE1=$OPTARG;;
