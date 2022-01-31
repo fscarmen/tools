@@ -5,6 +5,9 @@ export LANG=en_US.UTF-8
 # 当前脚本版本号和新增功能
 VERSION=1.04
 
+最大支持流媒体
+SUPPORT_NUM='2'
+
 # 设置关联数组 T 用于中英文
 declare -A T
 
@@ -174,7 +177,6 @@ case "${STATUS[@]}" in
 
 # 期望解锁流媒体, 变量 SUPPORT_NUM 限制选项枚举的次数，不填默认全选, 解锁状态保存在 /etc/wireguard/status.log
 input_streammedia_unlock(){
-SUPPORT_NUM='2'
 if [[ -z "${STREAM_UNLOCK[@]}" ]]; then
 	yellow " ${T[${L}15]} " && reading " ${T[${L}3]} " CHOOSE4
 	for ((d=0; d<"$SUPPORT_NUM"; d++)); do
@@ -340,7 +342,7 @@ statistics_of_run-times
 select_laguage
 
 # 传参 2/2
-while getopts ":CcEeUu46SsM:m:A:a:N:n:" OPTNAME; do
+while getopts ":CcEeUu46SsM:m:A:a:N:n:T:t:" OPTNAME; do
 	case "$OPTNAME" in
 		'C'|'c' ) L='C';;
 		'E'|'e' ) L='E';;
@@ -356,8 +358,14 @@ while getopts ":CcEeUu46SsM:m:A:a:N:n:" OPTNAME; do
 			  else [[ $OPTARG != [1-3] ]] && red " ${T[${L}25]} " && exit 1 || CHOOSE1=$OPTARG
 			  fi;;
 		'A'|'a' ) [[ ! "$OPTARG" =~ ^[A-Za-z]{2}$ ]] && red " ${T[${L}26]} " && exit 1 || EXPECT="$OPTARG";;
-		'N'|'n' ) echo "$OPTARG" | grep -qi 'n' && STREAM_UNLOCK[0]='1' || STREAM_UNLOCK[0]='0'
+		'N'|'n' ) for ((d=0; d<"$SUPPORT_NUM"; d++)); do
+	       		  [[ $d = 0 ]] && echo 'null' > /etc/wireguard/status.log || echo 'null' >> /etc/wireguard/status.log; done
+			  echo "$OPTARG" | grep -qi 'n' && STREAM_UNLOCK[0]='1' || STREAM_UNLOCK[0]='0'
 			  echo "$OPTARG" | grep -qi 'd' && STREAM_UNLOCK[1]='1' || STREAM_UNLOCK[1]='0';;
+		'T'|'t' ) TOKEN="$(echo "$OPTARG" | cut -d'&' -f1)"
+			  USERID="$(echo "$OPTARG" | cut -d'&' -f2)"
+			  CUSTOM="$(echo "$OPTARG" | cut -d'&' -f3)"
+			  CUSTOM="${CUSTOM:-'Stream Media Unlock'}";;
     	esac
 done
 
