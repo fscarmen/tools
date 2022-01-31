@@ -137,6 +137,7 @@ if [[ -z "${STATUS[@]}" ]]; then
 		TRACE6=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 		[[ $TRACE4 =~ on|plus ]] && STATUS[0]=1 || STATUS[0]=0
 		[[ $TRACE6 =~ on|plus ]] && STATUS[1]=1 || STATUS[1]=0
+	else STATUS=(0 0)
 	fi
 
 	type -P warp-cli >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'warp-svc' ]] && warp-cli --accept-tos connect >/dev/null 2>&1
