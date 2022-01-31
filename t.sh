@@ -208,7 +208,7 @@ timedatectl set-timezone Asia/Shanghai
 
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
 
-log_output="\\\$(date +'%F %T').\\\\\tIP: \\\$WAN.\\\\\tCountry: \\\$COUNTRY.\\\\\tASN: \\\$ASNORG.\\\\\t\\\$CONTENT"
+log_output="\\\$(date +'%F %T').\\\\\tIP: \\\$WAN\\\\\tCountry: \\\$COUNTRY\\\\\tASN: \\\$ASNORG.\\\\\t\\\$CONTENT"
 
 ip(){
 IP_INFO="\$(curl $NIC https://ip.gs/json 2>/dev/null)"
@@ -368,7 +368,7 @@ MODE2[2]="done"
 TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root nohup bash /etc/wireguard/warp_unlock.sh >/root/log 2>&1 &\" >> /etc/crontab"
 RESULT_OUTPUT="${T[${L}21]}"
 export_unlock_file
-nohup bash /etc/wireguard/warp_unlock.sh &
+nohup bash /etc/wireguard/warp_unlock.sh >/dev/null 2>&1 &
 	}
 
 action0(){ exit 0; }
