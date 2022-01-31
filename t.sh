@@ -365,7 +365,7 @@ action3(){
 MODE2[0]="while true; do"
 MODE2[1]="sleep 1h"
 MODE2[2]="done"
-TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root nohup bash /etc/wireguard/warp_unlock.sh >/root/log 2>&1 &\" >> /etc/crontab"
+TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root nohup bash /etc/wireguard/warp_unlock.sh &\" >> /etc/crontab"
 RESULT_OUTPUT="${T[${L}21]}"
 export_unlock_file
 nohup bash /etc/wireguard/warp_unlock.sh >/dev/null 2>&1 &
