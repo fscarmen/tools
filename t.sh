@@ -204,8 +204,8 @@ input_region(){
 # Telegram Bot 日志推送
 input_tg(){
 	[[ -z $CUSTOM ]] && reading " $(eval echo "${T[${L}29]}") " TOKEN
-	[[ -n $TOKEN || -z $USERID ]] && reading " $(eval echo "${T[${L}30]}") " USERID
-	[[ -n $USERID || -z $CUSTOM ]] && reading " $(eval echo "${T[${L}31]}") " CUSTOM
+	[[ -n $TOKEN && -z $USERID ]] && reading " $(eval echo "${T[${L}30]}") " USERID
+	[[ -n $USERID && -z $CUSTOM ]] && reading " $(eval echo "${T[${L}31]}") " CUSTOM
 	}
 
 # 根据用户选择在线生成解锁程序，放在 /etc/wireguard/unlock.sh
@@ -362,9 +362,9 @@ while getopts ":CcEeUu46SsM:m:A:a:N:n:T:t:" OPTNAME; do
 	       		  [[ $d = 0 ]] && echo 'null' > /etc/wireguard/status.log || echo 'null' >> /etc/wireguard/status.log; done
 			  echo "$OPTARG" | grep -qi 'n' && STREAM_UNLOCK[0]='1' || STREAM_UNLOCK[0]='0'
 			  echo "$OPTARG" | grep -qi 'd' && STREAM_UNLOCK[1]='1' || STREAM_UNLOCK[1]='0';;
-		'T'|'t' ) TOKEN="$(echo $OPTARG | cut -d'&' -f1)"
-			  USERID="$(echo $OPTARG | cut -d'&' -f2)"
-			  CUSTOM="$(echo $OPTARG | cut -d'&' -f3)"
+		'T'|'t' ) TOKEN="$(echo $OPTARG | cut -d'@' -f1)"
+			  USERID="$(echo $OPTARG | cut -d'@' -f2)"
+			  CUSTOM="$(echo $OPTARG | cut -d'@' -f3)"
 			  CUSTOM="${CUSTOM:-'Stream Media Unlock'}";;
     	esac
 done
