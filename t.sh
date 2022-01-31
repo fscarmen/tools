@@ -5,7 +5,7 @@ export LANG=en_US.UTF-8
 # 当前脚本版本号和新增功能
 VERSION=1.04
 
-最大支持流媒体
+# 最大支持流媒体
 SUPPORT_NUM='2'
 
 # 设置关联数组 T 用于中英文
