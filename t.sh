@@ -3,15 +3,15 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/b
 export LANG=en_US.UTF-8
 
 # 当前脚本版本号和新增功能
-VERSION=1.02
+VERSION=1.03
 
 # 设置关联数组 T 用于中英文
 declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
-T[E1]="1.Add two ways the unlock; 2.Output the running log file to /root/result.log"
-T[C1]="1.增加两种解锁方式; 2.增加运行日志输出 /root/result.log"
+T[E1]="1. Suppport pass parameter. You can run like this:bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/t.sh) -E -A us -4 -N nd -M 2; 2. Improve log details"
+T[C1]="支持传参，你可以这样运行脚本: bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/t.sh) -E -A us -4 -N nd -M 2; 2. 把日志详细"
 T[E2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp_unlock/issues]"
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp_unlock/issues]"
 T[E3]="Choose:"
@@ -208,7 +208,7 @@ timedatectl set-timezone Asia/Shanghai
 
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
 
-log_output="\\\$(date +'%F %T'). IP: \\\$WAN.  Country: \\\$COUNTRY.  ASN: \\\$ASNORG.  \\\$CHECK_RESULT"
+log_output="\\\$(date +'%F %T').\\\\\tIP: \\\$WAN.\\\\\tCountry: \\\$COUNTRY.\\\\\tASN: \\\$ASNORG.\\\\\t\\\$CONTENT"
 
 ip(){
 IP_INFO="\$(curl $NIC https://ip.gs/json 2>/dev/null)"
@@ -231,7 +231,7 @@ REGION[0]=\$(curl --user-agent "${UA_Browser}" $NIC -fs --max-time 10 --write-ou
 REGION[0]=\${REGION[0]:-'US'}
 fi
 echo "\${REGION[0]}" | grep -qi "\$EXPECT" && R[0]='Yes' || R[0]='No'
-CHECK_RESULT="Netflix: \${R[0]}."
+CONTENT="Netflix: \${R[0]}."
 echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log
 }
 
@@ -261,12 +261,13 @@ region=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | grep 'countryCod
 inSupportedLocation=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | grep 'inSupportedLocation' | awk '{print \$2}' | cut -f1 -d',')
 [[ "\$region" == "JP" || ( -n "\$region" && "\$inSupportedLocation" == "true" ) ]] && R[1]='Yes' || R[1]='No'
 fi
-CHECK_RESULT="Disney+: \${R[1]}."
+CONTENT="Disney+: \${R[1]}."
 echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log
 }
 
 ${MODE2[0]}
 ip
+CONTENT='Script runs.'
 echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
 $UNLOCK_SELECT
@@ -346,7 +347,7 @@ check_system_info
 check_dependencies curl
 check_warp
 action1(){
-TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh 2>&1\" >> /etc/crontab"
+TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab"
 RESULT_OUTPUT="${T[${L}10]}"
 export_unlock_file
 	}
@@ -354,7 +355,7 @@ action2(){
 MODE2[0]="while true; do"
 MODE2[1]="sleep 1h"
 MODE2[2]="done"
-TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh 2>&1\" >> /etc/crontab"
+TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab"
 RESULT_OUTPUT="${T[${L}20]}"
 check_dependencies screen
 export_unlock_file
