@@ -172,13 +172,14 @@ case "${STATUS[@]}" in
  esac
 }
 
-# 期望解锁流媒体, 变量 SUPPORT_NUM 限制选项枚举的试数，不填默认全选
+# 期望解锁流媒体, 变量 SUPPORT_NUM 限制选项枚举的次数，不填默认全选, 解锁状态保存在 /etc/wireguard/status.log
 input_streammedia_unlock(){
 SUPPORT_NUM='2'
 if [[ -z "${STREAM_UNLOCK[@]}" ]]; then
 	yellow " ${T[${L}15]} " && reading " ${T[${L}3]} " CHOOSE4
 	for ((d=0; d<"$SUPPORT_NUM"; d++)); do
 	       ( [[ -z "$CHOOSE4" ]] || echo "$CHOOSE4" | grep -q "$((d+1))" ) && STREAM_UNLOCK[d]='1' || STREAM_UNLOCK[d]='0'
+	       [[ $d = 0 ]] && echo 'null' > /etc/wireguard/status.log || echo 'null' >> /etc/wireguard/status.log
 	done
 fi
 UNLOCK_SELECT=$(for ((e=0; e<"$SUPPORT_NUM"; e++)); do
@@ -255,7 +256,8 @@ fi
 echo "\${REGION[0]}" | grep -qi "\$EXPECT" && R[0]='Yes' || R[0]='No'
 CONTENT="Netflix: \${R[0]}."
 echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log
-[[ -n "\$CUSTOM" ]] && curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(eval echo "\$tg_output")" -d parse_mode="HTML" >/dev/null 2>&1
+[[ -n "\$CUSTOM" ]] && [[ \${R[0]} != \$(sed -n '1p' /etc/wireguard/status.log) ]] && curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(eval echo "\$tg_output")" -d parse_mode="HTML" >/dev/null 2>&1
+sed -i "1s/.*/\${R[0]}/" /etc/wireguard/status.log
 }
 
 check1(){
@@ -286,7 +288,8 @@ inSupportedLocation=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | gre
 fi
 CONTENT="Disney+: \${R[1]}."
 echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log
-[[ -n "\$CUSTOM" ]] && curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(eval echo "\$tg_output")" -d parse_mode="HTML" >/dev/null 2>&1
+[[ -n "\$CUSTOM" ]] && [[ \${R[1]} != \$(sed -n '2p' /etc/wireguard/status.log) ]] && curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(eval echo "\$tg_output")" -d parse_mode="HTML" >/dev/null 2>&1
+sed -i "2s/.*/\${R[1]}/" /etc/wireguard/status.log
 }
 
 ${MODE2[0]}
@@ -302,9 +305,8 @@ $UNLOCK_SELECT
 done
 ${MODE2[1]}
 ${MODE2[2]}
-
-else	echo -e "\$(date +'%F %T'). Brushing IP is working now." | tee -a /root/result.log
-	[[ -n "\$CUSTOM" ]] && curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(date +'%F %T'). Brushing IP is working now." -d parse_mode="HTML" >/dev/null 2>&1
+#else	echo -e "\$(date +'%F %T'). Brushing IP is working now." | tee -a /root/result.log
+#	[[ -n "\$CUSTOM" ]] && curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(date +'%F %T'). Brushing IP is working now." -d parse_mode="HTML" >/dev/null 2>&1
 fi
 EOF
 
@@ -321,7 +323,7 @@ type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos delete >/dev/null 2>&1
 sed -i '/warp_unlock.sh/d' /etc/crontab
 kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1
 kill -9 $(jobs -l | grep warp_unlock | awk '{print $2}') >/dev/null 2>&1
-rm -f /etc/wireguard/warp_unlock.sh /root/result.log
+rm -f /etc/wireguard/warp_unlock.sh /root/result.log /etc/wireguard/status.log
 type -P wg-quick >/dev/null 2>&1 && wg-quick up wgcf >/dev/null 2>&1
 type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1
 
