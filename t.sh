@@ -66,6 +66,12 @@ T[E27]="No unlock script is installed."
 T[C27]="解锁脚本还没有安装"
 T[E28]="Unlock script is installed."
 T[C28]="解锁脚本已安装"
+T[E29]="\n Please enter Bot Token if you need push the logs to Telegram . Leave blank to skip:"
+T[C29]="\n 如需要把日志推送到 Telegram 机器人，请输入 Bot Token:"
+T[E30]="\n Enter USERID:"
+T[C30]="\n 输入 USERID:"
+T[E31]="\n Enter custom name:"
+T[C31]="\n 自定义名称:"
 
 # 自定义字体彩色，read 函数，友道翻译函数，安装依赖函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -191,11 +197,20 @@ input_region(){
 	fi
 	}
 
+# Telegram Bot 日志推送
+input_tg(){
+	[[ -z $CUSTOM ]] && reading " $(eval echo "${T[${L}29]}") " TOKEN
+	[[ -n $TOKEN ]] && reading " $(eval echo "${T[${L}30]}") " USERID
+	[[ -n $USERID ]] && reading " $(eval echo "${T[${L}31]}") " CUSTOM
+	}
+
 # 根据用户选择在线生成解锁程序，放在 /etc/wireguard/unlock.sh
 export_unlock_file(){
 input_streammedia_unlock
 
-[[ -z "$EXPECT" ]] && input_region
+input_region
+
+input_tg
 
 # 根据解锁模式写入定时任务
 sh -c "$TASK"
@@ -204,13 +219,18 @@ sh -c "$TASK"
 # 感谢以下两位作者: lmc999 [https://github.com/lmc999/RegionRestrictionCheck] 和 luoxue-bot [https://github.com/luoxue-bot/warp_auto_change_ip]
 cat <<EOF >/etc/wireguard/warp_unlock.sh
 EXPECT="$EXPECT"
+TOKEN="$TOKEN"
+USERID="$USERID"
+CUSTOM="$CUSTOM"
 timedatectl set-timezone Asia/Shanghai
 
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
 
 log_output="\\\$(date +'%F %T').\\\\\tIP: \\\$WAN\\\\\t\\\\\tCountry: \\\$COUNTRY\\\\\t\\\\\tASN: \\\$ASNORG.\\\\\t\\\$CONTENT"
+tg_output="Server:\\\$CUSTOM. \\\$(date +'%F %T'). IP: \\\$WAN  Country: \\\$COUNTRY. ASN: \\\$ASNORG. \\\$CONTENT"
 
 ip(){
+unset IP_INFO WAN COUNTRY ASNORG
 IP_INFO="\$(curl $NIC https://ip.gs/json 2>/dev/null)"
 WAN=\$(expr "\$IP_INFO" : '.*ip\":\"\([^"]*\).*')
 COUNTRY=\$(expr "\$IP_INFO" : '.*country\":\"\([^"]*\).*')
@@ -218,9 +238,10 @@ ASNORG=\$(expr "\$IP_INFO" : '.*asn_org\":\"\([^"]*\).*')
 }
 
 wgcf_restart(){ systemctl restart wg-quick@wgcf; sleep 5; ip; }
-		
+
 socks5_restart(){
-warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 && sleep 15 &&
+warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 && sleep 15
+ip
 [[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license \$(cat /etc/wireguard/license) >/dev/null 2>&1 && sleep 2; }
 
 check0(){
@@ -233,6 +254,7 @@ fi
 echo "\${REGION[0]}" | grep -qi "\$EXPECT" && R[0]='Yes' || R[0]='No'
 CONTENT="Netflix: \${R[0]}."
 echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log
+[[ -n "\$CUSTOM" ]] && curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(eval echo "\$tg_output")" -d parse_mode="HTML" >/dev/null 2>&1
 }
 
 check1(){
@@ -263,6 +285,7 @@ inSupportedLocation=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | gre
 fi
 CONTENT="Disney+: \${R[1]}."
 echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log
+[[ -n "\$CUSTOM" ]] && curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(eval echo "\$tg_output")" -d parse_mode="HTML" >/dev/null 2>&1
 }
 
 ${MODE2[0]}
@@ -279,7 +302,8 @@ done
 ${MODE2[1]}
 ${MODE2[2]}
 
-else echo -e "\$(date +'%F %T'). Brushing IP is working now." | tee -a /root/result.log
+else	echo -e "\$(date +'%F %T'). Brushing IP is working now." | tee -a /root/result.log
+	[[ -n "\$CUSTOM" ]] && curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(date +'%F %T'). Brushing IP is working now." -d parse_mode="HTML" >/dev/null 2>&1
 fi
 EOF
 
