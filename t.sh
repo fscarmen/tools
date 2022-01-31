@@ -66,12 +66,12 @@ T[E27]="No unlock script is installed."
 T[C27]="解锁脚本还没有安装"
 T[E28]="Unlock script is installed."
 T[C28]="解锁脚本已安装"
-T[E29]="\n Please enter Bot Token if you need push the logs to Telegram . Leave blank to skip:"
-T[C29]="\n 如需要把日志推送到 Telegram 机器人，请输入 Bot Token:"
-T[E30]="\n Enter USERID:"
-T[C30]="\n 输入 USERID:"
-T[E31]="\n Enter custom name:"
-T[C31]="\n 自定义名称:"
+T[E29]="\\\n Please enter Bot Token if you need push the logs to Telegram . Leave blank to skip:"
+T[C29]="\\\n 如需要把日志推送到 Telegram 机器人，请输入 Bot Token:"
+T[E30]="\\\n Enter USERID:"
+T[C30]="\\\n 输入 USERID:"
+T[E31]="\\\n Enter custom name:"
+T[C31]="\\\n 自定义名称:"
 
 # 自定义字体彩色，read 函数，友道翻译函数，安装依赖函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
