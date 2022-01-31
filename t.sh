@@ -204,8 +204,8 @@ input_region(){
 # Telegram Bot 日志推送
 input_tg(){
 	[[ -z $CUSTOM ]] && reading " $(eval echo "${T[${L}29]}") " TOKEN
-	[[ -n $TOKEN ]] && reading " $(eval echo "${T[${L}30]}") " USERID
-	[[ -n $USERID ]] && reading " $(eval echo "${T[${L}31]}") " CUSTOM
+	[[ -n $TOKEN || -z $USERID ]] && reading " $(eval echo "${T[${L}30]}") " USERID
+	[[ -n $USERID || -z $CUSTOM ]] && reading " $(eval echo "${T[${L}31]}") " CUSTOM
 	}
 
 # 根据用户选择在线生成解锁程序，放在 /etc/wireguard/unlock.sh
