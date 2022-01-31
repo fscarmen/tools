@@ -307,8 +307,6 @@ $UNLOCK_SELECT
 done
 ${MODE2[1]}
 ${MODE2[2]}
-#else	echo -e "\$(date +'%F %T'). Brushing IP is working now." | tee -a /root/result.log
-#	[[ -n "\$CUSTOM" ]] && curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(date +'%F %T'). Brushing IP is working now." -d parse_mode="HTML" >/dev/null 2>&1
 fi
 EOF
 
