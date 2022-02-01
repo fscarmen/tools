@@ -148,17 +148,17 @@ check_unlock_running(){
 	UNLOCK_MODE_NOW=("${T[${L}40]}" "${T[${L}41]}" "${T[${L}42]}")
 	UNLOCK_MODE_AFTER1=("${T[${L}41]}" "${T[${L}40]}" "${T[${L}40]}")
 	UNLOCK_MODE_AFTER2=("${T[${L}42]}" "${T[${L}42]}" "${T[${L}41]}")
-	SWITCH_MODE1=(	"$(sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab
+	SWITCH_MODE1=(	"$(sed -i 's/.*warp_unlock.sh.*/@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh/g' >> /etc/crontab
 			MODE2=("while true; do" "sleep 1h; done")
 			check_dependencies screen)"
-			"$(sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"\*/5 \* \* \* \* root bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab)"
-			"$(sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"\*/5 \* \* \* \* root bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab)"
+			"$(sed -i 's/warp_unlock.sh/\*/5 \* \* \* \* root bash /etc/wireguard/warp_unlock.sh/g' >> /etc/crontab)"
+			"$(sed -i 's/warp_unlock.sh/\*/5 \* \* \* \* root bash /etc/wireguard/warp_unlock.sh/g' >> /etc/crontab)"
 			)
-	SWITCH_MODE2=(	"$(sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root nohup bash /etc/wireguard/warp_unlock.sh &\" >> /etc/crontab
+	SWITCH_MODE2=(	"$(sed -i 's/warp_unlock.sh/@reboot root nohup bash /etc/wireguard/warp_unlock.sh &/g' >> /etc/crontab
 			MODE2=("while true; do" "sleep 1h; done"))"	
-			"$(sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root nohup bash /etc/wireguard/warp_unlock.sh &\" >> /etc/crontab
+			"$(sed -i 's/warp_unlock.sh/@reboot root nohup bash /etc/wireguard/warp_unlock.sh &/g' >> /etc/crontab
 			MODE2=("while true; do" "sleep 1h; done"))"	
-			"$(sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab
+			"$(sed -i 's/warp_unlock.sh/@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh/g' >> /etc/crontab
 			MODE2=("while true; do" "sleep 1h; done")
 			check_dependencies screen)"
 			)
@@ -403,7 +403,6 @@ done
 
 # 主程序运行 2/2
 check_unlock_running
-action0(){ exit 0; }
 if [[ "$f" -lt "$UNLOCK_NUM" ]]; then
 MENU_SHOW="$(eval echo "${T[${L}19]}")"
 action1(){ 
