@@ -284,7 +284,7 @@ check0(){
 RESULT[0]=""; REGION[0]=""; R[0]="";
 RESULT[0]=\$(curl --user-agent "\${UA_Browser}" $NIC -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
 if [[ \${RESULT[0]} = 200 ]]; then
-REGION[0]=\$(curl --user-agent "${UA_Browser}" $NIC -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g' | tr '[:lower:]' '[:upper:]')
+REGION[0]=\$(curl --user-agent "\${UA_Browser}" $NIC -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g' | tr '[:lower:]' '[:upper:]')
 REGION[0]=\${REGION[0]:-'US'}
 fi
 echo "\${REGION[0]}" | grep -qi "\$EXPECT" && R[0]='Yes' || R[0]='No'
@@ -326,7 +326,7 @@ echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log
 sed -i "2s/.*/\${R[1]}/" /etc/wireguard/status.log
 }
 
-while true; do \# use for switch mode
+while true; do # use for switch mode
 ip
 CONTENT='Script runs.'
 echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log
@@ -337,7 +337,7 @@ unset R
 $RESTART
 $UNLOCK_SELECT
 done
-sleep 1h; done \# use for switch mode
+sleep 1h; done # use for switch mode
 fi
 EOF
 
