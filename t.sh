@@ -150,9 +150,9 @@ check_unlock_running(){
 	UNLOCK_MODE_AFTER2=("${T[${L}42]}" "${T[${L}42]}" "${T[${L}41]}")
 	SWITCH_MODE1=(	"$(sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab
 			sed -i "s/^#//g" /etc/wireguard/warp_unlock.sh)"
-			"$(sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 \* \* \* \* root bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab
+			"$(sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"\*/5 \* \* \* \* root bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab
 			sed -i "s/^.*use to switch/#&/g" /etc/wireguard/warp_unlock.sh)"
-			"$(sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 \* \* \* \* root bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab
+			"$(sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"\*/5 \* \* \* \* root bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab
 			sed -i "s/^.*use to switch/#&/g" /etc/wireguard/warp_unlock.sh)"
 			)
 	SWITCH_MODE2=(	"$(sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root nohup bash /etc/wireguard/warp_unlock.sh &\" >> /etc/crontab
