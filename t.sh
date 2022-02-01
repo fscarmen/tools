@@ -258,6 +258,7 @@ EXPECT="$EXPECT"
 TOKEN="$TOKEN"
 USERID="$USERID"
 CUSTOM="$CUSTOM"
+NIC="$NIC"
 timedatectl set-timezone Asia/Shanghai
 
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
@@ -267,7 +268,7 @@ tg_output="Server:\\\$CUSTOM. \\\$(date +'%F %T'). IP: \\\$WAN  Country: \\\$COU
 
 ip(){
 unset IP_INFO WAN COUNTRY ASNORG
-IP_INFO="\$(curl $NIC https://ip.gs/json 2>/dev/null)"
+IP_INFO="\$(curl \$NIC https://ip.gs/json 2>/dev/null)"
 WAN=\$(expr "\$IP_INFO" : '.*ip\":\"\([^"]*\).*')
 COUNTRY=\$(expr "\$IP_INFO" : '.*country\":\"\([^"]*\).*')
 ASNORG=\$(expr "\$IP_INFO" : '.*asn_org\":\"\([^"]*\).*')
@@ -282,9 +283,9 @@ ip
 
 check0(){
 RESULT[0]=""; REGION[0]=""; R[0]="";
-RESULT[0]=\$(curl --user-agent "\${UA_Browser}" $NIC -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
+RESULT[0]=\$(curl --user-agent "\${UA_Browser}" \$NIC -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
 if [[ \${RESULT[0]} = 200 ]]; then
-REGION[0]=\$(curl --user-agent "\${UA_Browser}" $NIC -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g' | tr '[:lower:]' '[:upper:]')
+REGION[0]=\$(curl --user-agent "\${UA_Browser}" \$NIC -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g' | tr '[:lower:]' '[:upper:]')
 REGION[0]=\${REGION[0]:-'US'}
 fi
 echo "\${REGION[0]}" | grep -qi "\$EXPECT" && R[0]='Yes' || R[0]='No'
@@ -297,13 +298,13 @@ sed -i "1s/.*/\${R[0]}/" /etc/wireguard/status.log
 check1(){
 unset PreAssertion assertion disneycookie TokenContent isBanned is403 fakecontent refreshToken disneycontent tmpresult previewcheck isUnabailable region inSupportedLocation
 R[1]=""
-PreAssertion=\$(curl $NIC --user-agent "\${UA_Browser}" -s --max-time 10 -X POST "https://global.edge.bamgrid.com/devices" -H "authorization: Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -H "content-type: application/json; charset=UTF-8" -d '{"deviceFamily":"browser","applicationRuntime":"chrome","deviceProfile":"windows","attributes":{}}' 2>&1)
+PreAssertion=\$(curl \$NIC --user-agent "\${UA_Browser}" -s --max-time 10 -X POST "https://global.edge.bamgrid.com/devices" -H "authorization: Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -H "content-type: application/json; charset=UTF-8" -d '{"deviceFamily":"browser","applicationRuntime":"chrome","deviceProfile":"windows","attributes":{}}' 2>&1)
 [[ "\$PreAssertion" == "curl"* ]] && R[1]='No'
 if [[ \${R[1]} != 'No' ]]; then
 assertion=\$(echo \$PreAssertion | python -m json.tool 2> /dev/null | grep assertion | cut -f4 -d'"')
 PreDisneyCookie=\$(curl -s --max-time 10 "https://raw.githubusercontent.com/lmc999/RegionRestrictionCheck/main/cookies" | sed -n '1p')
 disneycookie=\$(echo \$PreDisneyCookie | sed "s/DISNEYASSERTION/\${assertion}/g")
-TokenContent=\$(curl $NIC --user-agent "\${UA_Browser}" -s --max-time 10 -X POST "https://global.edge.bamgrid.com/token" -H "authorization: Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -d "\$disneycookie")
+TokenContent=\$(curl \$NIC --user-agent "\${UA_Browser}" -s --max-time 10 -X POST "https://global.edge.bamgrid.com/token" -H "authorization: Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -d "\$disneycookie")
 isBanned=\$(echo \$TokenContent | python -m json.tool 2> /dev/null | grep 'forbidden-location')
 is403=\$(echo \$TokenContent | grep '403 ERROR')
 [[ -n "\$isBanned\$is403" ]] && R[1]='No'
@@ -313,8 +314,8 @@ if [[ \${R[1]} != 'No' ]]; then
 fakecontent=\$(curl -s --max-time 10 "https://raw.githubusercontent.com/lmc999/RegionRestrictionCheck/main/cookies" | sed -n '8p')
 refreshToken=\$(echo \$TokenContent | python -m json.tool 2> /dev/null | grep 'refresh_token' | awk '{print \$2}' | cut -f2 -d'"')
 disneycontent=\$(echo \$fakecontent | sed "s/ILOVEDISNEY/\${refreshToken}/g")
-tmpresult=\$(curl $NIC --user-agent "\${UA_Browser}" -X POST -sSL --max-time 10 "https://disney.api.edge.bamgrid.com/graph/v1/device/graphql" -H "authorization: ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -d "\$disneycontent" 2>&1)
-previewcheck=\$(curl $NIC -s -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://disneyplus.com" | grep preview)
+tmpresult=\$(curl \$NIC --user-agent "\${UA_Browser}" -X POST -sSL --max-time 10 "https://disney.api.edge.bamgrid.com/graph/v1/device/graphql" -H "authorization: ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -d "\$disneycontent" 2>&1)
+previewcheck=\$(curl \$NIC -s -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://disneyplus.com" | grep preview)
 isUnabailable=\$(echo \$previewcheck | grep 'unavailable')      
 region=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | grep 'countryCode' | cut -f4 -d'"')
 inSupportedLocation=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | grep 'inSupportedLocation' | awk '{print \$2}' | cut -f1 -d',')
@@ -403,7 +404,13 @@ check_unlock_running
 action0(){ exit 0; }
 if [[ "$f" -lt "$UNLOCK_NUM" ]]; then
 MENU_SHOW="$(eval echo "${T[${L}19]}")"
-action1(){ "${SWITCH_MODE1[f]}"; sed -i "s/.*/null/g" /etc/wireguard/status.log; }
+action1(){ 
+check_dependencies screen
+
+
+
+
+"${SWITCH_MODE1[f]}"; sed -i "s/.*/null/g" /etc/wireguard/status.log; }
 action2(){ "${SWITCH_MODE2[f]}"; sed -i "s/.*/null/g" /etc/wireguard/status.log; }
 action3(){ uninstall; }
 action0(){ exit 0; }
