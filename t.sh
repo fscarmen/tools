@@ -77,10 +77,10 @@ T[C30]="\\\n 输入 USERID:"
 T[E31]="\\\n Enter custom name:"
 T[C31]="\\\n 自定义名称:"
 T[E40]="Mode 1: Check it every 5 minutes"
-T[C40]="Mode 2: Create a screen named [u] and run"
-T[E41]="Mode 3: Create a jobs with nohup to run in the background"
-T[C41]="模式1: 定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功"
-T[E42]="模式2: 创建一个名为 [u] 的 Screen 在后台刷"
+T[C40]="模式1: 定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功"
+T[E41]="Mode 2: Create a screen named [u] and run"
+T[C41]="模式2: 创建一个名为 [u] 的 Screen 在后台刷"
+T[E42]="Mode 3: Create a jobs with nohup to run in the background"
 T[C42]="模式3: 用 nohup 创建一个 jobs 在后台刷"
 T[E43]=""
 T[C43]=""
@@ -403,8 +403,8 @@ check_unlock_running
 action0(){ exit 0; }
 if [[ "$f" -lt "$UNLOCK_NUM" ]]; then
 MENU_SHOW="$(eval echo "${T[${L}19]}")"
-action1(){ SWITCH_MODE1[f]; sed -i "s/.*/null/g" /etc/wireguard/status.log; }
-action2(){ SWITCH_MODE2[f]; sed -i "s/.*/null/g" /etc/wireguard/status.log; }
+action1(){ "${SWITCH_MODE1[f]}"; sed -i "s/.*/null/g" /etc/wireguard/status.log; }
+action2(){ "${SWITCH_MODE2[f]}"; sed -i "s/.*/null/g" /etc/wireguard/status.log; }
 action3(){ uninstall; }
 action0(){ exit 0; }
 else
