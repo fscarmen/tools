@@ -403,8 +403,8 @@ check_unlock_running
 action0(){ exit 0; }
 if [[ "$f" -lt "$UNLOCK_NUM" ]]; then
 MENU_SHOW="$(eval echo "${T[${L}19]}")"
-action1(){ SWITCH_MODE1[f]; }
-action2(){ SWITCH_MODE2[f]; }
+action1(){ SWITCH_MODE1[f]; sed -i "s/.*/null/g" /etc/wireguard/status.log; }
+action2(){ SWITCH_MODE2[f]; sed -i "s/.*/null/g" /etc/wireguard/status.log; }
 action3(){ uninstall; }
 action0(){ exit 0; }
 else
