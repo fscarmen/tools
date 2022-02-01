@@ -396,8 +396,8 @@ action0(){ exit 0; }
 if [[ "$f" -lt "$UNLOCK_NUM" ]]; then
 UNLOCK_MODE="{$T[${L}4$f]}";;
 MENU_SHOW="$(eval echo "${T[${L}19]}")"
-action1(){ }
-action2(){ }
+action1(){ true; }
+action2(){ true; }
 action3(){ uninstall; }
 action0(){ exit 0; }
 else
