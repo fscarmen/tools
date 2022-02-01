@@ -5,8 +5,9 @@ export LANG=en_US.UTF-8
 # 当前脚本版本号和新增功能
 VERSION=1.04
 
-# 最大支持流媒体
+# 最大支持流媒体，最大支持解锁方法
 SUPPORT_NUM='2'
+UNLOCK_NUM='3'
 
 # 设置关联数组 T 用于中英文
 declare -A T
@@ -49,8 +50,8 @@ T[E17]="Version"
 T[C17]="脚本版本"
 T[E18]="New features"
 T[C18]="功能新增"
-T[E19]="\n Stream media unlock daemon is running.\n 1. Uninstall\n 0. Exit\n"
-T[C19]="\n 流媒体解锁守护正在运行中\n 1. 卸载\n 0. 退出\n"
+T[E19]="\\\n Stream media unlock daemon is running in \$UNLOCK_MODE.\\\n 1. Switch to \${UNLOCK_MODE_AFTER1[f]}\\\n 2. Switch to \${UNLOCK_MODE_AFTER2[f]}\\\n 3.Uninstall\\\n 0. Exit\\\n"
+T[C19]="\\\n 流媒体解锁守护正在以 \$UNLOCK_MODE 运行中\\\n 1. 切换至\${UNLOCK_MODE_AFTER1[f]}\\\n 2. 切换至\${UNLOCK_MODE_AFTER2[f]}\\\n 3. 卸载\\\n 0. 退出\\\n"
 T[E20]="Media unlock daemon installed successfully. A session window u has been created, enter [screen -Udr u] and close [screen -SX u quit]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log\n"
 T[C20]="\n 媒体解锁守护进程已安装成功，已创建一个会话窗口 u ，进入 [screen -Udr u]，关闭 [screen -SX u quit]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
 T[E21]="Media unlock daemon installed successfully. A jobs has been created, check [pgrep -laf warp_unlock] and close [kill -9 \$(pgrep -f warp_unlock)]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log\n"
@@ -75,6 +76,19 @@ T[E30]="\\\n Enter USERID:"
 T[C30]="\\\n 输入 USERID:"
 T[E31]="\\\n Enter custom name:"
 T[C31]="\\\n 自定义名称:"
+T[E40]="Mode 1: Check it every 5 minutes"
+T[C40]="Mode 2: Create a screen named [u] and run"
+T[E41]="Mode 3: Create a jobs with nohup to run in the background"
+T[C41]="模式1: 定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功"
+T[E42]="模式2: 创建一个名为 [u] 的 Screen 在后台刷"
+T[C42]="模式3: 用 nohup 创建一个 jobs 在后台刷"
+T[E43]=""
+T[C43]=""
+T[E44]=""
+T[C44]=""
+T[E45]=""
+T[C45]=""
+
 
 # 自定义字体彩色，read 函数，友道翻译函数，安装依赖函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -128,7 +142,16 @@ done
 
 # 检查解锁方式是否已运行
 check_unlock_running(){
-	grep -qE "warp_unlock" /etc/crontab && RUNNING=1
+	check_crontab=("^\*.*warp_unlock" "screen.*warp_unlock" "nohup.*warp_unlock")
+	for ((f=0; f<$UNLOCK_NUM; f++)); do
+	grep -qE "${check_crontab[f]}" /etc/crontab && break; done
+	UNLOCK_MODE_AFTER1=("${T[${L}41]}" "${T[${L}40]}" "${T[${L}40]}")
+	UNLOCK_MODE_AFTER2=("${T[${L}42]}" "${T[${L}42]}" "${T[${L}41]}")
+	SWITCH_MODE1=( $(sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab
+	
+	$(sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab)
+	)
+	
 }
 
 # 判断是否已经安装 WARP 网络接口或者 Socks5 代理,如已经安装组件尝试启动。再分情况作相应处理
@@ -185,7 +208,7 @@ if [[ -z "${STREAM_UNLOCK[@]}" ]]; then
 	done
 fi
 UNLOCK_SELECT=$(for ((e=0; e<"$SUPPORT_NUM"; e++)); do
-                [[ "${STREAM_UNLOCK[e]}" = 1 ]] && echo -e "[[ ! \${R[*]} =~ 'No' ]] && check$e;"
+                [[ "${STREAM_UNLOCK[e]}" = 1 ]] && echo -e "[[ ! \${R[*]} =~ 'No' ]] && check$e;" || echo -e "#[[ ! \${R[*]} =~ 'No' ]] && check$e;"
 		done)
 }
 
@@ -370,10 +393,13 @@ done
 # 主程序运行 2/2
 check_unlock_running
 action0(){ exit 0; }
-if [[ "$RUNNING" = 1 ]]; then
-MENU_SHOW="${T[${L}19]}"
-action1(){ uninstall; }
-action2(){ exit 0; }
+if [[ "$f" -lt "$UNLOCK_NUM" ]]; then
+UNLOCK_MODE="{$T[${L}4$f]}";;
+MENU_SHOW="$(eval echo "${T[${L}19]}")"
+action1(){ }
+action2(){ }
+action3(){ uninstall; }
+action0(){ exit 0; }
 else
 MENU_SHOW="${T[${L}12]}"
 check_system_info
