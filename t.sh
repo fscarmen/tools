@@ -162,6 +162,19 @@ check_unlock_running(){
 			MODE2=("while true; do" "sleep 1h; done")
 			check_dependencies screen)"
 			)
+	RUN_AFTER_SWITCH1=( "$(kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1
+				screen -USdm u bash /etc/wireguard/warp_unlock.sh)"
+	
+	
+	
+	)
+	
+	RUN_AFTER_SWITCH2=( "$(kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1
+				)"
+	
+	
+	
+	)
 	
 }
 
