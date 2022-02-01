@@ -422,11 +422,13 @@ action1(){
 NIC=$(grep "NIC=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
 "${SWITCH_MODE1[f]}"
 export_unlock_file
+"${RUN_AFTER_SWITCH1[f]}"
 }
 action2(){
 NIC=$(grep "NIC=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
 "${SWITCH_MODE2[f]}"
 export_unlock_file
+"${RUN_AFTER_SWITCH2[f]}"
 }
 action3(){ uninstall; }
 action0(){ exit 0; }
