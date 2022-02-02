@@ -14,8 +14,8 @@ declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
-T[E1]="1. Suppport pass parameter. You can run like this:bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/t.sh) -E -A us -4 -N nd -M 2; 2. Support logs push to Telegram; 3. Switch Mode online; 4. Log limit is 1000 lines"
-T[C1]="支持传参，你可以这样运行脚本: bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/t.sh) -E -A us -4 -N nd -M 2; 2. 把日志输出到 Telegram; 3. 在线切换解锁模式; 4. 日志限制1000行"
+T[E1]="1. Suppport pass parameter. You can run like this:bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/t.sh) -E -A us -4 -N nd -M 2; 2. Support logs push to Telegram; 3. Switch Mode online"
+T[C1]="支持传参，你可以这样运行脚本: bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/t.sh) -E -A us -4 -N nd -M 2; 2. 把日志输出到 Telegram; 3. 在线切换解锁模式"
 T[E2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp_unlock/issues]"
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp_unlock/issues]"
 T[E3]="Choose:"
@@ -185,10 +185,10 @@ check_unlock_running(){
 	UNLOCK_MODE_NOW=("${T[${L}40]}" "${T[${L}41]}" "${T[${L}42]}")
 	UNLOCK_MODE_AFTER1=("${T[${L}41]}" "${T[${L}40]}" "${T[${L}40]}")
 	UNLOCK_MODE_AFTER2=("${T[${L}42]}" "${T[${L}42]}" "${T[${L}41]}")
-	SWITCH_MODE1=(	"switch_1_2" "switch_2_1" "switch_3_1"	)
-	SWITCH_MODE2=(	"switch_1_3" "switch_2_3" "switch_3_2"	)
-	RUN_AFTER_SWITCH1=( "run_1_2" "run_2_1" "run_3_1"	)
-	RUN_AFTER_SWITCH2=( "run_1_3" "run_2_3" "run_3_2"	)
+	SWITCH_MODE1=( "switch_1_2" "switch_2_1" "switch_3_1" )
+	SWITCH_MODE2=( "switch_1_3" "switch_2_3" "switch_3_2" )
+	RUN_AFTER_SWITCH1=( "run_1_2" "run_2_1" "run_3_1" )
+	RUN_AFTER_SWITCH2=( "run_1_3" "run_2_3" "run_3_2" )
 }
 
 # 判断是否已经安装 WARP 网络接口或者 Socks5 代理,如已经安装组件尝试启动。再分情况作相应处理
@@ -294,7 +294,7 @@ if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a
 log_output="\\\$(date +'%F %T').\\\\\tIP: \\\$WAN\\\\\t\\\\\tCountry: \\\$COUNTRY\\\\\t\\\$CONTENT"
 tg_output="Server:\\\$CUSTOM. \\\$(date +'%F %T'). IP: \\\$WAN  Country: \\\$COUNTRY. \\\$CONTENT"
 
-log_message(){ echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log; tail -n 1000 result.log > result.log; }
+log_message(){ echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log; }
 tg_message(){ curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(eval echo "\$tg_output")" -d parse_mode="HTML" >/dev/null 2>&1; }
 
 ip(){
