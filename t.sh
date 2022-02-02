@@ -294,6 +294,9 @@ if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a
 log_output="\\\$(date +'%F %T').\\\\\tIP: \\\$WAN\\\\\t\\\\\tCountry: \\\$COUNTRY\\\\\t\\\\\tASN: \\\$ASNORG.\\\\\t\\\$CONTENT"
 tg_output="Server:\\\$CUSTOM. \\\$(date +'%F %T'). IP: \\\$WAN  Country: \\\$COUNTRY. ASN: \\\$ASNORG. \\\$CONTENT"
 
+tg_message(){ curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(eval echo "\$tg_output")" -d parse_mode="HTML" >/dev/null 2>&1; }
+log_message(){ echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log; tail -n 1000 result.log > result.log; }
+
 ip(){
 unset IP_INFO WAN COUNTRY ASNORG
 IP_INFO="\$(curl \$NIC https://ip.gs/json 2>/dev/null)"
@@ -318,8 +321,8 @@ REGION[0]=\${REGION[0]:-'US'}
 fi
 echo "\${REGION[0]}" | grep -qi "\$EXPECT" && R[0]='Yes' || R[0]='No'
 CONTENT="Netflix: \${R[0]}."
-echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log; tail -n 1000 result.log > result.log
-[[ -n "\$CUSTOM" ]] && [[ \${R[0]} != \$(sed -n '1p' /etc/wireguard/status.log) ]] && curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(eval echo "\$tg_output")" -d parse_mode="HTML" >/dev/null 2>&1
+log_message
+[[ -n "\$CUSTOM" ]] && [[ \${R[0]} != \$(sed -n '1p' /etc/wireguard/status.log) ]] && tg_message
 sed -i "1s/.*/\${R[0]}/" /etc/wireguard/status.log
 }
 
@@ -350,8 +353,8 @@ inSupportedLocation=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | gre
 [[ "\$region" == "JP" || ( -n "\$region" && "\$inSupportedLocation" == "true" ) ]] && R[1]='Yes' || R[1]='No'
 fi
 CONTENT="Disney+: \${R[1]}."
-echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log; tail -n 1000 result.log > result.log
-[[ -n "\$CUSTOM" ]] && [[ \${R[1]} != \$(sed -n '2p' /etc/wireguard/status.log) ]] && curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(eval echo "\$tg_output")" -d parse_mode="HTML" >/dev/null 2>&1
+log_message
+[[ -n "\$CUSTOM" ]] && [[ \${R[1]} != \$(sed -n '2p' /etc/wireguard/status.log) ]] && tg_message
 sed -i "2s/.*/\${R[1]}/" /etc/wireguard/status.log
 }
 
