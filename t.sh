@@ -291,11 +291,11 @@ timedatectl set-timezone Asia/Shanghai
 
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
 
-log_output="\\\$(date +'%F %T').\\\\\tIP: \\\$WAN\\\\\t\\\\\tCountry: \\\$COUNTRY\\\\\t\\\\\tASN: \\\$ASNORG.\\\\\t\\\$CONTENT"
-tg_output="Server:\\\$CUSTOM. \\\$(date +'%F %T'). IP: \\\$WAN  Country: \\\$COUNTRY. ASN: \\\$ASNORG. \\\$CONTENT"
+log_output="\\\$(date +'%F %T').\\\\\tIP: \\\$WAN\\\\\t\\\\\tCountry: \\\$COUNTRY\\\\\t\\\$CONTENT"
+tg_output="Server:\\\$CUSTOM. \\\$(date +'%F %T'). IP: \\\$WAN  Country: \\\$COUNTRY. \\\$CONTENT"
 
-tg_message(){ curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(eval echo "\$tg_output")" -d parse_mode="HTML" >/dev/null 2>&1; }
 log_message(){ echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log; tail -n 1000 result.log > result.log; }
+tg_message(){ curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(eval echo "\$tg_output")" -d parse_mode="HTML" >/dev/null 2>&1; }
 
 ip(){
 unset IP_INFO WAN COUNTRY ASNORG
@@ -361,7 +361,7 @@ sed -i "2s/.*/\${R[1]}/" /etc/wireguard/status.log
 ${MODE2[0]}
 ip
 CONTENT='Script runs.'
-echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log; tail -n 1000 result.log > result.log
+log_message
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x6*4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
 $UNLOCK_SELECT
 until [[ ! \${R[*]}  =~ 'No' ]]; do
