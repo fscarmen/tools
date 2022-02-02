@@ -168,8 +168,8 @@ check_unlock_running(){
 	run_2_3(){	screen -QX u quit >/dev/null 2>&1
 			nohup bash /etc/wireguard/warp_unlock.sh >/dev/null 2>&1 &
 			}
-	rum_3_1(){	kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1; }
-	rum_3_2(){	kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1
+	run_3_1(){	kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1; }
+	run_3_2(){	kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1
 			screen -QX u quit >/dev/null 2>&1
 			}
 
