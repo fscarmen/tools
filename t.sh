@@ -170,7 +170,7 @@ check_unlock_running(){
 			}
 	run_3_1(){	kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1; }
 	run_3_2(){	kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1
-			screen -QX u quit >/dev/null 2>&1
+			screen -USdm u bash /etc/wireguard/warp_unlock.sh
 			}
 
 	check_crontab=("^\*.*warp_unlock" "screen.*warp_unlock" "nohup.*warp_unlock")
