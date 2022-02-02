@@ -173,10 +173,11 @@ check_unlock_running(){
 			screen -USdm u bash /etc/wireguard/warp_unlock.sh
 			}
 
-	NIC=$(grep -q "NIC=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
-	TOKEN=$(grep -q "TOKEN=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
-	USERID=$(grep -q "USERID=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
-	CUSTOM=$(grep -q "CUSTOM=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
+	EXPECT=$(grep -s "EXPECT=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)	
+	TOKEN=$(grep -s "TOKEN=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
+	USERID=$(grep -s "USERID=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
+	CUSTOM=$(grep -s "CUSTOM=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
+	NIC=$(grep -s "NIC=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
 
 	check_crontab=("^\*.*warp_unlock" "screen.*warp_unlock" "nohup.*warp_unlock")
 	for ((f=0; f<$UNLOCK_NUM; f++)); do
