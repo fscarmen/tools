@@ -173,6 +173,11 @@ check_unlock_running(){
 			screen -USdm u bash /etc/wireguard/warp_unlock.sh
 			}
 
+	NIC=$(grep -q "NIC=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
+	TOKEN=$(grep -q "TOKEN=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
+	USERID=$(grep -q "USERID=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
+	CUSTOM=$(grep -q "CUSTOM=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
+
 	check_crontab=("^\*.*warp_unlock" "screen.*warp_unlock" "nohup.*warp_unlock")
 	for ((f=0; f<$UNLOCK_NUM; f++)); do
 	grep -qE "${check_crontab[f]}" /etc/crontab && break; done
@@ -210,20 +215,20 @@ case "${STATUS[@]}" in
       * ) wget -N https://cdn.jsdelivr.net/gh/fscarmen/warp/menu.sh && bash menu.sh; exit;;
      esac;;
 '0 0 1' ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
-     NIC="-s4m7 --socks5 $PROXYSOCKS5"
+     NIC="-s4m8 --socks5 $PROXYSOCKS5"
      RESTART="socks5_restart";;
-'0 1 0' ) NIC='-s6m7'; RESTART="wgcf_restart";;
-'1 0 0' ) NIC='-s4m7'; RESTART="wgcf_restart";;
+'0 1 0' ) NIC='-s6m8'; RESTART="wgcf_restart";;
+'1 0 0' ) NIC='-s4m8'; RESTART="wgcf_restart";;
 '1 1 0' ) yellow " ${T[${L}23]} " && reading " ${T[${L}3]} " CHOOSE3
       case "$CHOOSE3" in
-      2 ) NIC='-s6m7'; RESTART="wgcf_restart";;
-      * ) NIC='-s4m7'; RESTART="wgcf_restart";;
+      2 ) NIC='-s6m8'; RESTART="wgcf_restart";;
+      * ) NIC='-s4m8'; RESTART="wgcf_restart";;
       esac;;
 '0 1 1' ) yellow " ${T[${L}6]} " && reading " ${T[${L}3]} " CHOOSE3
       case "$CHOOSE3" in
-      2 ) NIC='-s6m7'; RESTART="wgcf_restart";;
+      2 ) NIC='-s6m8'; RESTART="wgcf_restart";;
       * ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
-          NIC="-s4m7 --socks5 $PROXYSOCKS5"
+          NIC="-s4m8 --socks5 $PROXYSOCKS5"
 	  RESTART="socks5_restart";;
       esac;;
  esac
@@ -312,7 +317,7 @@ REGION[0]=\${REGION[0]:-'US'}
 fi
 echo "\${REGION[0]}" | grep -qi "\$EXPECT" && R[0]='Yes' || R[0]='No'
 CONTENT="Netflix: \${R[0]}."
-echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log
+echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log; tail -n 1000 result.log > result.log
 [[ -n "\$CUSTOM" ]] && [[ \${R[0]} != \$(sed -n '1p' /etc/wireguard/status.log) ]] && curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(eval echo "\$tg_output")" -d parse_mode="HTML" >/dev/null 2>&1
 sed -i "1s/.*/\${R[0]}/" /etc/wireguard/status.log
 }
@@ -344,7 +349,7 @@ inSupportedLocation=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | gre
 [[ "\$region" == "JP" || ( -n "\$region" && "\$inSupportedLocation" == "true" ) ]] && R[1]='Yes' || R[1]='No'
 fi
 CONTENT="Disney+: \${R[1]}."
-echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log
+echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log; tail -n 1000 result.log > result.log
 [[ -n "\$CUSTOM" ]] && [[ \${R[1]} != \$(sed -n '2p' /etc/wireguard/status.log) ]] && curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(eval echo "\$tg_output")" -d parse_mode="HTML" >/dev/null 2>&1
 sed -i "2s/.*/\${R[1]}/" /etc/wireguard/status.log
 }
@@ -352,8 +357,8 @@ sed -i "2s/.*/\${R[1]}/" /etc/wireguard/status.log
 ${MODE2[0]}
 ip
 CONTENT='Script runs.'
-echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log
-UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
+echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log; tail -n 1000 result.log > result.log
+UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x6*4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
 $UNLOCK_SELECT
 until [[ ! \${R[*]}  =~ 'No' ]]; do
 unset R
@@ -426,13 +431,11 @@ check_unlock_running
 if [[ "$f" -lt "$UNLOCK_NUM" ]]; then
 MENU_SHOW="$(eval echo "${T[${L}19]}")"
 action1(){ 
-NIC=$(grep "NIC=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
 "${SWITCH_MODE1[f]}"
 export_unlock_file
 "${RUN_AFTER_SWITCH1[f]}"
 }
 action2(){
-NIC=$(grep "NIC=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
 "${SWITCH_MODE2[f]}"
 export_unlock_file
 "${RUN_AFTER_SWITCH2[f]}"
