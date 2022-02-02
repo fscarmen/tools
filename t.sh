@@ -50,7 +50,7 @@ T[E17]="Version"
 T[C17]="脚本版本"
 T[E18]="New features"
 T[C18]="功能新增"
-T[E19]="\\\n Stream media unlock daemon is running in \${UNLOCK_MODE_NOW[f]}.\\\n 1. Switch to \${UNLOCK_MODE_AFTER1[f]}\\\n 2. Switch to \${UNLOCK_MODE_AFTER2[f]}\\\n 3.Uninstall\\\n 0. Exit\\\n"
+T[E19]="\\\n Stream media unlock daemon is running in \${UNLOCK_MODE_NOW[f]}.\\\n 1. Switch to \${UNLOCK_MODE_AFTER1[f]}\\\n 2. Switch to \${UNLOCK_MODE_AFTER2[f]}\\\n 3. Uninstall\\\n 0. Exit\\\n"
 T[C19]="\\\n 流媒体解锁守护正在以 \${UNLOCK_MODE_NOW[f]} 运行中\\\n 1. 切换至\${UNLOCK_MODE_AFTER1[f]}\\\n 2. 切换至\${UNLOCK_MODE_AFTER2[f]}\\\n 3. 卸载\\\n 0. 退出\\\n"
 T[E20]="Media unlock daemon installed successfully. A session window u has been created, enter [screen -Udr u] and close [screen -SX u quit]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log\n"
 T[C20]="\n 媒体解锁守护进程已安装成功，已创建一个会话窗口 u ，进入 [screen -Udr u]，关闭 [screen -SX u quit]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
@@ -422,13 +422,13 @@ action1(){
 NIC=$(grep "NIC=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
 sh -c "${SWITCH_MODE1[f]}"
 export_unlock_file
-"${RUN_AFTER_SWITCH1[f]}"
+sh -c "${RUN_AFTER_SWITCH1[f]}"
 }
 action2(){
 NIC=$(grep "NIC=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
 sh -c "${SWITCH_MODE2[f]}"
 export_unlock_file
-"${RUN_AFTER_SWITCH2[f]}"
+sh -c "${RUN_AFTER_SWITCH2[f]}"
 }
 action3(){ uninstall; }
 action0(){ exit 0; }
