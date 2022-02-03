@@ -320,13 +320,13 @@ if [[ \${RESULT[0]} = 200 ]]; then
 REGION[0]=\$(curl --user-agent "\${UA_Browser}" \$NIC -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g' | tr '[:lower:]' '[:upper:]')
 REGION[0]=\${REGION[0]:-'US'}
 fi
-echo "\${REGION[0]}" | grep -qi "\$EXPECT" && R[0]='Yes' || R[0]='No'
+echo "\${REGION[0]}" | grep -qi "\$EXPECT" && R[0]='Yes🎉' || R[0]='No😰'
 CONTENT="Netflix: \${R[0]}."
 log_message
 [[ -n "\$CUSTOM" ]] && [[ \${R[0]} != \$(sed -n '1p' /etc/wireguard/status.log) ]] && tg_message
 sed -i "1s/.*/\${R[0]}/" /etc/wireguard/status.log
 }
-
+cb
 check1(){
 unset PreAssertion assertion disneycookie TokenContent isBanned is403 fakecontent refreshToken disneycontent tmpresult previewcheck isUnabailable region inSupportedLocation
 R[1]=""
@@ -351,7 +351,7 @@ previewcheck=\$(curl \$NIC -s -o /dev/null -L --max-time 10 -w '%{url_effective}
 isUnabailable=\$(echo \$previewcheck | grep 'unavailable')      
 region=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | grep 'countryCode' | cut -f4 -d'"')
 inSupportedLocation=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | grep 'inSupportedLocation' | awk '{print \$2}' | cut -f1 -d',')
-[[ "\$region" == "JP" || ( -n "\$region" && "\$inSupportedLocation" == "true" ) ]] && R[1]='Yes' || R[1]='No'
+[[ "\$region" == "JP" || ( -n "\$region" && "\$inSupportedLocation" == "true" ) ]] && R[1]='Yes🎉' || R[1]='No😰'
 fi
 CONTENT="Disney+: \${R[1]}."
 log_message
