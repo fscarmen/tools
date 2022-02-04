@@ -298,6 +298,7 @@ TOKEN="$TOKEN"
 USERID="$USERID"
 CUSTOM="$CUSTOM"
 NIC="$NIC"
+RESTART="$RESTART"
 LOG_LIMIT="1000"
 UNLOCK_STATUS='Yes 🎉'
 NOT_UNLOCK_STATUS='No 😰'
@@ -380,7 +381,7 @@ UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x6*4) AppleWebKit/537.36 (KHTML
 $UNLOCK_SELECT
 until [[ ! \${R[*]}  =~ "\$NOT_UNLOCK_STATUS" ]]; do
 unset R
-$RESTART
+\$RESTART
 $UNLOCK_SELECT
 done
 ${MODE2[1]}
