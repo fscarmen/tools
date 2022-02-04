@@ -187,7 +187,7 @@ check_unlock_running(){
 	USERID=$(grep -s "USERID=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
 	CUSTOM=$(grep -s "CUSTOM=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
 	NIC=$(grep -s "NIC=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
-
+	RESTART=$(grep -s "RESTART=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
 	check_crontab=("^\*.*warp_unlock" "screen.*warp_unlock" "nohup.*warp_unlock")
 	for ((f=0; f<"$UNLOCK_NUM"; f++)); do
 	grep -qE "${check_crontab[f]}" /etc/crontab && break; done
