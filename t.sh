@@ -445,6 +445,7 @@ done
 # 主程序运行 2/2
 check_unlock_running
 if [[ "$f" -lt "$UNLOCK_NUM" ]]; then
+check_system_info
 MENU_SHOW="$(eval echo "${T[${L}19]}")"
 action1(){
 "${SWITCH_MODE1[f]}"
