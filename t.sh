@@ -3,7 +3,7 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/b
 export LANG=en_US.UTF-8
 
 # 当前脚本版本号和新增功能
-VERSION=1.05
+VERSION='1.05'
 
 # 最大支持流媒体，最大支持解锁方法
 SUPPORT_NUM='2'
