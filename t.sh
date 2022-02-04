@@ -446,6 +446,7 @@ done
 # 主程序运行 2/2
 check_system_info
 check_unlock_running
+check_dependencies curl
 if [[ "$f" -lt "$UNLOCK_NUM" ]]; then
 MENU_SHOW="$(eval echo "${T[${L}19]}")"
 action1(){
@@ -467,7 +468,6 @@ action4(){ uninstall; }
 action0(){ exit 0; }
 else
 MENU_SHOW="${T[${L}12]}"
-check_dependencies curl
 check_warp
 action1(){
 TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab"
