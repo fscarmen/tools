@@ -306,7 +306,7 @@ timedatectl set-timezone Asia/Shanghai
 
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
 
-log_output="\\\$(date +'%F %T').\\\\\tIP: \\\$WAN\\\\\tCountry: \\\$COUNTRY\\\\\t\\\$CONTENT"
+log_output="\\\$(date +'%F %T'). \\\\\tIP: \\\$WAN \\\\\tCountry: \\\$COUNTRY \\\\\t\\\$CONTENT"
 tg_output="Server:\\\$CUSTOM. \\\$(date +'%F %T'). IP: \\\$WAN  Country: \\\$COUNTRY. \\\$CONTENT"
 
 log_message(){ echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log; [[ \$(cat /root/result.log | wc -l) -gt \$LOG_LIMIT ]] && sed -i "1,10d" /root/result.log; }
