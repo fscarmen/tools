@@ -443,9 +443,9 @@ while getopts ":CcEeUu46SsM:m:A:a:N:n:T:t:" OPTNAME; do
 done
 
 # 主程序运行 2/2
+check_system_info
 check_unlock_running
 if [[ "$f" -lt "$UNLOCK_NUM" ]]; then
-check_system_info
 MENU_SHOW="$(eval echo "${T[${L}19]}")"
 action1(){
 "${SWITCH_MODE1[f]}"
@@ -466,7 +466,6 @@ action4(){ uninstall; }
 action0(){ exit 0; }
 else
 MENU_SHOW="${T[${L}12]}"
-check_system_info
 check_dependencies curl
 check_warp
 action1(){
