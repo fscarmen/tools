@@ -168,11 +168,11 @@ check_unlock_running(){
 	run_1_3(){	kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1
 			nohup bash /etc/wireguard/warp_unlock.sh >/dev/null 2>&1 &
 			}
-	run_2_1(){	screen -QX u quit >/dev/null 2>&1 && screen -wipe >/dev/null 2>&1; }
-	run_2_2(){	screen -QX u quit >/dev/null 2>&1 && screen -wipe >/dev/null 2>&1 && sleep 1
+	run_2_1(){	screen -QX u quit >/dev/null 2>&1 && sleep 1 && screen -wipe >/dev/null 2>&1; }
+	run_2_2(){	screen -QX u quit >/dev/null 2>&1 && sleep 1 && screen -wipe >/dev/null 2>&1
 			screen -USdm u bash /etc/wireguard/warp_unlock.sh
 			}
-	run_2_3(){	screen -QX u quit >/dev/null 2>&1 && screen -wipe >/dev/null 2>&1
+	run_2_3(){	screen -QX u quit >/dev/null 2>&1 && sleep 1 && screen -wipe >/dev/null 2>&1
 			nohup bash /etc/wireguard/warp_unlock.sh >/dev/null 2>&1 &
 			}
 	run_3_1(){	kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1; }
