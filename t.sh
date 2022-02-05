@@ -14,8 +14,8 @@ declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
-T[E1]="1. Suppport pass parameter. You can run like this:bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/t.sh) -E -A us -4 -N nd -M 2; 2. Support logs push to Telegram; 3. Support switch unlock modes freely; 4. Log limit is 1000 lines"
-T[C1]="支持传参，你可以这样运行脚本: bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/t.sh) -E -A us -4 -N nd -M 2; 2. 把日志输出到 Telegram; 3. 自由地切换解锁模式; 4. 日志限制1000行"
+T[E1]="1. Suppport pass parameter. You can run like this:bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/warp_unlock/main/unlock.sh) -E -A us -4 -N nd -M 2; 2. Support logs push to Telegram; 3. Support switch unlock modes freely; 4. Log limit is 1000 lines"
+T[C1]="支持传参，你可以这样运行脚本: bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/warp_unlock/main/unlock.sh) -E -A us -4 -N nd -M 2; 2. 把日志输出到 Telegram; 3. 自由地切换解锁模式; 4. 日志限制1000行"
 T[E2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp_unlock/issues]"
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp_unlock/issues]"
 T[E3]="Choose:"
@@ -44,8 +44,8 @@ T[E14]="Wrong input."
 T[C14]="输入错误"
 T[E15]="\n Select the stream media you wanna unlock (Multiple selections are possible, such as 123. The default is select all)\n 1. Netflix\n 2. Disney+\n"
 T[C15]="\n 选择你期望解锁的流媒体 (可多选，如 123，默认为全选)\n 1. Netflix\n 2. Disney+\n"
-T[E16]="The script Born to make stream media unlock by WARP. Detail:[https://github.com/fscarmen/warp]\n Features:\n	* Support a variety of main stream streaming media detection.\n	* Multiple ways to unlock.\n	* Support WARP Socks5 Proxy to detect and replace IP.\n	* log output\n"
-T[C16]="本项目专为 WARP 解锁流媒体而生。详细说明：[https://github.com/fscarmen/warp]\n 脚本特点:\n	* 支持多种主流串流影视检测\n	* 多种方式解锁\n	* 支持 WARP Socks5 Proxy 检测和更换 IP\n	* 日志输出\n"
+T[E16]="The script Born to make stream media unlock by WARP. Detail:[https://github.com/fscarmen/warp_unlock]\n Features:\n	* Support a variety of main stream streaming media detection.\n	* Multiple ways to unlock.\n	* Support WARP Socks5 Proxy to detect and replace IP.\n	* log output\n"
+T[C16]="本项目专为 WARP 解锁流媒体而生。详细说明：[https://github.com/fscarmen/warp_unlock]\n 脚本特点:\n	* 支持多种主流串流影视检测\n	* 多种方式解锁\n	* 支持 WARP Socks5 Proxy 检测和更换 IP\n	* 日志输出\n"
 T[E17]="Version"
 T[C17]="脚本版本"
 T[E18]="New features"
@@ -307,7 +307,7 @@ timedatectl set-timezone Asia/Shanghai
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
 
 log_output="\\\$(date +'%F %T'). \\\\\tIP: \\\$WAN \\\\\tCountry: \\\$COUNTRY \\\\\t\\\$CONTENT"
-tg_output="Server:\\\$CUSTOM. \\\$(date +'%F %T'). IP: \\\$WAN  Country: \\\$COUNTRY. \\\$CONTENT"
+tg_output="💻 \\\$CUSTOM. ⏰ \\\$(date +'%F %T'). 🛰 \\\$WAN  🌏 \\\$COUNTRY. \\\$CONTENT"
 
 log_message(){ echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log; [[ \$(cat /root/result.log | wc -l) -gt \$LOG_LIMIT ]] && sed -i "1,10d" /root/result.log; }
 tg_message(){ curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(eval echo "\$tg_output")" -d parse_mode="HTML" >/dev/null 2>&1; }
