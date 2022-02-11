@@ -320,7 +320,7 @@ COUNTRY=\$(expr "\$IP_INFO" : '.*country\":\"\([^"]*\).*')
 ASNORG=\$(expr "\$IP_INFO" : '.*asn_org\":\"\([^"]*\).*')
 }
 
-wgcf_restart(){ systemctl restart wg-quick@wgcf; sleep 5; ip; }
+wgcf_restart(){ systemctl restart wg-quick@wgcf; sleep 2; ss -nltp | grep dnsmasq >/dev/null 2>&1 && systemctl restart dnsmasq >/dev/null 2>&1; sleep 2; ip; }
 
 socks5_restart(){
 warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 && sleep 15
@@ -340,7 +340,7 @@ log_message
 [[ -n "\$CUSTOM" ]] && [[ \${R[0]} != \$(sed -n '1p' /etc/wireguard/status.log) ]] && tg_message
 sed -i "1s/.*/\${R[0]}/" /etc/wireguard/status.log
 }
-cb
+
 check1(){
 unset PreAssertion assertion disneycookie TokenContent isBanned is403 fakecontent refreshToken disneycontent tmpresult previewcheck isUnabailable region inSupportedLocation
 R[1]=""
