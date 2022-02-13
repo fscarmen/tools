@@ -68,4 +68,5 @@ install(){
 	rm -rf wgcf-profile.conf /usr/local/bin/wgcf
 	}&
 
+
 install
