@@ -70,11 +70,14 @@ wgcf_install(){
 	[[ -e wgcf-profile.conf ]] && sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf && green " \n MTU complete\n "
 	sed -i "s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf
 	mv wgcf-profile.conf /etc/wireguard/wgcf.conf
-	rm -rf wgcf-profile.conf /usr/local/bin/wgcf
 	}&
 
 	wait
+	wget https://github.com/ginuerzh/gost/releases/download/v2.11.1/gost-linux-amd64-2.11.1.gz
+	gzip -d gost-linux-amd64-2.11.1.gz
+	docker cp gost-linux-amd64-2.11.1 wgcf:/etc/wireguard/gost
 	docker exec -it wgcf bash /etc/wireguard/run.sh
+	rm -rf wgcf-profile.conf /usr/local/bin/wgcf gost-linux-amd64
 }
 
 # 期望解锁地区
