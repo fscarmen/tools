@@ -76,7 +76,7 @@ wgcf_install(){
 	gzip -d gost-linux-amd64-2.11.1.gz
 	mv gost-linux-amd64-2.11.1 /etc/wireguard/gost
 	chmod +x /etc/wireguard/gost
-	docker exec -it wgcf /etc/wireguard/run.sh &
+	docker exec -it wgcf /etc/wireguard/run.sh
 	rm -rf wgcf-profile.conf /usr/local/bin/wgcf gost-linux-amd64
 }
 
