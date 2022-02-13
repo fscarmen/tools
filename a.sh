@@ -74,7 +74,7 @@ wgcf_install(){
 	}&
 
 	wait
-	docker exec -it wgcf /etc/wireguard/run.sh
+	docker exec -it wgcf bash /etc/wireguard/run.sh
 }
 
 # 期望解锁地区
