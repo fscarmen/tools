@@ -34,7 +34,7 @@ wgcf_install(){
 
 	# 注册 WARP 账户 ( wgcf-account.toml 使用默认值加加快速度)。如有 WARP+ 账户，修改 license 并升级，并把设备名等信息保存到 /etc/wireguard/info.log
 	mkdir -p /etc/wireguard/ >/dev/null 2>&1
-	echo "wg-quick up wgcf\nnohup /etc/wireguard/gost -L :1080 >/dev/null 2>&1 &" > /etc/wireguard/run.sh; chmod +x /etc/wireguard/run.sh
+	echo -e "wg-quick up wgcf\nnohup /etc/wireguard/gost -L :1080 >/dev/null 2>&1 &" > /etc/wireguard/run.sh; chmod +x /etc/wireguard/run.sh
 	until [[ -e wgcf-account.toml ]] >/dev/null 2>&1; do
 		wgcf register --accept-tos >/dev/null 2>&1 && break
 	done
