@@ -19,7 +19,7 @@ wgcf_install(){
 	{ 
 	green " \n Install docker \n " && ! systemctl is-active docker >/dev/null 2>&1 && curl -sSL get.docker.com | sh
 
-	docker run -dit --restart=always --name wgcf --sysctl net.ipv6.conf.all.disable_ipv6=0 --device /dev/net/tun --entrypoint /run.sh --privileged --cap-add net_admin --cap-add sys_module --log-opt max-size=1m -v /etc/wireguard:/etc/wireguard -v /lib/modules:/lib/modules fscarmen/Netflix_unlock:amd64
+	docker run -dit --restart=always --name wgcf --sysctl net.ipv6.conf.all.disable_ipv6=0 --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module --log-opt max-size=1m -v /etc/wireguard:/etc/wireguard -v /lib/modules:/lib/modules fscarmen/netflix_unlock:amd64
 	}&
 
 	{
@@ -34,6 +34,7 @@ wgcf_install(){
 
 	# 注册 WARP 账户 ( wgcf-account.toml 使用默认值加加快速度)。如有 WARP+ 账户，修改 license 并升级，并把设备名等信息保存到 /etc/wireguard/info.log
 	mkdir -p /etc/wireguard/ >/dev/null 2>&1
+	echo "wg-quick up wgcf\nnohup /etc/wireguard/gost -L :1080 >/dev/null 2>&1 &" > /etc/wireguard/run.sh; chmod +x /etc/wireguard/run.sh
 	until [[ -e wgcf-account.toml ]] >/dev/null 2>&1; do
 		wgcf register --accept-tos >/dev/null 2>&1 && break
 	done
@@ -72,6 +73,10 @@ wgcf_install(){
 	rm -rf wgcf-profile.conf /usr/local/bin/wgcf
 	}&
 
+	wait
+	docker exec -it wgcf /etc/wireguard/run.sh
+}
+
 # 期望解锁地区
 input_region(){
 	if [[ -z "$EXPECT" ]]; then
@@ -98,7 +103,7 @@ input_region
 
 input_tg
 
-# 生成解锁情况文件
+# 生成解锁情况文件和 docker 运行文件
 echo 'null' > /etc/wireguard/status.log
 
 # 生成 warp_unlock.sh 文件，判断当前流媒体解锁状态，遇到不解锁时更换 WARP IP，直至刷成功。5分钟后还没有刷成功，将不会重复该进程而浪费系统资源
