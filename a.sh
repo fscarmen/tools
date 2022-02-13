@@ -76,7 +76,8 @@ wgcf_install(){
 	wget https://github.com/ginuerzh/gost/releases/download/v2.11.1/gost-linux-amd64-2.11.1.gz
 	gzip -d gost-linux-amd64-2.11.1.gz
 	docker cp gost-linux-amd64-2.11.1 wgcf:/etc/wireguard/gost
-	docker exec -it wgcf bash /etc/wireguard/run.sh
+	docker exec -it wgcf chmod +x /etc/wireguard/gost
+	docker exec -it wgcf /etc/wireguard/run.sh
 	rm -rf wgcf-profile.conf /usr/local/bin/wgcf gost-linux-amd64
 }
 
@@ -199,5 +200,5 @@ EOF
 green " All is ok "
 }
 
-wgcf_install
+wgcf_install &
 export_unlock_file
