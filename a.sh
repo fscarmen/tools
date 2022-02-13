@@ -34,7 +34,7 @@ wgcf_install(){
 
 	# 注册 WARP 账户 ( wgcf-account.toml 使用默认值加加快速度)。如有 WARP+ 账户，修改 license 并升级，并把设备名等信息保存到 /etc/wireguard/info.log
 	mkdir -p /etc/wireguard/ >/dev/null 2>&1
-	echo -e "wg-quick up wgcf\nnohup /etc/wireguard/gost -L :1080 >/dev/null 2>&1 &" > /etc/wireguard/run.sh; chmod +x /etc/wireguard/run.sh
+	echo -e "wg-quick up wgcf\n/etc/wireguard/gost -L :1080" > /etc/wireguard/run.sh; chmod +x /etc/wireguard/run.sh
 	until [[ -e wgcf-account.toml ]] >/dev/null 2>&1; do
 		wgcf register --accept-tos >/dev/null 2>&1 && break
 	done
@@ -43,7 +43,6 @@ wgcf_install(){
 
 	# 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
 	[[ -e wgcf-account.toml ]] && wgcf generate >/dev/null 2>&1
-	green " \n wgcf complete\n "
 
 	# 反复测试最佳 MTU。 Wireguard Header：IPv4=60 bytes,IPv6=80 bytes，1280 ≤1 MTU ≤ 1420。 ping = 8(ICMP回显示请求和回显应答报文格式长度) + 20(IP首部) 。
 	# 详细说明：<[WireGuard] Header / MTU sizes for Wireguard>：https://lists.zx2c4.com/pipermail/wireguard/2017-December/002201.html
@@ -67,7 +66,7 @@ wgcf_install(){
 
 	MTU=$((MTU+28-80))
 
-	[[ -e wgcf-profile.conf ]] && sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf && green " \n MTU complete\n "
+	[[ -e wgcf-profile.conf ]] && sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf
 	sed -i "s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf
 	mv wgcf-profile.conf /etc/wireguard/wgcf.conf
 	}&
@@ -77,7 +76,7 @@ wgcf_install(){
 	gzip -d gost-linux-amd64-2.11.1.gz
 	mv gost-linux-amd64-2.11.1 /etc/wireguard/gost
 	chmod +x /etc/wireguard/gost
-	docker exec -it wgcf /etc/wireguard/run.sh
+	docker exec -it wgcf /etc/wireguard/run.sh &
 	rm -rf wgcf-profile.conf /usr/local/bin/wgcf gost-linux-amd64
 }
 
