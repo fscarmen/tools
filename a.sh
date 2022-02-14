@@ -34,7 +34,7 @@ wgcf_install(){
 
 	# 注册 WARP 账户 ( wgcf-account.toml 使用默认值加加快速度)。如有 WARP+ 账户，修改 license 并升级，并把设备名等信息保存到 /etc/wireguard/info.log
 	mkdir -p /etc/wireguard/ >/dev/null 2>&1
-	echo -e "wg-quick up wgcf\n/etc/wireguard/gost -L :1080" > /etc/wireguard/run.sh; chmod +x /etc/wireguard/run.sh
+	echo -e "wg-quick up wgcf\ncrond\n/etc/wireguard/gost -L :1080" > /etc/wireguard/run.sh; chmod +x /etc/wireguard/run.sh
 	until [[ -e wgcf-account.toml ]] >/dev/null 2>&1; do
 		wgcf register --accept-tos >/dev/null 2>&1 && break
 	done
@@ -101,10 +101,6 @@ input_tg(){
 
 # 生成解锁文件
 export_unlock_file(){
-
-input_region
-
-input_tg
 
 # 生成解锁情况文件和 docker 运行文件
 echo 'null' > /etc/wireguard/status.log
@@ -199,5 +195,8 @@ EOF
 green " All is ok "
 }
 
+input_region
+
+input_tg
 wgcf_install &
 export_unlock_file
