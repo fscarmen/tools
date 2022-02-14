@@ -17,12 +17,11 @@ wgcf_install(){
 
 	# 安装 docker, 拉取镜像+创建容器
 
-	{green " \n Install docker \n " && ! systemctl is-active docker >/dev/null 2>&1 && curl -sSL get.docker.com | sh
+	green " \n Install docker \n " && ! systemctl is-active docker >/dev/null 2>&1 && curl -sSL get.docker.com | sh
 
 	docker run --restart=always --name wgcf --sysctl net.ipv6.conf.all.disable_ipv6=0 --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module --log-opt max-size=1m -v /etc/wireguard:/etc/wireguard -v /lib/modules:/lib/modules fscarmen/netflix_unlock:amd64
-	}&
 
-	{
+
 	# 判断 wgcf 的最新版本,如因 github 接口问题未能获取，默认 v2.2.11
 	latest=$(wget -qO- -4 "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
 	latest=${latest:-'2.2.11'}
@@ -69,16 +68,16 @@ wgcf_install(){
 	[[ -e wgcf-profile.conf ]] && sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf
 	sed -i "s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf
 	mv wgcf-profile.conf /etc/wireguard/wgcf.conf
-	}&
+
 	
-	{
+
 	wget -4q https://github.com/ginuerzh/gost/releases/download/v2.11.1/gost-linux-amd64-2.11.1.gz
-	gzip -d gost-linux-amd64-2.11.1.gz
+	gzip -df gost-linux-amd64-2.11.1.gz
 	mv gost-linux-amd64-2.11.1 /etc/wireguard/gost
 	chmod +x /etc/wireguard/gost
-	docker exec -it wgcf bash /etc/wireguard/run.sh &
+	
 	rm -rf wgcf-profile.conf /usr/local/bin/wgcf gost-linux-amd64
-	}&
+
 }
 
 # 期望解锁地区
@@ -201,7 +200,8 @@ green " All is ok "
 }
 
 
-wgcf_install &
+wgcf_install
 export_unlock_file
+docker exec -it wgcf bash /etc/wireguard/run.sh &
 
 
