@@ -69,9 +69,7 @@ wgcf_install(){
 	[[ -e wgcf-profile.conf ]] && sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf
 	sed -i "s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf-profile.conf
 	mv wgcf-profile.conf /etc/wireguard/wgcf.conf
-	}&
 
-	wait
 	wget -4q https://github.com/ginuerzh/gost/releases/download/v2.11.1/gost-linux-amd64-2.11.1.gz
 	gzip -d gost-linux-amd64-2.11.1.gz
 	mv gost-linux-amd64-2.11.1 /etc/wireguard/gost
@@ -198,5 +196,6 @@ green " All is ok "
 input_region
 
 input_tg
-wgcf_install &
 export_unlock_file
+wgcf_install
+
