@@ -24,4 +24,4 @@ RUN     apk add --no-cache tzdata net-tools iproute2 openresolv wireguard-tools 
 
 COPY    wgcf.conf warp_unlock.sh $DIR/
 
-ENTRYPOINT  ["$DIR/run.sh"]
+ENTRYPOINT  ["/etc/wireguard/run.sh"]
