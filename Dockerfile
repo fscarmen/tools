@@ -4,7 +4,7 @@ ENV     PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
         LANG=zh_CN.UTF-8 \
         DIR=/etc/wireguard
 
-WORKDIR $DIR
+WORKDIR ${DIR}
 
 RUN     apk add --no-cache tzdata net-tools iproute2 openresolv wireguard-tools openrc iptables curl \
         && rm -rf /var/cache/apk/* \
