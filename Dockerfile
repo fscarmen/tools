@@ -19,7 +19,7 @@ RUN     apk add --no-cache tzdata net-tools iproute2 openresolv wireguard-tools 
         && echo '*/5 * * * * nohup bash /etc/wireguard/warp_unlock.sh >/dev/null 2>&1 &' >> /etc/crontabs/root \
         && echo 'null' > /etc/wireguard/status.log \
         && echo -e "wg-quick up wgcf\ncrond\n/etc/wireguard/gost -L :40000" > $DIR//run.sh \
-        && chmod +x $DIR/gost $DIR/run.sh \
+        && chmod +x $DIR/gost $DIR/run.sh
   
 
 COPY    wgcf.conf warp_unlock.sh $DIR/
