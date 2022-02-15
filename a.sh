@@ -139,7 +139,7 @@ EOF
 docker_build(){
 	wget -O Dockerfile https://raw.githubusercontent.com/fscarmen/tools/main/Dockerfile
 	docker build -t fscarmen/netfilx_unlock .
-	docker run -dit --restart=always --name wgcf --sysctl net.ipv6.conf.all.disable_ipv6=0 --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module --log-opt max-size=1m -v /lib/modules:/lib/modules fscarmen/netfilx_unlock
+	docker run -dit --restart=always --name wgcf --sysctl net.ipv6.conf.all.disable_ipv6=0 --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module --log-opt max-size=1m -v /lib/modules:/lib/modules fscarmen/netfilx_unlock:latest
 	rm -rf wgcf.conf wgcf-account.toml Dockerfile warp_unlock.sh
 }
 
