@@ -1,8 +1,8 @@
-FROM alpine
+FROM    alpine
 
-ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
-    LANG=zh_CN.UTF-8 \
-    DIR=/etc/wireguard
+ENV     PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+        LANG=zh_CN.UTF-8 \
+        DIR=/etc/wireguard
 
 WORKDIR ${DIR}
 
@@ -22,7 +22,6 @@ RUN     apk add --no-cache tzdata net-tools iproute2 openresolv wireguard-tools 
         && chmod +x $DIR/gost $DIR/run.sh \
   
 
-COPY wgcf.conf warp_unlock.sh $DIR/
-RUN chmod +x $DIR/run.sh
+COPY    wgcf.conf warp_unlock.sh $DIR/
 
-#ENTRYPOINT ["/run.sh"]
+ENTRYPOINT  ["$DIR/run.sh"]
