@@ -17,7 +17,8 @@ RUN     apk add --no-cache tzdata net-tools iproute2 openresolv wireguard-tools 
         && gzip -d $DIR/gost.gz \
         && chmod +x $DIR/gost \
         && curl -fsSL git.io/wireguard-go.sh | bash \
-        && echo  '*/5 * * * * nohup bash /etc/wireguard/warp_unlock.sh >/dev/null 2>&1 &' >> /etc/crontabs/root \
+        && echo '*/5 * * * * nohup bash /etc/wireguard/warp_unlock.sh >/dev/null 2>&1 &' >> /etc/crontabs/root \
+        && echo 'null' > /etc/wireguard/status.log \
   
 
 #COPY run.sh $DIR/run.sh
