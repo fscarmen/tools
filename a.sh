@@ -15,10 +15,10 @@ wgcf_install(){
 	esac
 
 	# 安装 docker, 拉取镜像+创建容器
-
-	green " \n Install docker \n " && ! systemctl is-active docker >/dev/null 2>&1 && curl -sSL get.docker.com | sh
+	! systemctl is-active docker >/dev/null 2>&1 && green " \n Install docker \n " && curl -sSL get.docker.com | sh
 
 	# 判断 wgcf 的最新版本,如因 github 接口问题未能获取，默认 v2.2.11
+	green " \n Install WGCF \n "
 	latest=$(wget -qO- -4 "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
 	latest=${latest:-'2.2.11'}
 
@@ -137,10 +137,12 @@ EOF
 }
 
 docker_build(){
+	green " \n Docker build and run \n "
 	wget -O Dockerfile https://raw.githubusercontent.com/fscarmen/tools/main/Dockerfile
 	docker build -t fscarmen/netfilx_unlock .
 	docker run -dit --restart=always --name wgcf --sysctl net.ipv6.conf.all.disable_ipv6=0 --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module --log-opt max-size=1m -v /lib/modules:/lib/modules fscarmen/netfilx_unlock:latest
 	rm -rf wgcf.conf wgcf-account.toml Dockerfile warp_unlock.sh
+	docker rmi $(docker images | grep alpine | awk '{print $3}')
 }
 
 input_region
