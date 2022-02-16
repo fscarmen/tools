@@ -19,10 +19,7 @@ RUN     apk add --no-cache tzdata net-tools iproute2 openresolv wireguard-tools 
         && echo "*/5 * * * * nohup bash $DIR/warp_unlock.sh >/dev/null 2>&1 &" >> /etc/crontabs/root \
         && echo 'null' > $DIR/status.log \
         && echo -e "wg-quick up wgcf\ncrond\n$DIR/gost -L :40000" > $DIR/run.sh \
-        && chmod +x $DIR/gost $DIR/run.sh \
-        && until [[ -e wgcf-account.toml ]] >/dev/null 2>&1; do wgcf register --accept-tos && break; done \
-        && [[ -e wgcf-account.toml ]] && wgcf generate -p $DIR/wgcf.conf \
-        && sed -i "s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/162.159.192.1/g" $DIR/wgcf.conf
+        && chmod +x $DIR/gost $DIR/run.sh
 
   
 #COPY    wgcf.conf warp_unlock.sh $DIR/
