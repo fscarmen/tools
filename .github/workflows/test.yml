@@ -2,29 +2,14 @@ name: Test
 on:
   workflow_dispatch:
 
-  push:
-    branches:
-      - '*'
-    paths:
-      - '**'
-      - '!**.md'
-
-  pull_request:
-    branches:
-      - '*'
-    paths:
-      - '**'
-      - '!**.md'
-
-
 jobs:
   Ubuntu:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Build image
-      run: docker build -t wg . -f Dockerfile
-    - name: Test single container
+    - name: Build image and push to docker hub
+      run: docker buildx build -t fscarmen/netflix_test:latest --platform=linux/arm64,linux/amd64 . --push
+    - name: Test container
       run:  |
         docker run --rm -id \
         --name wgcf \
@@ -33,9 +18,10 @@ jobs:
         --cap-add sys_module \
         --log-opt max-size=1m \
         -v /lib/modules:/lib/modules \
-        fscarmen/netfilx_unlock:latest
+        fscarmen/netflix_test:latest
         docker exec -i wgcf curl -4 ipget.net
         docker exec -i wgcf curl -4 ip.gs
+        docker exec -i wgcf ss -nltp
         docker run --rm   --network container:wgcf  curlimages/curl curl -4 ipget.net
         docker run --rm   --network container:wgcf  curlimages/curl curl -4 ip.gs
         docker stop wgcf
