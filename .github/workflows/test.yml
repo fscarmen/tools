@@ -44,6 +44,7 @@ jobs:
             -v /lib/modules:/lib/modules \
             -v /etc/wireguard:/etc/wireguard \
             ${DOCKERHUB_REPOSITORY}
+
             docker exec -i wgcf curl -4 ipget.net
             docker exec -i wgcf curl -4 ip.gs
             docker exec -i wgcf ss -nltp
