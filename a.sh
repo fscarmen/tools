@@ -4,8 +4,7 @@ export LANG=en_US.UTF-8
 
 WORKDIR='/etc/wireguard'
 
-
-# 自定义字体彩色，read 函数，友道翻译函数
+# 自定义字体彩色，read 函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
 green(){ echo -e "\033[32m\033[01m$1\033[0m"; }
 yellow(){ echo -e "\033[33m\033[01m$1\033[0m"; }
