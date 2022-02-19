@@ -149,8 +149,8 @@ docker_build(){
 	! systemctl is-active docker >/dev/null 2>&1 && green " \n Install docker \n " && curl -sSL get.docker.com | sh
 	
 	wget -O Dockerfile https://github.com/fscarmen/tools/raw/main/Dockerfile
-	docker build -t fscarmen/netfilx_unlock .
-	docker run -dit --restart=always --name wgcf --sysctl net.ipv6.conf.all.disable_ipv6=0 --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module --log-opt max-size=1m -v /lib/modules:/lib/modules -v $WGCF_DIR:$WGCF_DIR fscarmen/netfilx_unlock:latest
+	docker build -t fscarmen/netflix_unlock .
+	docker run -dit --restart=always --name wgcf --sysctl net.ipv6.conf.all.disable_ipv6=0 --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module --log-opt max-size=1m -v /lib/modules:/lib/modules -v $WGCF_DIR:$WGCF_DIR fscarmen/netflix_unlock:latest
 	rm -rf wgcf.conf wgcf-account.toml Dockerfile warp_unlock.sh /usr/local/bin/wgcf
 	green " \n Done! \n "
 }
