@@ -3,7 +3,7 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/b
 export LANG=en_US.UTF-8
 
 WGCF_DIR='/etc/wireguard'
-WORK_DIR='/unlock'
+DOCKER_DIR='/unlock'
 
 # 自定义字体彩色，read 函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -125,8 +125,8 @@ REGION[0]=\${REGION[0]:-'US'}
 fi
 echo "\${REGION[0]}" | grep -qi "\$EXPECT" && R[0]="\$UNLOCK_STATUS" || R[0]="\$NOT_UNLOCK_STATUS"
 CONTENT="Netflix: \${R[0]}."
-[[ -n "\$CUSTOM" ]] && [[ \${R[0]} != \$(sed -n '1p' $WORK_DIR/status.log) ]] && tg_message
-sed -i "1s/.*/\${R[0]}/" $WORK_DIR/status.log
+[[ -n "\$CUSTOM" ]] && [[ \${R[0]} != \$(sed -n '1p' $DOCKER_DIR/status.log) ]] && tg_message
+sed -i "1s/.*/\${R[0]}/" $DOCKER_DIR/status.log
 }
 
 ip
