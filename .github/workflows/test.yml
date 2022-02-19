@@ -45,5 +45,6 @@ jobs:
             -v /etc/wireguard:/etc/wireguard \
             ${DOCKERHUB_REPOSITORY}
 
-            docker exec -i test ss -nltp
+            docker exec -i test netstat -nltp
+
             docker stop test
