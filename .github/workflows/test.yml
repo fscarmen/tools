@@ -1,27 +1,44 @@
-name: Test
+name: "Build Netflix unlock docker"
+
 on:
   workflow_dispatch:
 
 jobs:
-  Ubuntu:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Build image and push to docker hub
-      run: docker buildx build -t fscarmen/netflix_test:latest --platform=linux/arm64,linux/amd64 . --push
-    - name: Test container
-      run:  |
-        docker run --rm -id \
-        --name wgcf \
-        --sysctl net.ipv6.conf.all.disable_ipv6=0 \
-        --privileged --cap-add net_admin \
-        --cap-add sys_module \
-        --log-opt max-size=1m \
-        -v /lib/modules:/lib/modules \
-        fscarmen/netflix_test:latest
-        docker exec -i wgcf curl -4 ipget.net
-        docker exec -i wgcf curl -4 ip.gs
-        docker exec -i wgcf ss -nltp
-        docker run --rm   --network container:wgcf  curlimages/curl curl -4 ipget.net
-        docker run --rm   --network container:wgcf  curlimages/curl curl -4 ip.gs
-        docker stop wgcf
+  Building:
+      runs-on: ubuntu-latest
+      name: "Build Netflix unlock docker"
+      env:
+        DOCKER_BUILDKIT: 1
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKERHUB_REPOSITORY: ${{ secrets.DOCKER_USERNAME }}/pagermaid_modify
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+
+        - name: Login to DockerHub
+          uses: docker/login-action@v1
+          with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+        - run: docker buildx build -t fscarmen/netflix_test:latest --platform=linux/arm64,linux/amd64 . --push
+
+        - name: Test container
+          run:  |
+            docker run --rm -id \
+            --name wgcf \
+            --sysctl net.ipv6.conf.all.disable_ipv6=0 \
+            --privileged --cap-add net_admin \
+            --cap-add sys_module \
+            --log-opt max-size=1m \
+            -v /lib/modules:/lib/modules \
+            -v /etc/wireguard:/etc/wireguard \
+            fscarmen/netflix_unlock:latest
+            docker exec -i wgcf curl -4 ipget.net
+            docker exec -i wgcf curl -4 ip.gs
+            docker exec -i wgcf ss -nltp
+            docker run --rm --network container:wgcf curlimages/curl curl -4 ipget.net
+            docker run --rm --network container:wgcf curlimages/curl curl -4 ip.gs
+            docker run --rm --network container:wgcf curlimages/ss -nltp
+            docker stop wgcf
