@@ -2,7 +2,7 @@ FROM  alpine
 
 ENV   PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
       LANG=zh_CN.UTF-8 \
-      DIR=/
+      DIR=/wgcf
 
 WORKDIR ${DIR}
 
@@ -19,4 +19,4 @@ RUN      apk add --no-cache tzdata net-tools iproute2 openresolv wireguard-tools
       && echo -e "wg-quick up wgcf\n$DIR/gost -L :40000" > $DIR/run.sh \
       && chmod +x $DIR/gost $DIR/run.sh
 
-#ENTRYPOINT  $DIR/run.sh
+ENTRYPOINT  $DIR/run.sh
