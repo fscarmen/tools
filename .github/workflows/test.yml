@@ -19,7 +19,7 @@ jobs:
           uses: actions/checkout@v2
 
         - name: Build Netflix unlock docker 
-            run:
+          run: |
             
             export DOCKER_CLI_EXPERIMENTAL=enabled
 
