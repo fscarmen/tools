@@ -46,4 +46,4 @@ jobs:
             ${DOCKERHUB_REPOSITORY}
 
             docker exec -i test ss -nltp
-            docker stop wgcf
+            docker stop test
