@@ -21,4 +21,8 @@ jobs:
         - run:
             docker login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
             
+            docker buildx create --use --name mybuilder
+            
+            docker buildx inspect mybuilder --bootstrap
+            
             docker buildx build --tag ${DOCKERHUB_REPOSITORY} --platform=linux/arm64,linux/amd64 . --push
