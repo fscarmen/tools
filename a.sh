@@ -147,7 +147,7 @@ docker_build(){
 	# 安装 docker, 拉取镜像+创建容器
 	! systemctl is-active docker >/dev/null 2>&1 && green " \n Install docker \n " && curl -sSL get.docker.com | sh
 	
-	wget -O Dockerfile https://raw.githubusercontent.com/fscarmen/warp_unlock/main/Dockerfile
+	wget -O Dockerfile https://github.com/fscarmen/tools/raw/main/Dockerfile
 	docker build -t fscarmen/netfilx_unlock .
 	docker run -dit --restart=always --name wgcf --sysctl net.ipv6.conf.all.disable_ipv6=0 --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module --log-opt max-size=1m -v /lib/modules:/lib/modules -v $WORKDIR:$WORKDIR fscarmen/netfilx_unlock:latest
 	rm -rf wgcf.conf wgcf-account.toml Dockerfile warp_unlock.sh /usr/local/bin/wgcf
