@@ -34,10 +34,6 @@ jobs:
         --log-opt max-size=1m \
         -v /lib/modules:/lib/modules \
         fscarmen/netfilx_unlock:latest
-        while ! docker logs wgcf | grep "route.go"; do
-          echo wait
-          sleep 1
-        done
         docker exec -i wgcf curl -4 ipget.net
         docker exec -i wgcf curl -4 ip.gs
         docker run --rm   --network container:wgcf  curlimages/curl curl -4 ipget.net
