@@ -33,12 +33,12 @@ wgcf_install(){
 	chmod +x /usr/local/bin/wgcf
 
 	# 注册 WARP 账户 ( wgcf-account.toml 使用默认值加加快速度)。如有 WARP+ 账户，修改 license 并升级
-	until [[ -e wgcf-account.toml ]] >/dev/null 2>&1; do
+	until [ -e wgcf-account.toml ] >/dev/null 2>&1; do
 		wgcf register --accept-tos >/dev/null 2>&1 && break
 	done
 
 	# 生成 Wire-Guard 配置文件 (wgcf.conf)
-	[[ -e wgcf-account.toml ]] && wgcf generate -p wgcf.conf >/dev/null 2>&1
+	[ -e wgcf-account.toml ] && wgcf generate -p $WORKDIR/wgcf.conf >/dev/null 2>&1
 
 	# 反复测试最佳 MTU。 Wireguard Header：IPv4=60 bytes,IPv6=80 bytes，1280 ≤1 MTU ≤ 1420。 ping = 8(ICMP回显示请求和回显应答报文格式长度) + 20(IP首部) 。
 	# 详细说明：<[WireGuard] Header / MTU sizes for Wireguard>：https://lists.zx2c4.com/pipermail/wireguard/2017-December/002201.html
@@ -62,8 +62,8 @@ wgcf_install(){
 
 	MTU=$((MTU+28-80))
 
-	[[ -e wgcf.conf ]] && sed -i "s/MTU.*/MTU = $MTU/g" wgcf.conf
-	sed -i "s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/162.159.192.1/g" wgcf.conf
+	[ -e wgcf.conf ] && sed -i "s/MTU.*/MTU = $MTU/g" $WORKDIR/wgcf.conf
+	sed -i "s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/162.159.192.1/g" $WORKDIR/wgcf.conf
 }
 
 # 期望解锁地区
