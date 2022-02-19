@@ -2,7 +2,8 @@
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/bin
 export LANG=en_US.UTF-8
 
-WORKDIR='/etc/wireguard'
+WGCF_DIR='/etc/wireguard'
+WORK_DIR='/unlock'
 
 # 自定义字体彩色，read 函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -38,7 +39,7 @@ wgcf_install(){
 	done
 
 	# 生成 Wire-Guard 配置文件 (wgcf.conf)
-	[ -e wgcf-account.toml ] && wgcf generate -p $WORKDIR/wgcf.conf >/dev/null 2>&1
+	[ -e wgcf-account.toml ] && wgcf generate -p $WGCF_DIR/wgcf.conf >/dev/null 2>&1
 
 	# 反复测试最佳 MTU。 Wireguard Header：IPv4=60 bytes,IPv6=80 bytes，1280 ≤1 MTU ≤ 1420。 ping = 8(ICMP回显示请求和回显应答报文格式长度) + 20(IP首部) 。
 	# 详细说明：<[WireGuard] Header / MTU sizes for Wireguard>：https://lists.zx2c4.com/pipermail/wireguard/2017-December/002201.html
@@ -62,8 +63,8 @@ wgcf_install(){
 
 	MTU=$((MTU+28-80))
 
-	[ -e wgcf.conf ] && sed -i "s/MTU.*/MTU = $MTU/g" $WORKDIR/wgcf.conf
-	sed -i "s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/162.159.192.1/g" $WORKDIR/wgcf.conf
+	[ -e wgcf.conf ] && sed -i "s/MTU.*/MTU = $MTU/g" $WGCF_DIR/wgcf.conf
+	sed -i "s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/162.159.192.1/g" $WGCF_DIR/wgcf.conf
 }
 
 # 期望解锁地区
@@ -124,8 +125,8 @@ REGION[0]=\${REGION[0]:-'US'}
 fi
 echo "\${REGION[0]}" | grep -qi "\$EXPECT" && R[0]="\$UNLOCK_STATUS" || R[0]="\$NOT_UNLOCK_STATUS"
 CONTENT="Netflix: \${R[0]}."
-[[ -n "\$CUSTOM" ]] && [[ \${R[0]} != \$(sed -n '1p' $WORKDIR/status.log) ]] && tg_message
-sed -i "1s/.*/\${R[0]}/" $WORKDIR/status.log
+[[ -n "\$CUSTOM" ]] && [[ \${R[0]} != \$(sed -n '1p' $WORK_DIR/status.log) ]] && tg_message
+sed -i "1s/.*/\${R[0]}/" $WORK_DIR/status.log
 }
 
 ip
