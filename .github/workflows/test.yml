@@ -18,7 +18,7 @@ jobs:
         - name: Checkout
           uses: actions/checkout@v2
 
-        - name: Build Netflix unlock docker 
+        - name: Build and push images to Docker hub
           run: |
             
             export DOCKER_CLI_EXPERIMENTAL=enabled
