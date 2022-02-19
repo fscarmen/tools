@@ -19,4 +19,4 @@ RUN      apk add --no-cache tzdata net-tools iproute2 openresolv wireguard-tools
       && echo -e "wg-quick up wgcf\ncrond\n$DIR/gost -L :40000" > $DIR/run.sh \
       && chmod +x $DIR/gost $DIR/run.sh
 
-ENTRYPOINT  $DIR/run.sh
+#ENTRYPOINT  $DIR/run.sh
