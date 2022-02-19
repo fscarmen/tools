@@ -2,6 +2,9 @@
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/bin
 export LANG=en_US.UTF-8
 
+WORKDIR='/etc/wireguard'
+
+
 # 自定义字体彩色，read 函数，友道翻译函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
 green(){ echo -e "\033[32m\033[01m$1\033[0m"; }
@@ -16,8 +19,10 @@ TODAY=$(expr "$COUNT" : '.*\s\([0-9]\{1,\}\)\s/.*') && TOTAL=$(expr "$COUNT" : '
 
 wgcf_install(){
 	# 判断处理器架构
-	ARCHITECTURE=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)
-	
+	case $(tr '[:upper:]' '[:lower:]' <<< "$(arch)") in
+	aarch64 ) ARCHITECTURE=arm64;;	x86_64 ) ARCHITECTURE=amd64;;	* ) red " Curren architecture $(arch) is not supported. Feedback: [https://github.com/fscarmen/warp/issues] " && exit 1;;
+	esac
+
 	# 判断 wgcf 的最新版本,如因 github 接口问题未能获取，默认 v2.2.11
 	green " \n Install WGCF \n "
 	latest=$(wget -qO- -4 "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
@@ -83,10 +88,10 @@ input_tg(){
 
 # 生成解锁文件
 export_unlock_file(){
-
+[ ! -d $WORKDIR ] && mkdir $WORKDIR
 
 # 生成 warp_unlock.sh 文件，判断当前流媒体解锁状态，遇到不解锁时更换 WARP IP，直至刷成功。5分钟后还没有刷成功，将不会重复该进程而浪费系统资源
-cat <<EOF > warp_unlock.sh
+cat <<EOF > $WORKDIR/warp_unlock.sh
 EXPECT="$EXPECT"
 TOKEN="$TOKEN"
 USERID="$USERID"
@@ -120,8 +125,8 @@ REGION[0]=\${REGION[0]:-'US'}
 fi
 echo "\${REGION[0]}" | grep -qi "\$EXPECT" && R[0]="\$UNLOCK_STATUS" || R[0]="\$NOT_UNLOCK_STATUS"
 CONTENT="Netflix: \${R[0]}."
-[[ -n "\$CUSTOM" ]] && [[ \${R[0]} != \$(sed -n '1p' /etc/wireguard/status.log) ]] && tg_message
-sed -i "1s/.*/\${R[0]}/" /etc/wireguard/status.log
+[[ -n "\$CUSTOM" ]] && [[ \${R[0]} != \$(sed -n '1p' $WORKDIR/status.log) ]] && tg_message
+sed -i "1s/.*/\${R[0]}/" $WORKDIR/status.log
 }
 
 ip
@@ -145,7 +150,7 @@ docker_build(){
 	
 	wget -O Dockerfile https://raw.githubusercontent.com/fscarmen/warp_unlock/main/Dockerfile
 	docker build -t fscarmen/netfilx_unlock .
-	docker run -dit --restart=always --name wgcf --sysctl net.ipv6.conf.all.disable_ipv6=0 --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module --log-opt max-size=1m -v /lib/modules:/lib/modules fscarmen/netfilx_unlock:latest
+	docker run -dit --restart=always --name wgcf --sysctl net.ipv6.conf.all.disable_ipv6=0 --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module --log-opt max-size=1m -v /lib/modules:/lib/modules -v $WORKDIR:$WORKDIR fscarmen/netfilx_unlock:latest
 	rm -rf wgcf.conf wgcf-account.toml Dockerfile warp_unlock.sh /usr/local/bin/wgcf
 	green " \n Done! \n "
 }
