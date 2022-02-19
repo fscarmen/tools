@@ -11,7 +11,7 @@ jobs:
         DOCKER_BUILDKIT: 1
         DOCKER_CLI_EXPERIMENTAL: enabled
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKERHUB_REPOSITORY: ${{ secrets.DOCKER_USERNAME }}/pagermaid_modify
+        DOCKERHUB_REPOSITORY: ${{ secrets.DOCKER_USERNAME }}/netflix_unlock:latest
       steps:
         - name: Checkout
           uses: actions/checkout@v2
@@ -22,7 +22,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-        - run: docker buildx build -t fscarmen/netflix_test:latest --platform=linux/arm64,linux/amd64 . --push
+        - run: docker buildx build -t ${DOCKERHUB_REPOSITORY} --platform=linux/arm64,linux/amd64 . --push
 
         - name: Test container
           run:  |
@@ -34,7 +34,8 @@ jobs:
             --log-opt max-size=1m \
             -v /lib/modules:/lib/modules \
             -v /etc/wireguard:/etc/wireguard \
-            fscarmen/netflix_unlock:latest
+            ${DOCKERHUB_REPOSITORY}
+
             docker exec -i wgcf curl -4 ipget.net
             docker exec -i wgcf curl -4 ip.gs
             docker exec -i wgcf ss -nltp
