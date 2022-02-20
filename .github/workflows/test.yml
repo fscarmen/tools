@@ -12,11 +12,17 @@ jobs:
         DOCKER_CLI_EXPERIMENTAL: enabled
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        DOCKERHUB_REPOSITORY: ${{ secrets.DOCKER_USERNAME }}/netflix_unlock:latest
+        DOCKERHUB_REPOSITORY: ${{ secrets.DOCKER_USERNAME }}/test:latest
 
       steps:
         - name: Checkout
           uses: actions/checkout@v2
+        
+        - name: Login to DockerHub
+          uses: docker/login-action@v1
+          with:
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
 
         - name: Build and push images to Docker hub
           run: |
@@ -25,7 +31,7 @@ jobs:
 
             docker run --rm --privileged docker/binfmt:66f9012c56a8316f9244ffd7622d7c21c1f6f28d
 
-            docker login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
+            #docker login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
 
             docker buildx create --use --name mybuilder
 
@@ -44,7 +50,4 @@ jobs:
             -v /lib/modules:/lib/modules \
             -v /etc/wireguard:/etc/wireguard \
             ${DOCKERHUB_REPOSITORY}
-
-            docker exec -i test netstat -nltp
-
             docker stop test
