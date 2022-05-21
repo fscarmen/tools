@@ -12,6 +12,8 @@ yellow(){
 
 install(){
 # EUserv docker 守护进程，定时1分钟检查一次
+type -p yum && INSTALL='yum -y install' || INSTALL='apt -y install'
+! type -p crontab >/dev/null 2>&1 && $INSTALL cron
 grep -qE '^[ ]*\*/1[ ]*\*[ ]*\*[ ]*\*[ ]*\*[ ]*root[ ]*bash[ ]*/root/EU_docker_AutoUp.sh' /etc/crontab || echo '*/1 * * * *  root bash /root/EU_docker_AutoUp.sh' >> /etc/crontab
 
 # 生成 EU_docker_AutoUp.sh 文件，判断当前 docker 状态，遇到 Created 或 Exited 时重启，直至刷成功。1分钟后还没有刷成功，将不会重复该进程而浪费系统资源
