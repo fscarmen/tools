@@ -28,11 +28,11 @@ if [[ $ARCHITECTURE = i386 ]]; then
 else
   CMD=(	"$(grep -i pretty_name /etc/os-release 2>/dev/null | cut -d \" -f2)"
       	"$(hostnamectl 2>/dev/null | grep -i system | cut -d : -f2)"
-		    "$(lsb_release -sd 2>/dev/null)"
-		    "$(grep -i description /etc/lsb-release 2>/dev/null | cut -d \" -f2)"
-	  	  " $(grep . /etc/redhat-release 2>/dev/null)"
-		    "$(grep . /etc/issue 2>/dev/null | cut -d \\ -f1 | sed '/^[ ]*$/d')"
-		  )
+	"$(lsb_release -sd 2>/dev/null)"
+	"$(grep -i description /etc/lsb-release 2>/dev/null | cut -d \" -f2)"
+	"$(grep . /etc/redhat-release 2>/dev/null)"
+	"$(grep . /etc/issue 2>/dev/null | cut -d \\ -f1 | sed '/^[ ]*$/d')"
+	)
 
   REGEX=("debian" "ubuntu" "centos|red hat|kernel|oracle linux|amazon linux|alma|rocky")
   RELEASE=("Debian" "Ubuntu" "CentOS")
@@ -58,5 +58,5 @@ green "\n 检测中，请稍等片刻。\n"
 [[ ! -e "$FILE" ]] && curl -sO https://cdn.jsdelivr.net/gh/fscarmen/tools/besttrace/$FILE
 chmod +x "$FILE" >/dev/null 2>&1
 sudo ./"$FILE" "$ip" -g cn > $TEMP_FILE
-green "$(cat $TEMP_FILE | sed "s/.*AS[0-9]*//g" | sed "/\*$/d;/^$/d;1d" | uniq | awk '{printf("%d,%s\n"),NR,$0}')"
+green "$(cat $TEMP_FILE | sed "s/.*\*\(.*局域网\)/\1/g" | sed "s/.*AS[0-9]*//g" | sed "/\*$/d;/^$/d;1d" | uniq | awk '{printf("%d.%s\n"),NR,$0}')"
 rm -f $TEMP_FILE $FILE
