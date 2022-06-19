@@ -10,7 +10,7 @@ result0='打开'; result1='关闭'
 TOKEN=$(wget -qO- https://tcp$STACK.ping.pe/$ip | grep 'document.cookie' | sed "s/.*document.cookie=\"\([^;]\{1,\}\).*/\1/g")
 STREAM_ID=$(wget -qO- --header="cookie: $TOKEN" https://tcp$STACK.ping.pe/$ip | grep 'stream_id =' | cut -d \' -f2)
 sleep 3
-until [[ ${#AREA[@]} = 10 ]]; do
+until [[ $ALL =~ 'TW_1' ]]; do
   unset ALL AREA RESULT
   sleep 2
   ((j++)) || true
