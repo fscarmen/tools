@@ -8,6 +8,13 @@ bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/root.sh) 
 bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/return.sh) [DESTINATION_IP]
 
 ```
+
+测vps端口是否被墙，可跟参数如 8.8.8.8:443，如不填端口，默认为80
+```bash
+bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/check_port.sh) [IP:PORT]
+
+```
+
 端口转发，解决代理443端口被墙，本机用 127.0.0.1
 ```bash
 bash <(curl -sSL http://www.arloor.com/sh/iptablesUtils/natcfg.sh)
