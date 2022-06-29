@@ -80,7 +80,7 @@ green " IPv6: $WAN_6\t 地区: $COUNTRY_6\t 类型: $TYPE_6\t ASN: $ASNORG_6\n"
 [[ $ip =~ '.' && -z "$IP_4" ]] && red " VPS 没有 IPv4 网络，不能查 $ip\n" && exit 1
 [[ $ip =~ ':' && -z "$IP_6" ]] && red " VPS 没有 IPv6 网络，不能查 $ip\n" && exit 1
 
-[[ ! -e "$FILE" ]] && curl -sO https://cdn.jsdelivr.net/gh/fscarmen/tools/besttrace/$FILE
+[[ ! -e "$FILE" ]] && curl -sO https://cdn.jsdelivr.net/gh/fscarmen/tools/besttrace/$FILE &&
 chmod +x "$FILE" >/dev/null 2>&1
 sudo ./"$FILE" "$ip" -g cn > $TEMP_FILE
 green "$(cat $TEMP_FILE | cut -d \* -f2 | sed "s/.*\(  AS[0-9]\)/\1/" | sed "/\*$/d;/^$/d;1d" | uniq | awk '{printf("%d.%s\n"),NR,$0}')"
