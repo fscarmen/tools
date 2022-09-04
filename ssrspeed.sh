@@ -1,24 +1,26 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2034
+
 # 当前脚本版本号和新增功能
 VERSION=1.0.0
 
 E[0]="Language:\n  1.English (default) \n  2.简体中文"
 C[0]="${E[0]}"
 E[1]="Speed test and unlocking test is for reference only and does not represent the actual usage, due to network changes, Netflix blocking and ip replacement. Speed test is time-sensitive."
-C[1]="测速及解锁测试仅供参考，不代表实际使用情况，由于网络情况变化、Netflix 封锁及 ip 更换，测速具有时效性"
+C[1]="测速及解锁测试仅供参考, 不代表实际使用情况, 由于网络情况变化、Netflix 封锁及 ip 更换, 测速具有时效性"
 E[2]="New Features: "
 C[2]="新特性: "
 E[3]="Choose:"
 C[3]="请选择:"
-E[4]="!!! This cannot be empty!!!"
-C[4]="!!!此处不能为空!!!"
+E[4]="! This cannot be empty !"
+C[4]="! 此处不能为空 !"
 E[5]="More than 5 errors have been entered, and the script exits."
 C[5]="输入错误超过5次, 脚本退出"
 E[6]="Please input a subscription url or a single node supported by v2ray (VLESS is not supported):"
-C[6]="请输入订阅链接或者v2ray支持的单节点 (不支持 VLESS):"
+C[6]="请输入订阅链接或者 v2ray 支持的单节点 (不支持 VLESS):"
 E[7]="If there are more than 2 filters below, you can separate the keywords by spaces."
-C[7]="以下筛选条件如超过2个, 可以通过空格分隔关键词."
+C[7]="以下筛选条件如超过 2 个, 可以通过空格分隔关键词."
 E[8]="Filter nodes by remarks using keyword:"
 C[8]="使用关键字通过注释筛选节点:"
 E[9]="Exclude nodes by remarks using keyword:"
@@ -48,36 +50,37 @@ C[20]="是否卸载以下 python3 依赖:"
 E[21]="Whether to uninstall the following environment dependencies:\n git and python3."
 C[21]="是否卸载以下环境依赖:\n git 和 python3"
 E[22]="Whether to uninstall brew, a package management tool for Mac?"
-C[22]="是否卸载 Mac下的一个包管理工具 brew"
+C[22]="是否卸载 Mac 下的一个包管理工具 brew"
 E[23]="To uninstall the above dependencies, please press [y]. The default is not to uninstall:"
-C[23]="卸载以上依赖请按[y],默认为不卸载:"
+C[23]="卸载以上依赖请按[y], 默认为不卸载:"
 E[24]="Uninstallation of SSRSpeedN is complete."
 C[24]="卸载 SSRSpeedN 已完成"
 E[25]="The SSRSpeedN installation folder cannot be found in the current path. Please check if it is already installed or the installation path."
-C[25]="当前路径下找不到 SSRSpeedN 安装文件夹。请确认是否已安装或安装路径"
+C[25]="当前路径下找不到 SSRSpeedN 安装文件夹, 请确认是否已安装或安装路径"
 
-# 自定义字体彩色,read 函数,友道翻译函数
-red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
-green(){ echo -e "\033[32m\033[01m$1\033[0m"; }
-yellow(){ echo -e "\033[33m\033[01m$1\033[0m"; }
-reading(){ read -rp "$(green "$1")" "$2"; }
-translate(){ [[ -n "$1" ]] && curl -ksm8 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=${1//[[:space:]]/}" | cut -d \" -f18 2>/dev/null; }
+# 彩色 log 函数, read 函数, text 函数, 友道翻译函数
+error() { echo -e "\033[31m\033[01m$1\033[0m" && exit 1; }
+info() { echo -e "\033[32m\033[01m$1\033[0m"; }
+warning() { echo -e "\033[33m\033[01m$1\033[0m"; }
+reading() { read -rp "$(info "$1")" "$2"; }
+text() { eval echo "\${${T}[$1]}"; }
+# translate() { [[ -n "$1" ]] && curl -ksm8 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=${1//[[:space:]]/}" | cut -d \" -f18 2>/dev/null; }
 
-# 选择语言，先判断 SSRSpeedN/language 里的语言选择，没有的话再让用户选择，默认英语
-select_language(){
-  if [[ "$T" != [CE] ]]; then
-    if [ -e SSRSpeedN/language ]; then
-      T=$(cat SSRSpeedN/language 2>&1)
+# 选择语言, 先判断 SSRSpeedN/data/language 里的语言选择, 没有的话再让用户选择, 默认英语
+select_language() {
+  if [[ $T != [CE] ]]; then
+    if [ -e SSRSpeedN/data/language ]; then
+      T=$(cat SSRSpeedN/data/language 2>&1)
     else
-      T=E && yellow "\n $(eval echo "\${${T}[0]}") \n" && reading " $(eval echo "\${${T}[3]}") " CHOOSE_LANGUAGE 
-	  [[ $CHOOSE_LANGUAGE = 2 ]] && T=C
+      T=E && warning "\n $(text 0) \n" && reading " $(text 3) " LNG_CHOICE
+      [[ $LNG_CHOICE = 2 ]] && T=C
     fi
   fi
-  }
+}
 
-help(){
-  if [[ "$T" = C ]] || grep -q 'C' SSRSpeedN/languag; then
-  echo "
+help() {
+  if [[ $T = C ]] || grep -q 'C' SSRSpeedN/data/language; then
+    echo "
 用法: ssrspeed [-h] [--version] [-c GUICONFIG] [-u URL] [-m TEST_METHOD]
                    [-M TEST_MODE] [--include FILTER [FILTER ...]]
                    [--include-remark REMARKS [REMARKS ...]]
@@ -126,6 +129,7 @@ help(){
  FAST                 Fast.com 速度测试
 "
   else
+
     echo "
 usage: ssrspeed [-h] [--version] [-c GUICONFIG] [-u URL] [-m TEST_METHOD]
                   [-M TEST_MODE] [--include FILTER [FILTER ...]]
@@ -176,103 +180,107 @@ Options:
 "
   fi
   exit 0
-  }
+}
 
-input(){
+input() {
   local i=0
-  while [ -z $URL ]; do
+  while [ -z "$URL" ]; do
     ((i++)) || true
-    [ $i -gt 1 ] && NOT_BLANK="$(eval echo "\${${T}[4]}") " && [ $i = 6 ] && red "\n $(eval echo "\${${T}[5]}") " && exit 1
-    reading "\n ${NOT_BLANK}$(eval echo "\${${T}[6]}") " URL
+    [ "$i" -gt 1 ] && NOT_BLANK="$(text 4) " && [ "$i" = 6 ] && error "\n $(text 5) "
+    reading "\n ${NOT_BLANK}$(text 6) " URL
   done
   [ -n "$URL" ] && URL="-u $URL"
-  yellow "\n $(eval echo "\${${T}[7]}") "
-  reading "\n $(eval echo "\${${T}[8]}") " INCLUDE_REMARK
+  warning "\n $(text 7) "
+  reading "\n $(text 8) " INCLUDE_REMARK
   [ -n "$INCLUDE_REMARK" ] && INCLUDE_REMARK="--include-remark $INCLUDE_REMARK"
-  reading "\n $(eval echo "\${${T}[9]}") " EXCLUDE_REMARK
+  reading "\n $(text 9) " EXCLUDE_REMARK
   [ -n "$EXCLUDE_REMARK" ] && EXCLUDE_REMARK="--exclude-remark $EXCLUDE_REMARK"
-  reading "\n $(eval echo "\${${T}[10]}") " GROUP
+  reading "\n $(text 10) " GROUP
   [ -n "$GROUP" ] && GROUP="-g $GROUP"
   RESULT_COLOR="--color=origin"
-#  RESULT_COLOR="--color=origin" && yellow "\n $(eval echo "\${${T}[11]}") " && reading " $(eval echo "\${${T}[3]}") " CHOOSE_COLOR && [ "$CHOOSE_COLOR" = 2 ] && RESULT_COLOR="--color=poor"
-  yellow "\n $(eval echo "\${${T}[12]}") " && reading " $(eval echo "\${${T}[3]}") " CHOOSE_METHOD
-  case "$CHOOSE_METHOD" in 1 ) SORT_METHOD="--sort=speed";; 2 ) SORT_METHOD="--sort=rspeed";; 3 ) SORT_METHOD="--sort=ping";; 4 ) SORT_METHOD="--sort=rping";; esac
-  }
+  #  RESULT_COLOR="--color=origin" && warning "\n $(text 11) " && reading " $(text 3) " CHOOSE_COLOR && [ "$CHOOSE_COLOR" = 2 ] && RESULT_COLOR="--color=poor"
+  warning "\n $(text 12) " && reading " $(text 3) " METHOD_CHOICE
+  case "$METHOD_CHOICE" in 1) SORT_METHOD="--sort=speed" ;; 2) SORT_METHOD="--sort=rspeed" ;; 3) SORT_METHOD="--sort=ping" ;; 4) SORT_METHOD="--sort=rping" ;; esac
+}
 
-check_operating_system(){
-  sw_vesrs 2>/dev/null | grep -qvi macos && red " $(eval echo "\${${T}[13]}") " && exit 1
-  }
+check_operating_system() {
+  sw_vesrs 2>/dev/null | grep -iqv macos && error " $(text 13) "
+}
 
-check_brew(){
-  green "\n $(eval echo "\${${T}[14]}") \n"
-  ! type -p brew >/dev/null 2>&1 && yellow " $(eval echo "\${${T}[17]}") brew " && sudo /bin/zsh -c "$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)"
-  ! type -p pip3 >/dev/null 2>&1 && yellow " $(eval echo "\${${T}[17]}") python3 " && sudo brew install python3
-  ! type -p git >/dev/null 2>&1 && yellow " $(eval echo "\${${T}[17]}") git " && sudo brew install git
-  }
+check_brew() {
+  info "\n $(text 14) \n"
+  ! type -p brew >/dev/null 2>&1 && warning " $(text 17) brew " && sudo /bin/zsh -c "$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)"
+  ! type -p pip3 >/dev/null 2>&1 && warning " $(text 17) python3 " && sudo brew install python3
+  ! type -p git >/dev/null 2>&1 && warning " $(text 17) git " && sudo brew install git
+}
 
-check_ssrspeedn(){
-  green "\n $(eval echo "\${${T}[15]}") \n"
+# shellcheck disable=SC2015
+check_ssrspeedn() {
+  info "\n $(text 15) \n"
   [ ! -e SSRSpeedN ] && sudo git clone https://github.com/Oreomeow/SSRSpeedN
   if [ ! -e SSRSpeedN/resources/clients ]; then
-    local LATEST=$(sudo curl -fsSL "https://api.github.com/repos/Oreomeow/SSRSpeedN/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
-    local LATEST=${LATEST:-'1.1.1'}
-    sudo curl -Lo SSRSpeedN/resources/clients_darwin_64.zip https://github.com/OreosLab/SSRSpeedN/releases/download/v$LATEST/clients_darwin_64.zip
-    [ ! -e SSRSpeedN/resources/clients_darwin_64.zip ] && red " $(eval echo "\${${T}[18]}") " && exit 1 || sudo unzip -d SSRSpeedN/resources/ SSRSpeedN/resources/clients_darwin_64.zip
-    [ ! -e SSRSpeedN/resources/clients ] && red " $(eval echo "\${${T}[19]}") " && exit 1 || sudo rm -f SSRSpeedN/resources/clients_darwin_64.zip
+    local LATEST
+    LATEST=$(sudo curl -fsSL "https://api.github.com/repos/Oreomeow/SSRSpeedN/releases/latest" | grep tag_name | sed -E 's/.*"([^"]+)".*/\1/' | cut -c 2-)
+    LATEST=${LATEST:-'1.1.1'}
+    sudo curl -oL SSRSpeedN/resources/clients_darwin_64.zip https://github.com/OreosLab/SSRSpeedN/releases/download/v"$LATEST"/clients_darwin_64.zip
+    [ ! -e SSRSpeedN/resources/clients_darwin_64.zip ] && error " $(text 18) " || sudo unzip -d SSRSpeedN/resources/ SSRSpeedN/resources/clients_darwin_64.zip
+    [ ! -e SSRSpeedN/resources/clients ] && error " $(text 19) " || sudo rm -f SSRSpeedN/resources/clients_darwin_64.zip
   fi
   sudo chmod -R +x SSRSpeedN
-  cd SSRSpeedN
-  sudo git pull
-  echo "$T" | sudo tee language >/dev/null 2>&1
-  sudo pip3 install --upgrade setuptools
+  cd SSRSpeedN || exit 1
+  sudo git pull || sudo git fetch --all && sudo git reset --hard origin/main
+  echo "$T" | sudo tee data/language >/dev/null 2>&1
+  sudo pip3 install --upgrade pip
   sudo pip3 install six
   sudo pip3 install -r requirements.txt
   [ ! -e data/ssrspeed.json ] && sudo cp -f data/ssrspeed.example.json data/ssrspeed.json
-  }
+}
 
-test(){
-  green "\n $(eval echo "\${${T}[16]}") \n"
-  sudo python3 -m ssrspeed $URL $INCLUDE_REMARK $EXCLUDE_REMARK $GROUP $RESULT_COLOR $SORT_METHOD --yes --skip-requirements-check
-  }
+test() {
+  info "\n $(text 16) \n"
+  sudo python3 -m ssrspeed $URL $INCLUDE_REMARK $EXCLUDE_REMARK $GROUP $RESULT_COLOR $SORT_METHOD --skip-requirements-check --yes
+}
 
-uninstall(){
+uninstall() {
   if [ -e SSRSpeedN ]; then
-    REQUIREMENTS=$(cat SSRSpeedN/requirements.txt | sed "/^$/d")
-    REQUIREMENTS="${REQUIREMENTS//[[:space:]]/, }"
-    yellow "\n $(eval echo "\${${T}[20]}")\n $REQUIREMENTS " && reading " $(eval echo "\${${T}[23]}") " UNINSTALL_REQUIREMENTS
- #   yellow "\n $(eval echo "\${${T}[21]}") " && reading " $(eval echo "\${${T}[23]}") " UNINSTALL_GIT_PYTHON3
- #   yellow "\n $(eval echo "\${${T}[22]}") " && reading " $(eval echo "\${${T}[23]}") " UNINSTALL_BREW
-    cd SSRSpeedN
-    [[ $UNINSTALL_REQUIREMENTS = [Yy] ]] && sudo pip3 uninstall -yr requirements.txt
+    REQS=$(sed "/^$/d" SSRSpeedN/requirements.txt)
+    REQS="${REQS//[[:space:]]/, }"
+    warning "\n $(text 20)\n $REQS " && reading " $(text 23) " UNINSTALL_REQS
+    #   warning "\n $(text 21) " && reading " $(text 23) " UNINSTALL_GIT_PYTHON3
+    #   warning "\n $(text 22) " && reading " $(text 23) " UNINSTALL_BREW
+    cd SSRSpeedN || exit 1
+    [[ $UNINSTALL_REQS = [Yy] ]] && sudo pip3 uninstall -ry requirements.txt
     cd ..
     sudo rm -rf SSRSpeedN
- #   [[ $UNINSTALL_GIT_PYTHON3 = [Yy] ]] && brew uninstall git
- #   [[ $UNINSTALL_BREW = [Yy] ]] && sudo 
-    green " $(eval echo "\${${T}[24]}") "
+    #   [[ $UNINSTALL_GIT_PYTHON3 = [Yy] ]] && brew uninstall git
+    #   [[ $UNINSTALL_BREW = [Yy] ]] && sudo
+    info " $(text 24) "
     exit 0
   else
-    red " $(eval echo "\${${T}[25]}") "
+    error " $(text 25) "
     exit 1
   fi
-  }
+}
+
+## Main ##
 
 # 传参 1/2
-[[ "$@" =~ -[Ee] ]] && T=E
-[[ "$@" =~ -[Cc] ]] && T=C
+[[ "$*" =~ -[Ee] ]] && T=E
+[[ "$*" =~ -[Cc] ]] && T=C
 
 select_language
 
 # 传参 2/2
 while getopts ":HhUuR:r:" OPTNAME; do
   case "$OPTNAME" in
-    [Hh] ) help;;
-    [Uu] ) uninstall;;
-    [Rr] ) URL=$OPTARG;;
+  [Hh]) help ;;
+  [Uu]) uninstall ;;
+  [Rr]) URL=$OPTARG ;;
   esac
 done
 
-input
 check_operating_system
+input
 check_brew
 check_ssrspeedn
 test
