@@ -8,7 +8,7 @@ VERSION=1.0.0
 E[0]="Language:\n  1.English (default) \n  2.简体中文"
 C[0]="${E[0]}"
 E[1]="Speed test and unlocking test is for reference only and does not represent the actual usage, due to network changes, Netflix blocking and ip replacement. Speed test is time-sensitive."
-C[1]="测速及解锁测试仅供参考, 不代表实际使用情况, 由于网络情况变化、Netflix 封锁及 ip 更换, 测速具有时效性"
+C[1]="测速及解锁测试仅供参考, 不代表实际使用情况, 由于网络情况变化, Netflix 封锁及 ip 更换, 测速具有时效性"
 E[2]="New Features: "
 C[2]="新特性: "
 E[3]="Choose:"
@@ -236,6 +236,7 @@ check_ssrspeedn() {
   [ ! -e data/ssrspeed.json ] && sudo cp -f data/ssrspeed.example.json data/ssrspeed.json
 }
 
+# shellcheck disable=SC2086
 test() {
   info "\n $(text 16) \n"
   sudo python3 -m ssrspeed $URL $INCLUDE_REMARK $EXCLUDE_REMARK $GROUP $RESULT_COLOR $SORT_METHOD --skip-requirements-check --yes
