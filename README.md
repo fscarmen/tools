@@ -29,3 +29,8 @@ docker 更换端口
 ```bash
 bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/docker_port.sh)
 ```
+
+机场测活节点， -c 中文; -e 英文; -r <订阅 URL和节点>; -u 卸载; -a 全自动 -m 手动
+```bash
+bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/ssrspeed.sh)
+```
