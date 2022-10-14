@@ -34,3 +34,8 @@ bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/docker_po
 ```bash
 bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/ssrspeed.sh) [OPTION]
 ```
+
+OpenVZ dd 为 alpine
+```bash
+bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/root.sh) [PASSWORD]
+```
