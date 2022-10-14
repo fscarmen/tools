@@ -37,5 +37,5 @@ bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/ssrspeed.
 
 OpenVZ dd 为 alpine
 ```bash
-bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/root.sh) [PASSWORD]
+bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/dd_alpine.sh)
 ```
