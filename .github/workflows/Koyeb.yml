@@ -11,7 +11,7 @@ jobs:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         DOCKERHUB_PROJECT: ${{ secrets.KOYEB_PROJECT }}
-        DOCKERHUB_REPOSITORY: ${{ env.DOCKERHUB_REPOSITORY }}/${{ env.DOCKERHUB_PROJECT }}
+        DOCKERHUB_REPOSITORY: ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_PROJECT }}
       steps:
       - name: Login to DockerHub
         uses: docker/login-action@v2.1.0
