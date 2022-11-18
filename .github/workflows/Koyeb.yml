@@ -10,7 +10,7 @@ jobs:
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        DOCKERHUB_PROJECT: ${{ secrets.KOYEB_PROJECT }}
+        DOCKER_PROJECT: ${{ secrets.KOYEB_PROJECT }}
 
       steps:
       - name: Login to DockerHub
@@ -23,6 +23,6 @@ jobs:
       - name: Build and push images
         run:  |
             for OS in {Ubuntu,Debian,Alpine}; do
-              docker build -t ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_PROJECT }}:$OS -f ${GITHUB_WORKSPACE}/Koyeb/Dockerfile.$OS .
-              docker push ${{ env.DOCKERHUB_REPOSITORY }}:$OS
+              docker build -t ${{ env.DOCKER_USERNAME }}/${{ env.DOCKER_PROJECT }}:$OS -f ${GITHUB_WORKSPACE}/Koyeb/Dockerfile.$OS .
+              docker push ${{ env.DOCKER_USERNAME }}/${{ env.DOCKER_PROJECT }}:$OS
             done
