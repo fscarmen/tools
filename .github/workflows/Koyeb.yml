@@ -23,6 +23,6 @@ jobs:
       - name: Build and push images
         run:  |
             for OS in {Ubuntu,Debian,Alpine}; do
-              docker build -t ${{ env.DOCKER_USERNAME }}/${{ env.DOCKER_PROJECT }}:$OS -f ${{ GITHUB_WORKSPACE }}/Koyeb/Dockerfile.$OS .
+              docker build -t ${{ env.DOCKER_USERNAME }}/${{ env.DOCKER_PROJECT }}:$OS -f ${GITHUB_WORKSPACE}/Koyeb/Dockerfile.$OS .
               docker push ${{ env.DOCKER_USERNAME }}/${{ env.DOCKER_PROJECT }}:$OS
             done
