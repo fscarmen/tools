@@ -11,7 +11,7 @@ jobs:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         DOCKERHUB_PROJECT: ${{ secrets.KOYEB_PROJECT }}
-        DOCKERHUB_REPOSITORY: ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_PROJECT }}
+
       steps:
       - name: Login to DockerHub
         uses: docker/login-action@v2.1.0
@@ -23,6 +23,6 @@ jobs:
       - name: Build and push images
         run:  |
             for OS in {Ubuntu,Debian,Alpine}; do
-              docker build ${{ env.DOCKERHUB_REPOSITORY }}:$OS -f ${GITHUB_WORKSPACE}/Koyeb/Dockerfile.$OS .
+              docker build ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_PROJECT }}:$OS -f ${GITHUB_WORKSPACE}/Koyeb/Dockerfile.$OS .
               docker push ${{ env.DOCKERHUB_REPOSITORY }}:$OS
             done
