@@ -6,7 +6,7 @@ on:
 jobs:
   Building:
       runs-on: ubuntu-latest
-      name: "Set ENV"
+      name: "Images for Koybe"
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -23,6 +23,6 @@ jobs:
       - name: Build and push images
         run:  |
             for OS in {Ubuntu,Debian,Alpine}; do
-              docker build ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_PROJECT }}:$OS -f ${GITHUB_WORKSPACE}/Koyeb/Dockerfile.$OS .
+              docker build -t ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_PROJECT }}:$OS -f ${GITHUB_WORKSPACE}/Koyeb/Dockerfile.$OS .
               docker push ${{ env.DOCKERHUB_REPOSITORY }}:$OS
             done
