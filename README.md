@@ -39,3 +39,8 @@ OpenVZ dd 为 alpine
 ```bash
 bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/dd_alpine.sh)
 ```
+
+解码加密 shell 脚本
+```bash
+bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/decode_shell.sh)
+```
