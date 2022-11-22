@@ -1,0 +1,28 @@
+name: "Images for Mogenius"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Building:
+      runs-on: ubuntu-latest
+      name: "Images for Mogenius"
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        DOCKER_PROJECT: ${{ secrets.Mogenius_PROJECT }}
+
+      steps:
+      - name: Login to DockerHub
+        uses: docker/login-action@v2.1.0
+        with:
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
+
+      - uses: actions/checkout@v3.1.0
+      - name: Build and push images
+        run:  |
+            for OS in {Ubuntu,Debian,Alpine}; do
+              docker build -t ${{ env.DOCKER_USERNAME }}/${{ env.DOCKER_PROJECT }}:$OS -f ${GITHUB_WORKSPACE}/Mogenius/Dockerfile.$OS .
+              docker push ${{ env.DOCKER_USERNAME }}/${{ env.DOCKER_PROJECT }}:$OS
+            done
