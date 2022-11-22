@@ -10,7 +10,7 @@ jobs:
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        DOCKER_PROJECT: ${{ secrets.Mogenius_PROJECT }}
+        DOCKER_PROJECT: ${{ secrets.MOGENIUS_PROJECT }}
 
       steps:
       - name: Login to DockerHub
