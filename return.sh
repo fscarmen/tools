@@ -64,26 +64,24 @@ API_ASN=("isp" "asn_org")
 for ((p=0; p<${#API_NET[@]}; p++)); do ping -c1 -W1 ${API_NET[p]} >/dev/null 2>&1 && IP_API="${API_NET[p]}" && break; done
   
 IP_4=$(curl -s4m5 -A Mozilla https://${API_URL[p]}) &&
-WAN_4=$(expr "$IP_4" : '.*ip\":[ ]*\"\([^"]*\).*') &&
-COUNTRY_4E=$(expr "$IP_4" : '.*country\":[ ]*\"\([^"]*\).*') &&
-COUNTRY_4=$(translate "$COUNTRY_4E") &&
-ASNORG_4=$(expr "$IP_4" : '.*'${API_ASN[p]}'\":[ ]*\"\([^"]*\).*')
-[ -n "$WAN_4" ] && green " IPv4: $WAN_4\t\t 地区: $COUNTRY_4\t ASN: $ASNORG_4\n"
-#PE_4=$(curl -sm5 ping.pe/$WAN_4) &&
-#COOKIE_4=$(echo $PE_4 | sed "s/.*document.cookie=\"\([^;]\{1,\}\).*/\1/g") &&
-#TYPE_4=$(curl -sm5 --header "cookie: $COOKIE_4" ping.pe/$WAN_4 | grep "id='page-div'" | sed "s/.*\[\(.*\)\].*/\1/g" | sed "s/.*orange'>\([^<]\{1,\}\).*/\1/g" | sed "s/hosting/数据中心/g;s/residential/家庭宽带/g") &&
-#green " IPv4: $WAN_4\t\t 地区: $COUNTRY_4\t 类型: $TYPE_4\t ASN: $ASNORG_4\n"
+WAN_4=$(expr "$IP_4" : '.*ip\":[ ]*\"\([^"]*\).*')
+if [ -n "$WAN_4" ]; then
+  COUNTRY_4E=$(expr "$IP_4" : '.*country\":[ ]*\"\([^"]*\).*')
+  COUNTRY_4=$(translate "$COUNTRY_4E")
+  ASNORG_4=$(expr "$IP_4" : '.*'${API_ASN[p]}'\":[ ]*\"\([^"]*\).*')
+  TYPE_4=$(curl -4m5 -sSL https://www.abuseipdb.com/check/$WAN_4 2>/dev/null | grep -A2 '<th>Usage Type</th>' | tail -n 1 | sed "s#Data Center/Web Hosting/Transit#数据中心#;s#Fixed Line ISP#家庭宽带#;s#Commercial#商业宽带#;s#Mobile ISP#移动流量#;s#Unknown#未知#")
+  green " IPv4: $WAN_4\t\t 地区: $COUNTRY_4\t 类型: $TYPE_4\t ASN: $ASNORG_4\n"
+fi
 
 IP_6=$(curl -s6m5 -A Mozilla https://${API_URL[p]}) &&
 WAN_6=$(expr "$IP_6" : '.*ip\":[ ]*\"\([^"]*\).*') &&
-COUNTRY_6E=$(expr "$IP_6" : '.*country\":[ ]*\"\([^"]*\).*') &&
-COUNTRY_6=$(translate "$COUNTRY_6E") &&
-ASNORG_6=$(expr "$IP_6" : '.*'${API_ASN[p]}'\":[ ]*\"\([^"]*\).*')
-[ -n "$WAN_6" ] && green " IPv6: $WAN_6\t 地区: $COUNTRY_6\t ASN: $ASNORG_6\n"
-#PE_6=$(curl -sm5 ping6.ping.pe/$WAN_6) &&
-#COOKIE_6=$(echo $PE_6 | sed "s/.*document.cookie=\"\([^;]\{1,\}\).*/\1/g") &&
-#TYPE_6=$(curl -sm5 --header "cookie: $COOKIE_6" ping6.ping.pe/$WAN_6 | grep "id='page-div'" | sed "s/.*\[\(.*\)\].*/\1/g" | sed "s/.*orange'>\([^<]\{1,\}\).*/\1/g" | sed "s/hosting/数据中心/g;s/residential/家庭宽带/g") &&
-#green " IPv6: $WAN_6\t 地区: $COUNTRY_6\t 类型: $TYPE_6\t ASN: $ASNORG_6\n"
+if [ -n "$WAN_6" ]; then
+  COUNTRY_6E=$(expr "$IP_6" : '.*country\":[ ]*\"\([^"]*\).*')
+  COUNTRY_6=$(translate "$COUNTRY_6E")
+  ASNORG_6=$(expr "$IP_6" : '.*'${API_ASN[p]}'\":[ ]*\"\([^"]*\).*')
+  TYPE_6=$(curl -6m5 -sSL https://www.abuseipdb.com/check/$WAN_6 2>/dev/null | grep -A2 '<th>Usage Type</th>' | tail -n 1 | sed "s#Data Center/Web Hosting/Transit#数据中心#;s#Fixed Line ISP#家庭宽带#;s#Commercial#商业宽带#;s#Mobile ISP#移动流量#;s#Unknown#未知#")
+  green " IPv6: $WAN_6\t 地区: $COUNTRY_6\t 类型: $TYPE_6\t ASN: $ASNORG_6\n"
+fi
 
 [[ $ip =~ '.' && -z "$IP_4" ]] && red " VPS 没有 IPv4 网络，不能查 $ip\n" && exit 1
 [[ $ip =~ ':' && -z "$IP_6" ]] && red " VPS 没有 IPv6 网络，不能查 $ip\n" && exit 1
