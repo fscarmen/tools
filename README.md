@@ -44,3 +44,8 @@ bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/dd_alpine
 ```bash
 bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/decode_shell.sh)
 ```
+
+融合怪测评脚本
+```bash
+bash <(wget -qO- --no-check-certificate https://github.com/spiritLHLS/ecs/raw/main/ecs.sh)
+```
