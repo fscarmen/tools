@@ -25,7 +25,7 @@ done
 if [ ! $(type -p python2) ]; then
   if [ ! $(type -p python3) ]; then
     ${PACKAGE_UPDATE[int]}
-    ${PACKAGE_UPDATE[int]} python3
+    ${PACKAGE_INSTALL[int]} python3
   fi
   wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl3.py -O /bin/systemctl
 else
