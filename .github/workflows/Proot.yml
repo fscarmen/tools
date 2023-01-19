@@ -1,0 +1,27 @@
+name: Release Proot
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Proot:
+
+    name: Release Proot
+
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 0
+
+      - name: Download Proot
+        run: |
+          wget -O Proot.tar.gz https://link.jscdn.cn/1drv/aHR0cHM6Ly8xZHJ2Lm1zL3UvcyFBczJObkY3TXVRYlhnVjJjbWtRYVRjNVJlckZZP2U9Njh1OWlY
+          
+      - name: Release Proot
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: Proot
+          files: Proot.tar.gz
