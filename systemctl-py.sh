@@ -27,8 +27,10 @@ if [ ! $(type -p python2) ]; then
     ${PACKAGE_UPDATE[int]}
     ${PACKAGE_INSTALL[int]} python3
   fi
+  [ ! $(type -p wget) ] && ( ${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} wget )
   wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl3.py -O /bin/systemctl
 else
+  [ ! $(type -p wget) ] && ( ${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} wget )
   wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl.py -O /bin/systemctl
 fi
 
