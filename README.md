@@ -52,5 +52,5 @@ bash <(wget -qO- --no-check-certificate https://github.com/spiritLHLS/ecs/raw/ma
 
 在 Docker 容器中或 Serverless 平台中使用 systemctl python 版
 ```bash
-bash <(wget -qO- --no-check-certificate https://github.com/spiritLHLS/ecs/raw/main/systemctl-py.sh)
+bash <(wget -qO- --no-check-certificate https://raw.githubusercontent.com/fscarmen/tools/main/systemctl-py.sh)
 ```
