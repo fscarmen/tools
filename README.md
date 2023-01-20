@@ -49,3 +49,8 @@ bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/decode_sh
 ```bash
 bash <(wget -qO- --no-check-certificate https://github.com/spiritLHLS/ecs/raw/main/ecs.sh)
 ```
+
+在 Docker 容器中或 Serverless 平台中使用 systemctl python 版
+```bash
+bash <(wget -qO- --no-check-certificate https://github.com/spiritLHLS/ecs/raw/main/systemctl-py.sh)
+```
