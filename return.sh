@@ -7,6 +7,19 @@ green(){ echo -e "\033[32m\033[01m$1\033[0m"; }
 reading(){ read -rp "$(green "$1")" "$2"; }
 translate(){ [[ -n "$1" ]] && curl -ksm8 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=${1//[[:space:]]/}" | cut -d \" -f18 2>/dev/null; }
 
+check_dependencies() {
+  DEPS_CHECK=("ping" "curl" "sudo")
+  DEPS_INSTALL=(" iputils-ping" " curl" " sudo")
+  for ((g=0; g<${#DEPS_CHECK[@]}; g++)); do [ ! $(type -p ${DEPS_CHECK[g]}) ] && DEPS+=${DEPS_INSTALL[g]}; done
+  if [ -n "$DEPS" ]; then
+    info "\n $(text 7) $DEPS \n"
+    ${PACKAGE_UPDATE[int]} >/dev/null 2>&1
+    ${PACKAGE_INSTALL[int]} $DEPS >/dev/null 2>&1
+  else
+    info "\n $(text 8) \n"
+  fi
+}
+
 check_dependencies(){ for c in $@; do
 type -p $c >/dev/null 2>&1 || (yellow " 安装 $c 中…… " && ${PACKAGE_INSTALL[b]} "$c") || (yellow " 先升级软件库才能继续安装 \$c，时间较长，请耐心等待…… " && ${PACKAGE_UPDATE[b]} && ${PACKAGE_INSTALL[b]} "$c")
 ! type -p $c >/dev/null 2>&1 && yellow " 安装 \$c 失败，脚本中止，问题反馈:[https://github.com/fscarmen/tools/issues] " && exit 1; done; }
@@ -51,7 +64,7 @@ fi
 
 [[ -z $SYSTEM ]] && red " 本脚本只支持 Debian、Ubuntu、CentOS、Alpine 或者 macOS 系统,问题反馈:[https://github.com/fscarmen/warp_unlock/issues] " && exit 1
 
-check_dependencies curl sudo
+check_dependencies
 ip=$1
 green "\n 本脚说明：测 VPS ——> 对端 经过的地区及线路，填本地IP就是测回程，核心程序来自: https://www.ipip.net/ ，请知悉！"
 [[ -z "$ip" || $ip = '[DESTINATION_IP]' ]] && reading "\n 请输入目的地 IP: " ip
