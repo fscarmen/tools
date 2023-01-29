@@ -12,17 +12,14 @@ check_dependencies() {
   DEPS_INSTALL=(" iputils-ping" " curl" " sudo")
   for ((g=0; g<${#DEPS_CHECK[@]}; g++)); do [ ! $(type -p ${DEPS_CHECK[g]}) ] && DEPS+=${DEPS_INSTALL[g]}; done
   if [ -n "$DEPS" ]; then
-    info "\n $(text 7) $DEPS \n"
+    green "\n 安装依赖列表: $DEPS \n"
     ${PACKAGE_UPDATE[int]} >/dev/null 2>&1
     ${PACKAGE_INSTALL[int]} $DEPS >/dev/null 2>&1
   else
-    info "\n $(text 8) \n"
+    green "\n 所有依赖已存在，不需要额外安装 \n"
   fi
 }
 
-check_dependencies(){ for c in $@; do
-type -p $c >/dev/null 2>&1 || (yellow " 安装 $c 中…… " && ${PACKAGE_INSTALL[b]} "$c") || (yellow " 先升级软件库才能继续安装 \$c，时间较长，请耐心等待…… " && ${PACKAGE_UPDATE[b]} && ${PACKAGE_INSTALL[b]} "$c")
-! type -p $c >/dev/null 2>&1 && yellow " 安装 \$c 失败，脚本中止，问题反馈:[https://github.com/fscarmen/tools/issues] " && exit 1; done; }
 
 ARCHITECTURE="$(arch)"
 case $ARCHITECTURE in
