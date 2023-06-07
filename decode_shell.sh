@@ -31,14 +31,18 @@ elif [[ "$FILE" =~ .*\.sh$ ]]; then
   else
     [ ! -f "$FILE" ] && echo -e "\n \033[31m\033[01m $FILE is empty. The script is exit！\033[0m \n" && exit 1 || cp $FILE $TEMP
   fi
- 
+
   awk -F 'eval' '{print $1}' $TEMP > $TEMP.1
   . $TEMP.1
-  eval echo $(awk -F 'eval' '{print $2}' $TEMP) | sed '1d; s#")" bash "$@"##g' > $TEMP.2
-  base64 -d $TEMP.2 | sed '1d; s#")" bash "$@"##g' > $TEMP.3
-  base64 -d $TEMP.3 > $TEMP-decode
-  rm -rf $TEMP.*
-  echo -e "\n\033[32m\033[01m Decode file is: $TEMP-decode \033[0m\n"
+  eval echo $(awk -F 'eval' '{print $2}' $TEMP) > $TEMP.2
+  i=2
+  while [[ "$(head -n 1 $TEMP.$i)" =~ ^"bash -c" && "$(tail -n 1 $TEMP.$i)" =~ 'bash "$@"'$ ]]; do
+    sed '1d; s#")" bash "$@"##g' $TEMP.$i | base64 -d > $TEMP.$[i+1]
+    (( i++ )) || true
+  done
+    cp $TEMP.$i $TEMP-decode
+    rm -rf $TEMP.*
+    echo -e "\n\033[32m\033[01m Decode file is: $TEMP-decode \033[0m\n"
 
 else
   echo -e "\n \033[31m\033[01m $FILE is unavailable. The script is exit！\033[0m \n" && exit 1
