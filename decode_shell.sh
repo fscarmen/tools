@@ -40,9 +40,9 @@ elif [[ "$FILE" =~ .*\.sh$ ]]; then
     sed '1d; s#")" bash "$@"##g' $TEMP.$i | base64 -d > $TEMP.$[i+1]
     (( i++ )) || true
   done
-    cp $TEMP.$i $TEMP-decode
-    rm -rf $TEMP.*
-    echo -e "\n\033[32m\033[01m Decode file is: $TEMP-decode \033[0m\n"
+  cp $TEMP.$i $TEMP-decode
+  rm -rf $TEMP.* $TEMP
+  echo -e "\n\033[32m\033[01m Decode file is: $TEMP-decode \033[0m\n"
 
 else
   echo -e "\n \033[31m\033[01m $FILE is unavailable. The script is exit！\033[0m \n" && exit 1
