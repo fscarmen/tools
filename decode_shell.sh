@@ -23,26 +23,21 @@ if [[ "$FILE" =~ .*\.sh\.x$ ]]; then
   [ -e decode.core ] && echo -e "\n\033[32m\033[01m Decode file is: decode.core \033[0m\n" || echo -e "\n\033[31m Decode file failed. \033[0m\n"
 
 elif [[ "$FILE" =~ .*\.sh$ ]]; then
-  TEMP='temp.sh'
-  rm -f $TEMP
+  TEMP=$(awk -F / '{print $NF}' <<< "$FILE")
+  rm -f decode-$TEMP
   if [[ "$FILE" =~ ^http ]]; then
     wget -O $TEMP $FILE
     [ "$?" != 0 ] && rm -f $TEMP && echo -e "\n \033[31m\033[01m Could not download the file. The script is exit！\033[0m \n" && exit 1
   else
-    [ ! -f "$FILE" ] && echo -e "\n \033[31m\033[01m $FILE is empty. The script is exit！\033[0m \n" && exit 1 || cp $FILE $TEMP
+    [ ! -s "$FILE" ] && echo -e "\n \033[31m\033[01m $FILE is empty. The script is exit！\033[0m \n" && exit 1
   fi
 
-  awk -F 'eval' '{print $1}' $TEMP > $TEMP.1
-  . $TEMP.1
-  eval echo $(awk -F 'eval' '{print $2}' $TEMP) > $TEMP.2
-  i=2
-  while [[ "$(head -n 1 $TEMP.$i)" =~ ^"bash -c" && "$(tail -n 1 $TEMP.$i)" =~ 'bash "$@"'$ ]]; do
-    sed '1d; s#")" bash "$@"##g' $TEMP.$i | base64 -d > $TEMP.$[i+1]
-    (( i++ )) || true
+  decode[0]=$(bash <(sed "s#eval#echo#" $TEMP))
+  while [[ "${decode[$((${#decode[*]}-1))]}" =~ ^"bash -c" && "${decode[$((${#decode[*]}-1))]}" =~ 'bash "$@"'$ ]]; do
+    decode[${#decode[*]}]=$(bash <(sed 's/bash -c/echo/; s/bash "$@"//'  <<< "${decode[$((${#decode[*]}-1))]}"))
   done
-  cp $TEMP.$i $TEMP-decode
-  rm -rf $TEMP.* $TEMP
-  echo -e "\n\033[32m\033[01m Decode file is: $TEMP-decode \033[0m\n"
+  echo "${decode[-1]}" > decode-$TEMP
+  echo -e "\n\033[32m\033[01m Decode file is: decode-$TEMP \033[0m\n"
 
 else
   echo -e "\n \033[31m\033[01m $FILE is unavailable. The script is exit！\033[0m \n" && exit 1
