@@ -33,7 +33,7 @@ elif [[ "$FILE" =~ .*\.sh$ ]]; then
   fi
 
   decode[0]=$(bash <(sed "s#eval#echo#" $TEMP))
-  while [[ "${decode[$((${#decode[*]}-1))]}" =~ ^"bash -c" && "${decode[$((${#decode[*]}-1))]}" =~ 'bash "$@"'$ ]]; do
+  while [[ "$(head -c 7 <<< "${decode[$((${#decode[*]}-1))]}")" = "bash -c" && "$(tail -c 10 <<< "${decode[$((${#decode[*]}-1))]}")" = 'bash "$@"' ]]; do
     decode[${#decode[*]}]=$(bash <(sed 's/bash -c/echo/; s/bash "$@"//'  <<< "${decode[$((${#decode[*]}-1))]}"))
   done
   echo "${decode[-1]}" > decode-$TEMP
