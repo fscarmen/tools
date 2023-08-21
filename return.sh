@@ -87,13 +87,15 @@ if [ -n "$WAN_4" ]; then
   COUNTRY_4E=$(expr "$IP_4" : '.*country\":[ ]*\"\([^"]*\).*')
   COUNTRY_4=$(translate "$COUNTRY_4E")
   ASNORG_4=$(expr "$IP_4" : '.*'${ISP[0]}'\":[ ]*\"\([^"]*\).*')
+  FRAUD_SCORE_4=$(curl -m10 -sL -H "Referer: https://scamalytics.com" \
+  "https://scamalytics.com/ip/$WAN_4" | awk -F : '/Fraud Score/ {gsub(/[^0-9]/,"",$2); print $2}')
   TYPE_4=$(curl -sG https://api.abuseipdb.com/api/v2/check \
   --data-urlencode "ipAddress=$WAN_4" \
   -d maxAgeInDays=90 \
   -d verbose \
   -H "Key: 59f18f3d7bfe41ba6eb6c6ba8bd8801c2add9ec039fedcb7b863c8dbfbcbe7f96d3648c3a456c8fb" \
   -H "Accept: application/json" | sed 's@.*usageType":"\([^"]\+\).*@\1@g' | sed "s@.*Data Center.*@数据中心@;s@Fixed Line ISP@家庭宽带@;s@.*Commercial.*@商业宽带@;s@.*Mobile ISP.*@移动流量@;s@.*Content Delivery Network.*@内容分发网络(CDN)@;s@.*Search Engine Spider.*@搜索引擎蜘蛛@;s@.*University.*@教育网@;s@.*Unknown.*@家庭宽带@")
-  green " IPv4: $WAN_4\t\t 地区: $COUNTRY_4\t 类型: $TYPE_4\t ISP: $ASNORG_4\n"
+  green " IPv4: $WAN_4\t\t 地区: $COUNTRY_4\t 宽带类型: $TYPE_4\t 欺诈分数(越低越好): $FRAUD_SCORE_4\t ISP: $ASNORG_4\n"
 fi
 
 # 查 IPv6 信息
@@ -103,13 +105,15 @@ if [ -n "$WAN_6" ]; then
   COUNTRY_6E=$(expr "$IP_6" : '.*country\":[ ]*\"\([^"]*\).*')
   COUNTRY_6=$(translate "$COUNTRY_6E")
   ASNORG_6=$(expr "$IP_6" : '.*'${ISP[1]}'\":[ ]*\"\([^"]*\).*')
+  FRAUD_SCORE_6=$(curl -m10 -sL -H "Referer: https://scamalytics.com" \
+  "https://scamalytics.com/ip/$WAN_6" | awk -F : '/Fraud Score/ {gsub(/[^0-9]/,"",$2); print $2}')
   TYPE_6=$(curl -sG https://api.abuseipdb.com/api/v2/check \
   --data-urlencode "ipAddress=$WAN_6" \
   -d maxAgeInDays=90 \
   -d verbose \
   -H "Key: 59f18f3d7bfe41ba6eb6c6ba8bd8801c2add9ec039fedcb7b863c8dbfbcbe7f96d3648c3a456c8fb" \
   -H "Accept: application/json" | sed 's@.*usageType":"\([^"]\+\).*@\1@g' | sed "s@.*Data Center.*@数据中心@;s@Fixed Line ISP@家庭宽带@;s@.*Commercial.*@商业宽带@;s@.*Mobile ISP.*@移动流量@;s@.*Content Delivery Network.*@内容分发网络(CDN)@;s@.*Search Engine Spider.*@搜索引擎蜘蛛@;s@.*University.*@教育网@;s@.*Unknown.*@家庭宽带@")
-  green " IPv6: $WAN_6\t 地区: $COUNTRY_6\t 类型: $TYPE_6\t ISP: $ASNORG_6\n"
+  green " IPv6: $WAN_6\t 地区: $COUNTRY_6\t 宽带类型: $TYPE_6\t 欺诈分数(越低越好): $FRAUD_SCORE_6\t ISP: $ASNORG_6\n"
 fi
 
 [[ $ip =~ '.' && -z "$IP_4" ]] && red " VPS 没有 IPv4 网络，不能查 $ip\n" && exit 1
