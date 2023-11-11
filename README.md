@@ -1,6 +1,6 @@
 root+自定义密码登陆，可以带上密码，如果没有填，运行时会要求输入
 ```bash
-bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/root.sh) [PASSWORD]
+bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/root.sh) '[PASSWORD]'
 ```
 
 测vps到对端经过的地区及线路，填本地IP就是测回程。如果没有填，运行时会要求输入，暂只支持 AMD64 和 ARM64 的VPS
