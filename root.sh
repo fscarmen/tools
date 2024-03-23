@@ -17,5 +17,6 @@ if [ -f /etc/ssh/sshd_config.d/50-cloud-init.conf ]; then
     sed -i "s/^#\?PubkeyAuthentication.*/PubkeyAuthentication no/g" /etc/ssh/sshd_config.d/50-cloud-init.conf
     sed -i '/^AuthorizedKeysFile/s/^/#/' /etc/ssh/sshd_config.d/50-cloud-init.conf
 fi
+[ -s /etc/selinux/config ] && [ $(type -p getenforce) ] && [ $(getenforce) = 'Enforcing' ] && { setenforce 0; sed -i 's/^SELINUX=.*/# &/; /SELINUX=/a\SELINUX=disabled' /etc/selinux/config; }
 service sshd restart
 echo -e "\033[32m 请重新登陆，用户名：root ， 密码：$password \033[0m"
