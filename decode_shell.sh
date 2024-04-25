@@ -36,7 +36,21 @@ elif [[ "$FILE" =~ .*\.sh$ ]]; then
   while [[ "$(head -c 7 <<< "${decode[$((${#decode[*]}-1))]}")" = "bash -c" && "$(tail -c 10 <<< "${decode[$((${#decode[*]}-1))]}")" = 'bash "$@"' ]]; do
     decode[${#decode[*]}]=$(bash <(sed 's/bash -c/echo/; s/bash "$@"//'  <<< "${decode[$((${#decode[*]}-1))]}"))
   done
-  echo "${decode[-1]}" > decode-$TEMP
+  if [[ "$(wc -l <<< "${decode[-1]}")" > 80 ]]; then
+    echo "${decode[-1]}" > decode-$TEMP
+  else
+    if [ ! $(type -p bunzip2) ]; then
+      if [ $(type -p yum) ]; then
+        yum install -y bzip2
+      elif [ $(type -p apt) ]; then
+        apt install -y bzip2
+      elif [ $(type -p apk) ]; then
+        apk add -y bzip2
+      fi
+    fi
+    REAL_FILE_ONLINE=$(grep -E '(wget|curl).*http.*.sh' <<< "${decode[-1]}" | grep -o 'http[^ ]*.sh' | sed -n 1p)
+    wget -qO- $REAL_FILE_ONLINE | sed '1,/fi; exit \$res/d' | bunzip2 > decode-$TEMP
+  fi
   echo -e "\n\033[32m\033[01m Decode file is: decode-$TEMP \033[0m\n"
 
 else
