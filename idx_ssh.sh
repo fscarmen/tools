@@ -1,52 +1,63 @@
 #!/usr/bin/env bash
 
+# 定义颜色
+RED="\033[31m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+RESET="\033[0m"
+
 # 检测是否具有 root 权限
-[[ $EUID -ne 0 ]] && echo "错误: 请先运行 sudo -i 获取 root 权限后再执行此脚本" && exit 1
+[[ $EUID -ne 0 ]] && echo -e "${RED}错误: 请先运行 sudo -i 获取 root 权限后再执行此脚本${RESET}" && exit 1
 
 # 设置 SSH 和 Ngrok 隧道的脚本
 
-echo "===== 开始设置 SSH 和 Ngrok 隧道 ====="
+echo -e "${GREEN}===== 开始设置 SSH 和 Ngrok 隧道 =====${RESET}"
 
 # 获取用户输入
-echo "[1/8] 获取必要信息..."
+echo -e "${YELLOW}[1/8] 获取必要信息...${RESET}"
 read -p "请输入root密码:" PASSWORD
-read -p "请输入ngrok token (可以从 https://dashboard.ngrok.com/get-started/your-authtoken 获取):" NGROK_TOKEN
+read -p "请输入ngrok token (可以从 https://dashboard.ngrok.com 获取):" NGROK_TOKEN
 
-echo "[2/8] 正在解除 SSH 服务的锁定..."
+echo -e "${YELLOW}[2/8] 正在解除 SSH 服务的锁定...${RESET}"
 systemctl unmask ssh
 
-echo "[3/8] 正在停止当前运行的 SSH 服务..."
+echo -e "${YELLOW}[3/8] 正在停止当前运行的 SSH 服务...${RESET}"
 pkill sshd
 
-echo "[4/8] 正在卸载旧版 SSH 服务器并安装新版..."
+echo -e "${YELLOW}[4/8] 正在卸载旧版 SSH 服务器并安装新版...${RESET}"
 apt remove -y --purge openssh-server &>/dev/null
 apt update &>/dev/null
 apt install -y openssh-server &>/dev/null
 
-echo "[5/8] 正在设置 root 用户密码..."
+echo -e "${YELLOW}[5/8] 正在设置 root 用户密码...${RESET}"
 echo root:$PASSWORD | chpasswd root
 
-echo "[6/8] 正在配置 SSH 服务，允许 root 登录和密码认证..."
+echo -e "${YELLOW}[6/8] 正在配置 SSH 服务，允许 root 登录和密码认证...${RESET}"
 sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/g;s/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 
-echo "[7/8] 正在重启 SSH 服务并设置 ngrok 隧道..."
+echo -e "${YELLOW}[7/8] 正在重启 SSH 服务并设置 ngrok 隧道...${RESET}"
 systemctl restart ssh
 wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz -qO- | tar -xz -C /usr/local/bin
 nohup ngrok tcp 22 --authtoken=${NGROK_TOKEN} &>/dev/null &
 
-echo "等待 ngrok 服务启动..."
+echo -e "${YELLOW}等待 ngrok 服务启动...${RESET}"
 sleep 5
 
-echo "[8/8] 获取 ngrok 隧道信息..."
-NGROK_URL=$(curl -s http://localhost:4040/api/tunnels | sed 's#.*tcp://\([^"]\+\)".*#\1#')
+echo -e "${YELLOW}[8/8] 获取 ngrok 隧道信息...${RESET}"
+NGROK_INFO=$(curl -s http://localhost:4040/api/tunnels)
+grep -q "Your account is limited to 1 simultaneous ngrok agent sessions." <<< $NGROK_INFO && echo -e "${RED}错误: 您的 ngrok 账户限制了同时只能有一个 ngrok 代理会话，请检查您的 ngrok 设置。${RESET}" && exit 1
+! grep -q "public_url" <<< $NGROK_INFO && echo -e "${RED}错误: 无法获取 ngrok 隧道信息，请检查 ngrok 是否正常运行。${RESET}" && exit 1
+NGROK_URL=$(sed 's#.*tcp://\([^"]\+\)".*#\1#' <<< $NGROK_INFO)
 NGROK_HOST=$(cut -d: -f1 <<< $NGROK_URL)
 NGROK_PORT=$(cut -d: -f2 <<< $NGROK_URL)
 
-echo "===== 设置完成 ====="
+echo -e "${GREEN}===== 设置完成 =====${RESET}"
 echo ""
-echo "SSH 地址: $NGROK_HOST"
-echo "SSH 端口: $NGROK_PORT"
-echo "SSH 密码: $PASSWORD"
+echo -e "${GREEN}SSH 地址: ${RESET}$NGROK_HOST"
+echo -e "${GREEN}SSH 端口: ${RESET}$NGROK_PORT"
+echo -e "${GREEN}SSH 用户: ${RESET}root"
+echo -e "${GREEN}SSH 密码: ${RESET}$PASSWORD"
 echo ""
-echo "使用以下命令连接到您的服务器:"
-echo "ssh root@$NGROK_HOST -p $NGROK_PORT"
+echo -e "${GREEN}使用以下命令连接到您的服务器:${RESET}"
+echo -e "${GREEN}ssh root@$NGROK_HOST -p $NGROK_PORT${RESET}"
+echo ""
