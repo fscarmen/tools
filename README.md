@@ -54,3 +54,8 @@ bash <(wget -qO- --no-check-certificate https://github.com/spiritLHLS/ecs/raw/ma
 ```bash
 bash <(wget -qO- --no-check-certificate https://raw.githubusercontent.com/fscarmen/tools/main/systemctl-py.sh)
 ```
+
+idx.google.com 开启 ssh 密码登陆
+```bash
+bash <(wget -qO- --no-check-certificate https://raw.githubusercontent.com/fscarmen/tools/main/idx_ssh.sh)
+```
