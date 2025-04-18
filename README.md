@@ -57,5 +57,5 @@ bash <(wget -qO- --no-check-certificate https://raw.githubusercontent.com/fscarm
 
 idx.google.com 开启 ssh 密码登陆
 ```bash
-bash <(wget -qO- --no-check-certificate https://raw.githubusercontent.com/fscarmen/tools/main/idx_ssh.sh)
+bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/tools/main/idx_ssh.sh)
 ```
