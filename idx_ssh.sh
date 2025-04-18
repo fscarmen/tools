@@ -15,8 +15,28 @@ echo -e "${GREEN}===== 开始设置 SSH 和 Ngrok 隧道 =====${RESET}"
 
 # 获取用户输入
 echo -e "${YELLOW}[1/8] 获取必要信息...${RESET}"
-read -p "请输入root密码:" PASSWORD
-read -p "请输入ngrok token (可以从 https://dashboard.ngrok.com 获取):" NGROK_TOKEN
+
+# 获取密码，确保至少10位且不为空
+while true; do
+  read -p "请输入root密码 (至少10位): " PASSWORD
+  if [[ -z "$PASSWORD" ]]; then
+    echo -e "${RED}错误: 密码不能为空，请重新输入${RESET}"
+  elif [[ ${#PASSWORD} -lt 10 ]]; then
+    echo -e "${RED}错误: 密码长度不足10位，请重新输入${RESET}"
+  else
+    break
+  fi
+done
+
+# 获取ngrok token，确保不为空
+while true; do
+  read -p "请输入ngrok token (可以从 https://dashboard.ngrok.com 获取): " NGROK_TOKEN
+  if [[ -z "$NGROK_TOKEN" ]]; then
+    echo -e "${RED}错误: ngrok token不能为空，请重新输入${RESET}"
+  else
+    break
+  fi
+done
 
 echo -e "${YELLOW}[2/8] 正在解除 SSH 服务的锁定...${RESET}"
 systemctl unmask ssh
