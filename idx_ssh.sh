@@ -45,9 +45,9 @@ echo -e "${YELLOW}[3/8] 正在停止当前运行的 SSH 服务...${RESET}"
 pkill sshd
 
 echo -e "${YELLOW}[4/8] 正在卸载旧版 SSH 服务器并安装新版...${RESET}"
-apt remove -y --purge openssh-server &>/dev/null
-apt update &>/dev/null
-apt install -y openssh-server &>/dev/null
+DEBIAN_FRONTEND=noninteractive apt-get remove -y -qq --purge openssh-server &>/dev/null
+DEBIAN_FRONTEND=noninteractive apt-get -qq update &>/dev/null
+DEBIAN_FRONTEND=noninteractive apt-get install -y -qq openssh-server &>/dev/null
 
 echo -e "${YELLOW}[5/8] 正在设置 root 用户密码...${RESET}"
 echo root:$PASSWORD | chpasswd root
@@ -58,7 +58,27 @@ sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/g;s/^#\?PasswordAuthenticati
 echo -e "${YELLOW}[7/8] 正在重启 SSH 服务并设置 ngrok 隧道...${RESET}"
 systemctl restart ssh
 wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz -qO- | tar -xz -C /usr/local/bin
-nohup ngrok tcp 22 --authtoken=${NGROK_TOKEN} &>/dev/null &
+
+# 创建 ngrok systemd 服务
+cat > /etc/systemd/system/ngrok.service << EOF
+[Unit]
+Description=ngrok tunnel service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/bin/ngrok tcp 22 --authtoken=${NGROK_TOKEN}
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# 启用并启动 ngrok 服务
+systemctl daemon-reload
+systemctl enable --now ngrok &>/dev/null
 
 echo -e "${YELLOW}等待 ngrok 服务启动...${RESET}"
 sleep 5
