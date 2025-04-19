@@ -59,3 +59,8 @@ idx.google.com 开启 ssh 密码登陆
 ```bash
 bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/tools/main/idx_ssh.sh)
 ```
+
+idx.google.com 安装 docker
+```bash
+bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/tools/main/idx_docker.sh)
+```
