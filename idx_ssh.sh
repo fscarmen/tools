@@ -14,7 +14,7 @@ RESET="\033[0m"
 echo -e "${GREEN}===== 开始设置 SSH 和 Ngrok 隧道 =====${RESET}"
 
 # 获取用户输入
-echo -e "${YELLOW}[1/8] 获取必要信息...${RESET}"
+echo -e "${YELLOW}[1/5] 获取必要信息...${RESET}"
 
 # 获取密码，确保至少10位且不为空
 while true; do
@@ -38,32 +38,30 @@ while true; do
   fi
 done
 
-echo -e "${YELLOW}[2/8] 正在解除 SSH 服务的锁定...${RESET}"
-systemctl unmask ssh
+echo -e "${YELLOW}[2/5] 正在终止现有的 SSH 进程...${RESET}"
+lsof -i:22 | awk '/IPv4/{print $2}' | xargs kill -9 2>/dev/null || true
 
-echo -e "${YELLOW}[3/8] 正在停止当前运行的 SSH 服务...${RESET}"
-pkill sshd
+echo -e "${YELLOW}[3/5] 正在配置 SSH 服务，允许 root 登录和密码认证...${RESET}"
+echo -e '\nPermitRootLogin yes\nPasswordAuthentication yes' >> /etc/ssh/sshd_config
 
-echo -e "${YELLOW}[4/8] 正在卸载旧版 SSH 服务器并安装新版...${RESET}"
-apt remove -y --purge openssh-server &>/dev/null
-apt update &>/dev/null
-apt install -y openssh-server &>/dev/null
-
-echo -e "${YELLOW}[5/8] 正在设置 root 用户密码...${RESET}"
+echo -e "${YELLOW}[4/5] 正在设置 root 用户密码...${RESET}"
 echo root:$PASSWORD | chpasswd root
 
-echo -e "${YELLOW}[6/8] 正在配置 SSH 服务，允许 root 登录和密码认证...${RESET}"
-sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/g;s/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+echo -e "${YELLOW}[5/5] 正在解除 SSH 和 Docker 服务的锁定，启用密码访问...${RESET}"
+systemctl unmask ssh docker docker.socket containerd
+systemctl start ssh docker docker.socket containerd
 
-echo -e "${YELLOW}[7/8] 正在重启 SSH 服务并设置 ngrok 隧道...${RESET}"
-systemctl restart ssh
+# 下载并设置 ngrok
 wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz -qO- | tar -xz -C /usr/local/bin
-nohup ngrok tcp 22 --authtoken=${NGROK_TOKEN} &>/dev/null &
+
+# 使用 nohup 在后台运行 ngrok
+pkill -f "ngrok tcp 22" >/dev/null 2>&1 || true
+nohup /usr/local/bin/ngrok tcp 22 --authtoken=${NGROK_TOKEN} >/dev/null 2>&1 &
 
 echo -e "${YELLOW}等待 ngrok 服务启动...${RESET}"
 sleep 5
 
-echo -e "${YELLOW}[8/8] 获取 ngrok 隧道信息...${RESET}"
+echo -e "${YELLOW}获取 ngrok 隧道信息...${RESET}"
 NGROK_INFO=$(curl -s http://localhost:4040/api/tunnels)
 grep -q "Your account is limited to 1 simultaneous ngrok agent sessions." <<< $NGROK_INFO && echo -e "${RED}错误: 您的 ngrok 账户限制了同时只能有一个 ngrok 代理会话，请检查您的 ngrok 设置。${RESET}" && exit 1
 ! grep -q "public_url" <<< $NGROK_INFO && echo -e "${RED}错误: 无法获取 ngrok 隧道信息，请检查 ngrok 是否正常运行。${RESET}" && exit 1
@@ -80,4 +78,7 @@ echo -e "${GREEN}SSH 密码: ${RESET}$PASSWORD"
 echo ""
 echo -e "${GREEN}使用以下命令连接到您的服务器:${RESET}"
 echo -e "${GREEN}ssh root@$NGROK_HOST -p $NGROK_PORT${RESET}"
+echo ""
+echo -e "${YELLOW}注意: SSH 和 Docker 服务已解除锁定，可以使用密码进行访问${RESET}"
+echo -e "${YELLOW}注意: ngrok 进程在后台运行，如需停止请使用 'pkill -f \"ngrok tcp 22\"' 命令${RESET}"
 echo ""
