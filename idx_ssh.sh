@@ -49,6 +49,8 @@ echo root:$PASSWORD | chpasswd root
 
 echo -e "${YELLOW}[5/5] 正在解除 SSH 和 Docker 服务的锁定，启用密码访问...${RESET}"
 systemctl unmask ssh docker docker.socket containerd
+pkill dockerd
+pkill containerd
 systemctl start ssh docker docker.socket containerd
 
 # 下载并设置 ngrok

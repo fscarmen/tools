@@ -12,6 +12,8 @@ RESET="\033[0m"
 # 设置 Docker 的脚本
 echo -e "${YELLOW}正在解除 Docker 服务的锁定并启动服务...${RESET}"
 systemctl unmask docker docker.socket containerd &>/dev/null
+pkill dockerd
+pkill containerd
 systemctl start docker docker.socket containerd
 
 # 验证 Docker 是否启动成功
