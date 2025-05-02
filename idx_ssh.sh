@@ -51,7 +51,7 @@ echo -e "${YELLOW}[5/5] 正在解除 SSH 和 Docker 服务的锁定，启用密�
 systemctl unmask ssh containerd docker.socket docker
 pkill dockerd
 pkill containerd
-systemctl start ssh containerd docker.socket docker
+systemctl start ssh containerd docker.socket docker &>/dev/null
 
 # 下载并设置 ngrok
 wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz -qO- | tar -xz -C /usr/local/bin
