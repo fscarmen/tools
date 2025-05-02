@@ -48,10 +48,10 @@ echo -e "${YELLOW}[4/5] 正在设置 root 用户密码...${RESET}"
 echo root:$PASSWORD | chpasswd root
 
 echo -e "${YELLOW}[5/5] 正在解除 SSH 和 Docker 服务的锁定，启用密码访问...${RESET}"
-systemctl unmask ssh docker docker.socket containerd
+systemctl unmask ssh docker containerd docker.socket 
 pkill dockerd
 pkill containerd
-systemctl start ssh docker docker.socket containerd
+systemctl start ssh docker containerd docker.socket 
 
 # 下载并设置 ngrok
 wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz -qO- | tar -xz -C /usr/local/bin
