@@ -56,6 +56,36 @@ systemctl start ssh containerd docker.socket docker &>/dev/null
 # 下载并设置 ngrok
 wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz -qO- | tar -xz -C /usr/local/bin
 
+# 测试运行 ngrok
+echo -e "${YELLOW}测试 ngrok 运行状态...${RESET}"
+# 在后台运行 ngrok 并将输出重定向到临时文件
+TEST_LOG="/tmp/ngrok_test.log"
+/usr/local/bin/ngrok tcp 22 --authtoken=${NGROK_TOKEN} > $TEST_LOG 2>&1 &
+TEST_PID=$!
+
+# 等待几秒检查输出
+sleep 2
+
+# 检查日志文件中是否有错误信息
+if grep -q "You must add a credit or debit card" $TEST_LOG; then
+  kill $TEST_PID 2>/dev/null
+  echo -e "${RED}错误: 免费账户需要添加信用卡或借记卡才能使用 TCP 端点。这是为了防止滥用并保持互联网安全。该卡不会被收费。${RESET}"
+  rm -f $TEST_LOG
+  exit 1
+elif grep -q "limited to 1 simultaneous ngrok agent session" $TEST_LOG; then
+  kill $TEST_PID 2>/dev/null
+  echo -e "${RED}错误: 您的 ngrok 账户限制了同时只能有一个 ngrok 代理会话，请检查是否有其他正在运行的 ngrok 进程。${RESET}"
+  rm -f $TEST_LOG
+  exit 1
+fi
+
+# 清理测试进程和日志
+kill $TEST_PID 2>/dev/null
+rm -f $TEST_LOG
+
+# 如果测试成功，终止测试进程
+ps -ef | grep "ngrok tcp 22" | grep -v grep | awk '{print $2}' | xargs kill -9 2>/dev/null || true
+
 # 使用 nohup 在后台运行 ngrok
 pkill -f "ngrok tcp 22" >/dev/null 2>&1 || true
 nohup /usr/local/bin/ngrok tcp 22 --authtoken=${NGROK_TOKEN} >/dev/null 2>&1 &
@@ -65,7 +95,6 @@ sleep 5
 
 echo -e "${YELLOW}获取 ngrok 隧道信息...${RESET}"
 NGROK_INFO=$(curl -s http://localhost:4040/api/tunnels)
-grep -q "Your account is limited to 1 simultaneous ngrok agent sessions." <<< $NGROK_INFO && echo -e "${RED}错误: 您的 ngrok 账户限制了同时只能有一个 ngrok 代理会话，请检查您的 ngrok 设置。${RESET}" && exit 1
 ! grep -q "public_url" <<< $NGROK_INFO && echo -e "${RED}错误: 无法获取 ngrok 隧道信息，请检查 ngrok 是否正常运行。${RESET}" && exit 1
 NGROK_URL=$(sed 's#.*tcp://\([^"]\+\)".*#\1#' <<< $NGROK_INFO)
 NGROK_HOST=$(cut -d: -f1 <<< $NGROK_URL)

@@ -11,12 +11,13 @@ RESET="\033[0m"
 
 # 设置 Docker 的脚本
 echo -e "${YELLOW}正在解除 Docker 服务的锁定并启动服务...${RESET}"
-systemctl unmask docker docker.socket containerd &>/dev/null
+systemctl unmask ssh containerd docker.socket docker &>/dev/null
 pkill dockerd
 pkill containerd
-systemctl start docker docker.socket containerd
+systemctl start ssh containerd docker.socket docker &>/dev/null
 
-# 验证 Docker 是否启动成功
+# 等待几秒检查输出，验证 Docker 是否启动成功
+sleep 2
 if [[ $(systemctl is-active docker) == "active" && $(systemctl is-active docker.socket) == "active" ]]; then
   DOCKER_VERSION=$(docker --version | cut -d ' ' -f 3 | tr -d ',')
   echo -e "${GREEN}===== Docker 服务启动完成 =====${RESET}"
