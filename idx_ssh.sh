@@ -39,9 +39,9 @@ echo -e "${GREEN}===== 开始设置 SSH 和隧道 =====${RESET}"
 
 # 选择隧道类型
 echo -e "请选择要使用的隧道类型:"
-echo -e "1. Ngrok (免费版不支持 TCP，需要信用卡验证)"
+echo -e "1. Ngrok (免费版不支持 TCP，需要信用卡验证) [默认]"
 echo -e "2. Frp (需要自己的服务器)"
-read -p "请输入选择 [1-2]: " TUNNEL_TYPE
+read -p "请输入选择 [1-2] (默认: 1): " TUNNEL_TYPE
 
 echo -e "${YELLOW}[1/5] 获取必要信息...${RESET}"
 # 获取密码，确保至少10位且不为空
