@@ -42,8 +42,12 @@ done
 echo -e "${YELLOW}[2/4] 正在设置 Docker 和 Firefox 容器...${RESET}"
 
 # 确保 Docker 服务正在运行
-systemctl unmask docker docker.socket containerd 2>/dev/null || true
-systemctl start docker 2>/dev/null || true
+if [ "$(systemctl is-active docker)" != 'active' ]; then
+  systemctl unmask containerd docker.socket docker 2>/dev/null || true
+  pkill dockerd 2>/dev/null || true
+  pkill containerd 2>/dev/null || true
+  systemctl start containerd docker.socket docker 2>/dev/null || true
+fi
 
 # 创建 Firefox 数据目录
 mkdir -p ~/firefox-data
@@ -75,19 +79,19 @@ if [ ! -f /usr/local/bin/ngrok ]; then
   wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz -qO- | tar -xz -C /usr/local/bin
 fi
 
-# 查找可用的 API 端口
-NGROK_API_PORT=4041
-while nc -z localhost $NGROK_API_PORT 2>/dev/null; do
-  NGROK_API_PORT=$((NGROK_API_PORT + 1))
-  echo -e "${YELLOW}检测到端口 $((NGROK_API_PORT - 1)) 已被占用，尝试使用端口 ${NGROK_API_PORT}...${RESET}"
-done
-
 # 使用 nohup 在后台运行 ngrok
 pkill -f "ngrok http 5800 --name firefox" >/dev/null 2>&1 || true
 nohup /usr/local/bin/ngrok http 5800 --name firefox --authtoken=${NGROK_TOKEN} >/dev/null 2>&1 &
 
 echo -e "${YELLOW}[4/4] 等待 Ngrok 服务启动...${RESET}"
 sleep 5
+
+# 获取指定 ngrok 进程的 API 端口
+NGROK_PID=$(ps -ef | grep "ngrok http 5800 --name firefox" | grep -v grep | awk '{print $2}')
+[ -n "$NGROK_PID" ] && NGROK_API_PORT=$(lsof -p $NGROK_PID 2>/dev/null | grep "LISTEN" | grep "127.0.0.1:" | awk -F":" '{print $2}' | awk '{print $1}')
+
+# 如果无法获取端口，使用默认端口 4040
+[ -z "$NGROK_API_PORT" ] && NGROK_API_PORT=4040 && echo -e "${YELLOW}警告: 无法获取 ngrok API 端口，使用默认端口 4040${RESET}"
 
 echo -e "${YELLOW}获取 Ngrok 隧道信息...${RESET}"
 NGROK_INFO=$(curl -s http://localhost:${NGROK_API_PORT}/api/tunnels)

@@ -11,11 +11,19 @@ RESET="\033[0m"
 
 # 解锁服务函数
 unlock_services() {
-    echo -e "${YELLOW}[4/5] 正在解除 SSH 和 Docker 服务的锁定，启用密码访问...${RESET}"
-    systemctl unmask ssh containerd docker.socket docker
-    pkill dockerd
-    pkill containerd
-    systemctl start ssh containerd docker.socket docker &>/dev/null
+  echo -e "${YELLOW}[4/5] 正在解除 SSH 和 Docker 服务的锁定，启用密码访问...${RESET}"
+  if [ "$(systemctl is-active ssh)" != "active" ]; then
+    systemctl unmask ssh 2>/dev/null || true
+    systemctl start ssh 2>/dev/null || true
+  fi
+
+  if [[ "$(systemctl is-active docker)" != "active" || "$(systemctl is-active docker.socket)" != "active" ]]; then
+    systemctl unmask containerd docker.socket docker 2>/dev/null || true
+    pkill dockerd 2>/dev/null || true
+    pkill containerd 2>/dev/null || true
+    systemctl start containerd docker.socket docker 2>/dev/null || true
+    sleep 2
+  fi
 }
 
 # SSH 配置函数
@@ -181,7 +189,14 @@ EOF
     sleep 5
 
     echo -e "${YELLOW}获取 Ngrok 隧道信息...${RESET}"
-    NGROK_INFO=$(curl -s http://localhost:4040/api/tunnels)
+    # 获取指定 ngrok 进程的 API 端口
+    NGROK_PID=$(ps -ef | grep "ngrok tcp 22" | grep -v grep | awk '{print $2}')
+    [ -n "$NGROK_PID" ] && NGROK_API_PORT=$(lsof -p $NGROK_PID 2>/dev/null | grep "LISTEN" | grep "localhost:" | awk -F":" '{print $2}' | awk '{print $1}')
+    
+    # 如果无法获取端口，使用默认端口 4040
+    [ -z "$NGROK_API_PORT" ] && NGROK_API_PORT=4040 && echo -e "${YELLOW}警告: 无法获取 ngrok API 端口，使用默认端口 4040${RESET}"
+    
+    NGROK_INFO=$(curl -s http://localhost:${NGROK_API_PORT}/api/tunnels)
     ! grep -q "public_url" <<< $NGROK_INFO && echo -e "${RED}错误: 无法获取 Ngrok 隧道信息，请检查 Ngrok 是否正常运行。${RESET}" && exit 1
     NGROK_URL=$(sed 's#.*tcp://\([^"]\+\)".*#\1#' <<< $NGROK_INFO)
     NGROK_HOST=$(cut -d: -f1 <<< $NGROK_URL)
