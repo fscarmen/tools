@@ -30,11 +30,6 @@ docker 更换端口
 bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/docker_port.sh)
 ```
 
-机场测活节点， -c 中文; -e 英文; -r <订阅 URL和节点>; -u 卸载; -a 全自动; -m 手动
-```bash
-bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/ssrspeed.sh) [OPTION]
-```
-
 OpenVZ dd 为 alpine
 ```bash
 bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/dd_alpine.sh)
@@ -69,3 +64,13 @@ idx.google.com 24小时保活
 ```bash
 bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/tools/main/idx_alive.sh)
 ```
+
+Caddy 一键脚本
+```bash
+bash <(wget -qO- https://raw.githubusercontent.com/fscarmen/tools/main/caddy.sh)
+```
+
+Docker 一键脚本
+```bash
+bash <(wget -qO- get.docker.com)
+```bash
