@@ -7,23 +7,21 @@ yellow(){ echo -e "\033[33m\033[01m$1\033[0m"; }
 
 # 安装必要的依赖包
 install_dependencies() {
-  # 确定安装包管理器
-  type -p yum > /dev/null 2>&1 && INSTALL='yum -y install' || INSTALL='apt -y install'
-
   # 根据系统类型安装 cron 或 cronie
   if [ -f /etc/debian_version ]; then
     # Debian/Ubuntu 系列
-    type -p crontab >/dev/null 2>&1 || $INSTALL cron
+    INSTALL='apt -y install'
+    type -p crontab >/dev/null 2>&1 || apt -y install cron
   elif [ -f /etc/redhat-release ]; then
     # CentOS/RHEL 系列
-    type -p crontab >/dev/null 2>&1 || $INSTALL cronie
+    INSTALL='yum -y install'
+    type -p crontab >/dev/null 2>&1 || yum -y install cronie
   else
     red "不支持的操作系统"
     exit 1
   fi
 
-  # 安装 Docker 和 flock
-  type -p docker >/dev/null 2>&1 || $INSTALL docker
+  # 安装 flock
   type -p flock >/dev/null 2>&1 || $INSTALL util-linux
 }
 
