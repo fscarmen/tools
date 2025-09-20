@@ -1,49 +1,99 @@
-# 字体彩色
-red(){
-	echo -e "\033[31m\033[01m$1\033[0m"
-    }
-green(){
-	echo -e "\033[32m\033[01m$1\033[0m"
-    }
-yellow(){
-	echo -e "\033[33m\033[01m$1\033[0m"
+#!/bin/bash
+
+# 字体颜色
+red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
+green(){ echo -e "\033[32m\033[01m$1\033[0m"; }
+yellow(){ echo -e "\033[33m\033[01m$1\033[0m"; }
+
+# 安装必要的依赖包
+install_dependencies() {
+  # 确定安装包管理器
+  type -p yum > /dev/null 2>&1 && INSTALL='yum -y install' || INSTALL='apt -y install'
+
+  # 根据系统类型安装 cron 或 cronie
+  if [ -f /etc/debian_version ]; then
+    # Debian/Ubuntu 系列
+    type -p crontab >/dev/null 2>&1 || $INSTALL cron
+  elif [ -f /etc/redhat-release ]; then
+    # CentOS/RHEL 系列
+    type -p crontab >/dev/null 2>&1 || $INSTALL cronie
+  else
+    red "不支持的操作系统"
+    exit 1
+  fi
+
+  # 安装 Docker 和 flock
+  type -p docker >/dev/null 2>&1 || $INSTALL docker
+  type -p flock >/dev/null 2>&1 || $INSTALL util-linux
 }
 
-
+# 安装守护进程
 install(){
-# EUserv docker 守护进程，定时1分钟检查一次
-type -p yum && INSTALL='yum -y install' || INSTALL='apt -y install'
-! type -p crontab >/dev/null 2>&1 && $INSTALL cron
-grep -qE '^[ ]*\*/1[ ]*\*[ ]*\*[ ]*\*[ ]*\*[ ]*root[ ]*bash[ ]*/root/EU_docker_AutoUp.sh' /etc/crontab || echo '*/1 * * * *  root bash /root/EU_docker_AutoUp.sh' >> /etc/crontab
+  install_dependencies
 
-# 生成 EU_docker_AutoUp.sh 文件，判断当前 docker 状态，遇到 Created 或 Exited 时重启，直至刷成功。1分钟后还没有刷成功，将不会重复该进程而浪费系统资源
-        cat <<EOF >/root/EU_docker_AutoUp.sh
-[[ \$(pgrep -laf ^[/d]*bash.*EU_docker_AutoUp | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]] &&
-        until [[ -z \$(docker ps -a | egrep "Created|Exited") ]]
-                do docker start \$(docker ps -a | egrep "Created|Exited" | awk '{print \$1}')
-        done
+  # 添加定时任务（每分钟检查一次）
+  if ! grep -qE '^[ ]*\*/1[ ]*\*[ ]*\*[ ]*\*[ ]*\*[ ]*root[ ]*bash[ ]*/root/Docker_AutoUp.sh' /etc/crontab; then
+    echo '*/1 * * * *  root bash /root/Docker_AutoUp.sh' >> /etc/crontab
+  fi
+
+  # 生成 Docker_AutoUp.sh 文件
+  cat <<EOF >/root/Docker_AutoUp.sh
+#!/bin/bash
+
+# 使用 flock 加锁，确保脚本只会有一个实例在运行
+(
+  flock -n 200 || exit 1  # 尝试获取锁，若未获取到锁则退出
+
+  # 查找状态为 Created 或 Exited 的容器并尝试重启
+  for CONTAINER in \$(docker ps -a --filter "status=created" --filter "status=exited" --format "{{.ID}}")
+  do
+    docker start \$CONTAINER
+    # 检查容器是否已成功启动
+    if [[ \$(docker inspect -f '{{.State.Status}}' \$CONTAINER) == "running" ]]; then
+      green "容器 \$CONTAINER 已成功启动"
+    else
+      yellow "容器 \$CONTAINER 启动失败，正在重试..."
+      sleep 10  # 等待一段时间后再次尝试
+    fi
+  done
+) 200>/root/Docker_AutoUp.lock  # 锁文件位置，确保同一时刻只允许一个进程执行
 EOF
 
-# 输出执行结果
-green " EUserv Docker 守护进程已运行，系统1分钟判断一次 Docker 状态，重启已停止的 docker ！"
+  chmod +x /root/Docker_AutoUp.sh
+
+  # 输出执行结果
+  green "Docker 守护进程已运行，系统每分钟检查一次 Docker 状态，重启已停止的容器！"
 }
 
+# 卸载守护进程
 uninstall(){
-sed -i '/EU_docker/d' /etc/crontab
-kill -9 $(pgrep -f EU_docker_AutoUp) >/dev/null 2>&1
-rm -f /root/EU_docker_AutoUp.sh
+  # 删除定时任务
+  sed -i '/Docker_AutoUp/d' /etc/crontab
 
-# 输出执行结果
-green " EUserv Docker 守护进程已卸载 ！"
+  # 终止与 Docker_AutoUp.sh 相关的所有进程
+  kill -9 $(pgrep -f Docker_AutoUp) >/dev/null 2>&1
+
+  # 删除 Docker_AutoUp.sh 文件
+  rm -f /root/Docker_AutoUp.sh
+
+  # 删除锁文件
+  rm -f /root/Docker_AutoUp.lock
+
+  # 输出执行结果
+  green "Docker 守护进程已卸载，相关文件已清除！"
 }
 
+# 脚本菜单
 clear
-green " 项目地址：https://github.com/fscarmen/tools/issues\n=========================================================== "
-yellow " 1.安装 docker 守护进程,定时1分钟检查一次,检测到 docker 状态为 Created 或 Exited 时自动开刷直至成功\n 2.卸载\n 0.退出脚本 "
-read -p " 请选择： " CHOOSE
+green "项目地址：https://github.com/fscarmen/tools/issues"
+yellow "1. 安装 Docker 守护进程，定时检查 Docker 状态，每分钟检查一次，检测到 Docker 容器为 Created 或 Exited 时自动启动。"
+yellow "2. 卸载 Docker 守护进程"
+yellow "0. 退出脚本"
+read -p "请选择： " CHOOSE
+
 case "$CHOOSE" in
-1 ) install;;
-2 ) uninstall;;
-0 ) exit 0;;
-* ) red " 输入错误，脚本退出 ";exit 1;;
+  1 ) install;;
+  2 ) uninstall;;
+  0 ) exit 0;;
+  * ) red "输入错误，脚本退出"; exit 1;;
 esac
