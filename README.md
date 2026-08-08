@@ -83,5 +83,9 @@ bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/test_cfd.
 测试 VPS UDP 是否被限制
 ```bash
 ./$(wget -qO- https://github.com/fscarmen/udp-test/releases/latest/download/udp-test-linux-$(uname -m | sed 's/x86_64/amd64/; s/aarch64/arm64/').tar.gz | tar xzv)
+```
 
+旧版 WARP 一键升级内置保活
+```bash
+bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/tools/main/keepalive-upgrade.sh)
 ```
