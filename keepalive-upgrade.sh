@@ -66,12 +66,23 @@ ps -ef 2>/dev/null | grep -v grep | grep -q 'keepalive.sh loop' && {
 cat > "$KEEPALIVE" <<'EOF'
 #!/usr/bin/env bash
 set -u
+LOCK=/var/run/warp-keepalive.lock
+HAVE_FLOCK=0
+command -v flock >/dev/null 2>&1 && HAVE_FLOCK=1
 case "${1:-}" in
   start)
-    ps -ef 2>/dev/null | grep -q '[k]eepalive.sh loop' && exit 0
+    if [ "$HAVE_FLOCK" = 1 ]; then
+      # flock 原子锁，无竞态：拿不到锁说明已有实例。子进程继承 fd 9 持锁，loop 结束自动释放
+      exec 9>"$LOCK"
+      flock -n 9 || exit 0
+    else
+      # 无 flock(如 busybox/Alpine) 回退 ps+grep 检测
+      ps -ef 2>/dev/null | grep -q '[k]eepalive.sh loop' && exit 0
+    fi
     nohup "$0" loop >/dev/null 2>&1 &
     ;;
   stop)
+    # 不删锁文件，kill 掉 loop 后 fd 9 自动关闭释放锁，避免新建 inode 造成二次竞态
     for p in $(ps -ef 2>/dev/null | grep '[k]eepalive.sh loop' | awk '{print $2}'); do
       [ "$p" != "$$" ] && kill "$p" 2>/dev/null
     done
